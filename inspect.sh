@@ -2,6 +2,6 @@
 
 set -x
 
-docker run --user 0 -ti materialscloud:stage /bin/bash
+docker run --user 0 -ti mc-docker-stack:stage /bin/bash
 
 #EOF

@@ -2,6 +2,6 @@
 
 set -x
 
-docker build -t materialscloud:stage ./
+docker build -t mc-docker-stack:stage ./
 
 #EOF

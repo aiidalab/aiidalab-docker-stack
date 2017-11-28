@@ -2,6 +2,6 @@
 
 set -x
 
-docker tag materialscloud:stage materialscloud:latest
+docker tag mc-docker-stack:stage mc-docker-stack:latest
 
 #EOF
