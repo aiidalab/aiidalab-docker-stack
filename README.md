@@ -23,6 +23,6 @@ The users will gradually pick up the new image, whenever they restart their cont
 ## Slow IO
 To check for issues with OpenStack's block storage observe the following command for a **few minutes**:
 ```
-watch "ps axu| awk '{print \$8, \"   \", \$11}' | sort | head -n 10"
+watch -n 0.1 "ps axu| awk '{print \$8, \"   \", \$11}' | sort | head -n 10"
 ```
 Pretty much all processes should be in the `S` state. If a process stays in the `D` state for a longer time it is most likely waiting for slow IO.
