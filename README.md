@@ -1,7 +1,7 @@
 # Docker Stack for Jupyter.MaterialsCloud.org
 
 ## Deploy
-To deploy changes login into jupyter.materialscloud.org an execute the following commands:
+To deploy changes login into jupyter.materialscloud.org and execute the following commands:
 ```
 cd /home/ubuntu/mc-docker-stack/
 git pull
@@ -15,7 +15,7 @@ The users will gradually pick up the new image, whenever they restart their cont
 ## Cheat Sheet
 - List running containers: `docker ps`
 - List resource usage: `docker stats`
-- View log of one container: `docker container logs  <container_id>`
+- View log of a container: `docker container logs  <container_id>`
 - View JupyterHub log: `tail -f /var/log/syslog | grep jupyterhub`
 - Restart JupyterHub: `sudo service jupyterhub restart`
 - Restart Apache: `sudo apachectl graceful`
