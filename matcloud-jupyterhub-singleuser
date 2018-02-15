@@ -17,7 +17,7 @@ matcloud_page_template = """
     </a>
 </span>
 <span>
-    <a href='http://test-dev.materialscloud.org/home'
+    <a href='http://www.materialscloud.org/home'
        class='btn btn-default btn-sm navbar-btn pull-right'
        style='margin-right: 4px; margin-left: 2px;'>
         Materials Cloud
