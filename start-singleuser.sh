@@ -77,7 +77,7 @@ if [ ! -d /project/.aiida ]; then
    if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
       cd /opt/pseudos
       for i in *; do
-         verdi data upf uploadfamily $i $i $i
+         verdi import $i
       done
    fi
 

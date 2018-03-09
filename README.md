@@ -1,7 +1,7 @@
 # Docker Stack for Jupyter.MaterialsCloud.org
 
 ## Deploy
-To deploy changes login into jupyter.materialscloud.org and execute the following commands:
+To deploy changes, log into jupyter.materialscloud.org and execute the following commands:
 ```
 cd /home/ubuntu/mc-docker-stack/
 git pull
@@ -26,3 +26,17 @@ To check for issues with OpenStack's block storage observe the following command
 watch -n 0.1 "ps axu| awk '{print \$8, \"   \", \$11}' | sort | head -n 10"
 ```
 Pretty much all processes should be in the `S` state. If a process stays in the `D` state for a longer time it is most likely waiting for slow IO.
+
+## Local Testing
+In order to test the docker image locally, just clone this repository locally, and
+```
+./build.sh
+./activate.sh
+./inspect.sh
+```
+
+Inside the Docker image, try
+```
+su scientist
+/opt/start-singleuser.sh
+```

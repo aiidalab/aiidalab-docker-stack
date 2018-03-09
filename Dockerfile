@@ -4,7 +4,7 @@
 # https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
 # https://github.com/jupyter/docker-stacks/blob/master/scipy-notebook/Dockerfile
 #
-FROM ubuntu:zesty
+FROM ubuntu:17.10
 
 USER root
 
@@ -49,15 +49,12 @@ ENV LANGUAGE en_US.UTF-8
 
 # Quantum-Espresso Pseudo Potentials
 WORKDIR /opt/pseudos
-RUN for name in SSSP_acc_PBE SSSP_acc_PBESOL SSSP_eff_PBE SSSP_eff_PBESOL; do  \
-       wget http://www.materialscloud.ch/sssp/pseudos/${name}.tar.gz;          \
-       tar -xvzf ${name}.tar.gz;                                               \
-       rm -v ${name}.tar.gz;                                                   \
+RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
+    for name in SSSP_efficiency_pseudos SSSP_accuracy_pseudos; do  \
+       wget ${base_url}/${name}.aiida;                             \
     done;                                                                      \
     chown -R root:root /opt/pseudos/;                                          \
     chmod -R +r /opt/pseudos/
-# remove misplaced pseudo
-RUN rm -vf /opt/pseudos/SSSP_eff_PBE/Be_ONCV_PBE-1.0.upf
 
 ## install rclone
 WORKDIR /opt/rclone
@@ -104,7 +101,7 @@ RUN pip2 install appmode==0.2.0                                          && \
 WORKDIR /opt
 RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
     ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python2.7/dist-packages/molview_ipywidget  && \
-    ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python3.5/dist-packages/molview_ipywidget  && \
+    ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python3.6/dist-packages/molview_ipywidget  && \
     jupyter nbextension     install --sys-prefix --py --symlink molview_ipywidget  && \
     jupyter nbextension     enable  --sys-prefix --py           molview_ipywidget
 
