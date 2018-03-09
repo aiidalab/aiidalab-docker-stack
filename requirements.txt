@@ -1,7 +1,7 @@
 #
 # required packages ============================================================
 #
-# ipython==5.4.1  # IPython 6 requires Python 3.3 or later
+# ipython==5.5.0  # IPython 6 requires Python 3.3 or later
 # notebook
 # aiida
 # aiida-cp2k
@@ -24,10 +24,10 @@
 # Markdown
 #
 # freeze versions ==============================================================
-aiida==0.10.0
+aiida==0.11.0
 aiida-ase==1.0.1
 aiida-codtools==1.0.1
-aiida-core==0.10.0
+aiida-core==0.11.0
 aiida-cp2k==0.7
 aiida-nwchem==1.0.1
 aiida-quantumespresso==1.0.1
@@ -71,7 +71,7 @@ idna==2.6
 ipaddress==1.0.18
 ipykernel==4.6.1
 ipympl==0.1.0
-ipython==5.4.1
+ipython==5.5.0
 ipython-genutils==0.2.0
 ipywidgets==7.0.5
 itsdangerous==0.24

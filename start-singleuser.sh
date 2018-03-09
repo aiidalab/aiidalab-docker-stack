@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# This script is executed whenever the docker container is (re)started.
+
 #===============================================================================
 # debuging
 set -x
@@ -53,7 +55,7 @@ if [ ! -d /project/.aiida ]; then
       --first-name Some                 \
       --last-name Body                  \
       --institution XYZ                 \
-      --backend django                  \
+      --backend sqlalchemy              \
       --db_user aiida                   \
       --db_pass aiida_db_passwd         \
       --db_name aiidadb                 \
