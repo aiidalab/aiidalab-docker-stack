@@ -48,6 +48,8 @@ export SHELL=/bin/bash
 
 #===============================================================================
 # setup AiiDA
+aiida_backend=sqlalchemy
+
 if [ ! -d /project/.aiida ]; then
    verdi setup                          \
       --non-interactive                 \
@@ -55,7 +57,7 @@ if [ ! -d /project/.aiida ]; then
       --first-name Some                 \
       --last-name Body                  \
       --institution XYZ                 \
-      --backend sqlalchemy              \
+      --backend $aiida_backend          \
       --db_user aiida                   \
       --db_pass aiida_db_passwd         \
       --db_name aiidadb                 \
@@ -84,9 +86,11 @@ if [ ! -d /project/.aiida ]; then
    fi
 
 else
-   verdi daemon stop || true
-   echo "yes" | python /usr/local/lib/python2.7/dist-packages/aiida/backends/djsite/manage.py --aiida-profile=default migrate
-   verdi daemon start
+    if [ $aiida_backend = "django" ]; then
+        verdi daemon stop || true
+        echo "yes" | python /usr/local/lib/python2.7/dist-packages/aiida/backends/djsite/manage.py --aiida-profile=default migrate
+        verdi daemon start
+    fi
 fi
 
 
