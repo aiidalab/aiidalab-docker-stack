@@ -65,6 +65,7 @@ RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
 
 ## install PyPI packages for Pyhon 3
 RUN pip3 install --upgrade         \
+    'tornado==4.5.3'               \
     'jupyterhub==0.8.0'            \
     'notebook==5.1.0'
 
