@@ -74,6 +74,15 @@ RUN pip3 install --upgrade         \
 COPY requirements.txt /opt/
 RUN pip2 install -r /opt/requirements.txt
 
+## Get latest bugfixes from aiida-core
+## TODO: Remove this after aiida-core 0.11.2 is released
+WORKDIR /opt/aiida-core
+RUN git clone https://github.com/aiidateam/aiida_core.git && \
+    cd aiida_core && \
+     git checkout release_v0.11.2 && \
+     pip install --no-deps . && \
+    cd ..
+
 
 # active ipython kernels
 RUN python2 -m ipykernel install
