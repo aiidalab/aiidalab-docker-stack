@@ -28,7 +28,7 @@ aiida==0.10.0
 aiida-ase==1.0.1
 aiida-codtools==1.0.1
 aiida-core==0.10.0
-aiida-cp2k==0.8
+aiida-cp2k==0.8.1
 aiida-nwchem==1.0.1
 aiida-quantumespresso==1.0.1
 aiida-vasp==0.2.2
