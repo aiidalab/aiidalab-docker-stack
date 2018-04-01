@@ -101,8 +101,8 @@ RUN jupyter nbextension enable  --sys-prefix --py widgetsnbextension && \
 
 # install Jupyter Appmode
 # server runs python3, notebook runs python2 - need both
-RUN pip2 install appmode==0.2.0                                          && \
-    pip3 install appmode==0.2.0                                          && \
+RUN pip2 install appmode==0.3.0                                          && \
+    pip3 install appmode==0.3.0                                          && \
     jupyter nbextension     enable  --sys-prefix --py appmode            && \
     jupyter serverextension enable  --sys-prefix --py appmode
 
