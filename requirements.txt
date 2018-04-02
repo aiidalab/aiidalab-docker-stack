@@ -24,7 +24,7 @@
 # Markdown
 #
 # freeze versions ==============================================================
-aiida==0.11.2
+aiida==0.11.3
 aiida-ase==1.0.1
 aiida-codtools==1.0.1
 aiida-core[rest,atomic_tools]==0.11.3
