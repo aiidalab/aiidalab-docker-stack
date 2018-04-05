@@ -43,7 +43,7 @@ backports.functools-lru-cache==1.5
 backports.shutil-get-terminal-size==1.0.0
 billiard==3.3.0.23
 bleach==2.1.1
-bokeh==0.12.10
+bokeh==0.12.15
 bqplot==0.10.1
 celery==3.1.25
 certifi==2018.1.18
