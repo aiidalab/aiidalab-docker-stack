@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev            \
     python-dev            \
     git                   \
+    graphviz              \
     postgresql            \
     cp2k                  \
     quantum-espresso      \

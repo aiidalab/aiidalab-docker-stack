@@ -99,7 +99,7 @@ passlib==1.7.1
 pathlib2==2.3.0
 pexpect==4.3.0
 pickleshare==0.7.4
-plumpy==0.7.10
+plumpy==0.7.12
 portalocker==1.1.0
 prompt-toolkit==1.0.15
 psycopg2-binary==2.7.4
@@ -122,7 +122,7 @@ reentry==1.0.2
 requests==2.18.4
 scandir==1.6
 scipy==1.0.0
-seekpath==1.6.0
+seekpath==1.8.0
 simplegeneric==0.8.1
 singledispatch==3.4.0.3
 six==1.11.0
