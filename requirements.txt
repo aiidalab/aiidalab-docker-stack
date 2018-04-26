@@ -119,7 +119,7 @@ pythreejs==0.4.1
 pytz==2017.3
 PyYAML==3.12
 pyzmq==16.0.3
-reentry==1.0.2
+reentry==1.2.0
 requests==2.18.4
 scandir==1.6
 scipy==1.0.0
