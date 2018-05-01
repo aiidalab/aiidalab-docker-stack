@@ -30,7 +30,7 @@ aiida-codtools==1.0.1
 aiida-core[rest,atomic_tools]==0.11.4
 aiida-cp2k==0.9
 aiida-nwchem==1.0.1
-aiida-raspa==0.1.2
+aiida-raspa==0.2.0
 aiida-quantumespresso==2.0.0
 aiida-vasp==0.2.2
 aldjemy==0.6.0
