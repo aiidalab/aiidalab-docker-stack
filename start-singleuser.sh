@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# This script is executed whenever the docker container is (re)started.
+
 #===============================================================================
 # debuging
 set -x
@@ -46,6 +48,8 @@ export SHELL=/bin/bash
 
 #===============================================================================
 # setup AiiDA
+aiida_backend=django
+
 if [ ! -d /project/.aiida ]; then
    verdi setup                          \
       --non-interactive                 \
@@ -53,7 +57,7 @@ if [ ! -d /project/.aiida ]; then
       --first-name Some                 \
       --last-name Body                  \
       --institution XYZ                 \
-      --backend django                  \
+      --backend $aiida_backend          \
       --db_user aiida                   \
       --db_pass aiida_db_passwd         \
       --db_name aiidadb                 \
@@ -77,14 +81,16 @@ if [ ! -d /project/.aiida ]; then
    if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
       cd /opt/pseudos
       for i in *; do
-         verdi data upf uploadfamily $i $i $i
+         verdi import $i
       done
    fi
 
 else
-   verdi daemon stop || true
-   echo "yes" | python /usr/local/lib/python2.7/dist-packages/aiida/backends/djsite/manage.py --aiida-profile=default migrate
-   verdi daemon start
+    if [ $aiida_backend = "django" ]; then
+        verdi daemon stop || true
+        echo "yes" | python /usr/local/lib/python2.7/dist-packages/aiida/backends/djsite/manage.py --aiida-profile=default migrate
+        verdi daemon start
+    fi
 fi
 
 

@@ -2,6 +2,9 @@
 
 set -x
 
-docker run --user 0 -ti mc-docker-stack:stage /bin/bash
+docker run --init --user 0 -ti mc-docker-stack:develop /bin/bash
+
+# login as scientist
+#docker run --init --user scientist -ti mc-docker-stack:develop /bin/bash
 
 #EOF

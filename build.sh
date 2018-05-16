@@ -2,6 +2,6 @@
 
 set -x
 
-docker build -t mc-docker-stack:stage ./
+docker build -t mc-docker-stack:develop ./
 
 #EOF

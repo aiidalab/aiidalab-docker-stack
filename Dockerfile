@@ -4,12 +4,14 @@
 # https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
 # https://github.com/jupyter/docker-stacks/blob/master/scipy-notebook/Dockerfile
 #
-FROM ubuntu:zesty
+FROM ubuntu:17.10
 
 USER root
+RUN sed -i -e "s/\/\/archive\.ubuntu/\/\/au.archive.ubuntu/" /etc/apt/sources.list
 
 # install debian packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update && apt-get install -y --no-install-recommends  \
+    graphviz              \
     locales               \
     less                  \
     psmisc                \
@@ -49,15 +51,12 @@ ENV LANGUAGE en_US.UTF-8
 
 # Quantum-Espresso Pseudo Potentials
 WORKDIR /opt/pseudos
-RUN for name in SSSP_acc_PBE SSSP_acc_PBESOL SSSP_eff_PBE SSSP_eff_PBESOL; do  \
-       wget http://www.materialscloud.ch/sssp/pseudos/${name}.tar.gz;          \
-       tar -xvzf ${name}.tar.gz;                                               \
-       rm -v ${name}.tar.gz;                                                   \
+RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
+    for name in SSSP_efficiency_pseudos SSSP_accuracy_pseudos; do  \
+       wget ${base_url}/${name}.aiida;                             \
     done;                                                                      \
     chown -R root:root /opt/pseudos/;                                          \
     chmod -R +r /opt/pseudos/
-# remove misplaced pseudo
-RUN rm -vf /opt/pseudos/SSSP_eff_PBE/Be_ONCV_PBE-1.0.upf
 
 ## install rclone
 WORKDIR /opt/rclone
@@ -68,6 +67,7 @@ RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
 
 ## install PyPI packages for Pyhon 3
 RUN pip3 install --upgrade         \
+    'tornado==4.5.3'               \
     'jupyterhub==0.8.0'            \
     'notebook==5.1.0'
 
@@ -75,6 +75,15 @@ RUN pip3 install --upgrade         \
 ## Using pip freeze to keep user visible software stack stable.
 COPY requirements.txt /opt/
 RUN pip2 install -r /opt/requirements.txt
+
+## Get latest bugfixes from aiida-core
+## TODO: Remove this after aiida-core 0.11.2 is released
+#WORKDIR /opt/aiida-core
+#RUN git clone https://github.com/aiidateam/aiida_core.git && \
+#    cd aiida_core && \
+#     git checkout release_v0.11.2 && \
+#     pip install --no-deps . && \
+#    cd ..
 
 
 # active ipython kernels
@@ -94,8 +103,8 @@ RUN jupyter nbextension enable  --sys-prefix --py widgetsnbextension && \
 
 # install Jupyter Appmode
 # server runs python3, notebook runs python2 - need both
-RUN pip2 install appmode==0.2.0                                          && \
-    pip3 install appmode==0.2.0                                          && \
+RUN pip2 install appmode==0.3.0                                          && \
+    pip3 install appmode==0.3.0                                          && \
     jupyter nbextension     enable  --sys-prefix --py appmode            && \
     jupyter serverextension enable  --sys-prefix --py appmode
 
@@ -104,7 +113,7 @@ RUN pip2 install appmode==0.2.0                                          && \
 WORKDIR /opt
 RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
     ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python2.7/dist-packages/molview_ipywidget  && \
-    ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python3.5/dist-packages/molview_ipywidget  && \
+    ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python3.6/dist-packages/molview_ipywidget  && \
     jupyter nbextension     install --sys-prefix --py --symlink molview_ipywidget  && \
     jupyter nbextension     enable  --sys-prefix --py           molview_ipywidget
 
@@ -119,12 +128,12 @@ RUN reentry scan
 # https://www.mail-archive.com/users@lists.open-mpi.org/msg30611.html
 RUN echo "btl_base_warn_component_unused = 0" >> /etc/openmpi/openmpi-mca-params.conf
 
-# install Tini
-# TODO: might not be needed in the future, Docker now has an init build-in
-WORKDIR /opt
-RUN wget https://github.com/krallin/tini/releases/download/v0.15.0/tini && \
-    chmod +x /opt/tini
-ENTRYPOINT ["/opt/tini", "--"]
+## install Tini
+## TODO: might not be needed in the future, Docker now has an init build-in
+#WORKDIR /opt
+#RUN wget https://github.com/krallin/tini/releases/download/v0.15.0/tini && \
+#    chmod +x /opt/tini
+#ENTRYPOINT ["/opt/tini", "--"]
 
 #===============================================================================
 RUN mkdir /project                                                 && \

@@ -2,6 +2,6 @@
 
 set -x
 
-docker tag mc-docker-stack:stage mc-docker-stack:latest
+docker tag mc-docker-stack:develop mc-docker-stack:latest
 
 #EOF
