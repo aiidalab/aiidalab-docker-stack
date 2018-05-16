@@ -24,10 +24,10 @@
 # Markdown
 #
 # freeze versions ==============================================================
-aiida==0.11.4
+aiida==0.12.0
 aiida-ase==1.0.1
 aiida-codtools==1.0.1
-aiida-core[rest,atomic_tools]==0.11.4
+aiida-core[rest,atomic_tools]==0.12.0
 aiida-cp2k==0.9
 aiida-nwchem==1.0.1
 aiida-raspa==0.2.1
@@ -52,6 +52,8 @@ certifi==2018.1.18
 cffi==1.11.4
 chardet==3.0.4
 click==6.7
+click-plugins
+click-spinner
 configparser==3.5.0
 cryptography==2.1.4
 cycler==0.10.0
@@ -73,7 +75,7 @@ idna==2.6
 ipaddress==1.0.19
 ipykernel==4.8.2
 ipympl==0.1.0
-ipython==5.5.0
+ipython<6.0
 ipython-genutils==0.2.0
 ipywidgets==7.0.5
 itsdangerous==0.24
@@ -104,6 +106,7 @@ pickleshare==0.7.4
 plumpy==0.7.12
 portalocker==1.1.0
 prompt-toolkit==1.0.15
+psutil==5.4.0
 psycopg2-binary==2.7.4
 ptyprocess==0.5.2
 pyasn1==0.4.2
@@ -120,7 +123,7 @@ pythreejs==0.4.1
 pytz==2017.3
 PyYAML==3.12
 pyzmq==16.0.3
-reentry==1.2.0
+reentry==1.2.1a2
 requests==2.18.4
 scandir==1.6
 scipy==1.0.0
