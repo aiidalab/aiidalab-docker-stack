@@ -74,6 +74,9 @@ if [ ! -d /project/.aiida ]; then
    #verdi devel setproperty logging.celery_loglevel DEBUG
    #verdi devel setproperty logging.aiida_loglevel DEBUG
 
+   # update the list of plugins
+   reentry scan
+
    # start the daemon
    verdi daemon start
 
