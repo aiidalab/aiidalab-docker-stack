@@ -74,9 +74,6 @@ if [ ! -d /project/.aiida ]; then
    #verdi devel setproperty logging.celery_loglevel DEBUG
    #verdi devel setproperty logging.aiida_loglevel DEBUG
 
-   # update the list of plugins
-   reentry scan
-
    # start the daemon
    verdi daemon start
 
@@ -104,6 +101,9 @@ if [ ! -e /project/.bashrc ]; then
    echo 'eval "$(verdi completioncommand)"' >> /project/.bashrc
    echo 'export PYTHONPATH="/project"' >> /project/.bashrc
 fi
+
+# update the list of installed plugins
+grep "reentry scan" .bashrc || echo "reentry scan" >> .bashrc
 
 
 #===============================================================================
