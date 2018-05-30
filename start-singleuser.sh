@@ -103,7 +103,7 @@ if [ ! -e /project/.bashrc ]; then
 fi
 
 # update the list of installed plugins
-grep "reentry scan" .bashrc || echo "reentry scan" >> .bashrc
+grep "reentry scan" /project/.bashrc || echo "reentry scan" >> /project/.bashrc
 
 
 #===============================================================================
