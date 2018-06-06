@@ -102,6 +102,8 @@ if [ ! -e /project/.bashrc ]; then
    echo 'export PYTHONPATH="/project"' >> /project/.bashrc
 fi
 
+# update the list of installed plugins
+grep "reentry scan" /project/.bashrc || echo "reentry scan" >> /project/.bashrc
 
 #===============================================================================
 # generate ssh key
