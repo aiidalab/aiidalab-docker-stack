@@ -58,21 +58,25 @@ RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
     chown -R root:root /opt/pseudos/;                                          \
     chmod -R +r /opt/pseudos/
 
-## install rclone
+# install rclone
 WORKDIR /opt/rclone
 RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
     unzip rclone-v1.38-linux-amd64.zip;                              \
     ln -s rclone-v1.38-linux-amd64/rclone .
 
-## install PyPI packages for Python 3
+# install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
     'tornado==4.5.3'               \
     'jupyterhub==0.8.1'            \
     'notebook==5.5.0'              \
     'appmode==0.3.0'
 
-## install PyPI packages for Python 2.
+# install PyPI packages for Python 2.
+# This already enables jupyter notebook and server extensions
 RUN pip2 install --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc1
+
+# the fileupload extension also needs to be "installed"
+RUN jupyter nbextension install --sys-prefix --py fileupload
 
 ## Get latest bugfixes from aiida-core
 ## TODO: Remove this after aiida-core 0.11.2 is released
