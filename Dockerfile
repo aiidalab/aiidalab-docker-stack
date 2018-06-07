@@ -64,12 +64,12 @@ RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
     unzip rclone-v1.38-linux-amd64.zip;                              \
     ln -s rclone-v1.38-linux-amd64/rclone .
 
-
 ## install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
     'tornado==4.5.3'               \
     'jupyterhub==0.8.1'            \
-    'notebook==5.5.0'
+    'notebook==5.5.0'              \
+    'appmode==0.3.0'
 
 ## install PyPI packages for Python 2.
 RUN pip2 install --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc1
