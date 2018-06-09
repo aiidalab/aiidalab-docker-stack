@@ -58,23 +58,25 @@ RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
     chown -R root:root /opt/pseudos/;                                          \
     chmod -R +r /opt/pseudos/
 
-## install rclone
+# install rclone
 WORKDIR /opt/rclone
 RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
     unzip rclone-v1.38-linux-amd64.zip;                              \
     ln -s rclone-v1.38-linux-amd64/rclone .
 
-
-## install PyPI packages for Pyhon 3
+# install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
     'tornado==4.5.3'               \
-    'jupyterhub==0.8.0'            \
-    'notebook==5.1.0'
+    'jupyterhub==0.8.1'            \
+    'notebook==5.5.0'              \
+    'appmode==0.3.0'
 
-## install PyPI packages for Pyhon 2.
-## Using pip freeze to keep user visible software stack stable.
-COPY requirements.txt /opt/
-RUN pip2 install -r /opt/requirements.txt
+# install PyPI packages for Python 2.
+# This already enables jupyter notebook and server extensions
+RUN pip2 install --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc3
+
+# the fileupload extension also needs to be "installed"
+RUN jupyter nbextension install --sys-prefix --py fileupload
 
 ## Get latest bugfixes from aiida-core
 ## TODO: Remove this after aiida-core 0.11.2 is released
@@ -85,29 +87,9 @@ RUN pip2 install -r /opt/requirements.txt
 #     pip install --no-deps . && \
 #    cd ..
 
-
-# active ipython kernels
+# activate ipython kernels
 RUN python2 -m ipykernel install
 RUN python3 -m ipykernel install
-
-
-# enable Jupyter extensions
-RUN jupyter nbextension enable  --sys-prefix --py widgetsnbextension && \
-    jupyter nbextension enable  --sys-prefix --py pythreejs          && \
-    jupyter nbextension enable  --sys-prefix --py nglview            && \
-    jupyter nbextension enable  --sys-prefix --py bqplot             && \
-    jupyter nbextension enable  --sys-prefix --py ipympl             && \
-    jupyter nbextension install --sys-prefix --py fileupload         && \
-    jupyter nbextension enable  --sys-prefix --py fileupload
-
-
-# install Jupyter Appmode
-# server runs python3, notebook runs python2 - need both
-RUN pip2 install appmode==0.3.0                                          && \
-    pip3 install appmode==0.3.0                                          && \
-    jupyter nbextension     enable  --sys-prefix --py appmode            && \
-    jupyter serverextension enable  --sys-prefix --py appmode
-
 
 # install MolPad
 WORKDIR /opt
@@ -120,8 +102,7 @@ RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
 # create symlink for legacy workflows
 RUN cd /usr/local/lib/python2.7/dist-packages/aiida/workflows; rm -rf user; ln -s /project/workflows user
 
-# populate reentry cache
-# https://pypi.python.org/pypi/reentry/
+# populate reentry cache for root user https://pypi.python.org/pypi/reentry/
 RUN reentry scan
 
 # disable MPI warnings that confuse ASE

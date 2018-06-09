@@ -105,7 +105,6 @@ fi
 # update the list of installed plugins
 grep "reentry scan" /project/.bashrc || echo "reentry scan" >> /project/.bashrc
 
-
 #===============================================================================
 # generate ssh key
 if [ ! -e /project/.ssh/id_rsa ]; then
