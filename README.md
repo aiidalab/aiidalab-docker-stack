@@ -1,7 +1,9 @@
-# Docker Stack for Jupyter.MaterialsCloud.org
+# Docker Stack for AiiDA Lab
+
+This repo contains the Docker file used in the [AiiDA Lab](https://aiidalab.materialscloud.org).
 
 ## Deploy
-To deploy changes, log into jupyter.materialscloud.org and execute the following commands:
+To deploy changes, log into the AiiDA Lab server and execute the following commands:
 ```
 cd /home/ubuntu/mc-docker-stack/
 git pull
