@@ -73,13 +73,13 @@ RUN pip3 install --upgrade         \
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip2 install --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc6
+RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc6
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
 
 ## Get latest bugfixes from aiida-core
-RUN pip2 install --process-dependency-links git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
+RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
 ## TODO: Remove this after aiida-core 0.11.2 is released
 #WORKDIR /opt/aiida-core
 #RUN git clone https://github.com/aiidateam/aiida_core.git && \
