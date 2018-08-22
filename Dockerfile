@@ -9,10 +9,14 @@ FROM ubuntu:latest
 
 USER root
 
+# Add switch mirror to fix issue #9
+# https://github.com/materialscloud-org/mc-docker-stack/issues/9
+RUN echo "deb http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \ndeb-src http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \n" >> /etc/apt/sources.list
+
 # install debian packages
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    tzdata
+    tzdata 
 RUN apt-get install -y --no-install-recommends  \
     graphviz              \
     locales               \
@@ -24,7 +28,7 @@ RUN apt-get install -y --no-install-recommends  \
     libffi-dev            \
     python-dev            \
     git                   \
-    postgresql            \
+    gnupg                 \
     cp2k                  \
     quantum-espresso      \
     python-pip            \
@@ -44,6 +48,12 @@ RUN apt-get install -y --no-install-recommends  \
     rsync                 \
   && rm -rf /var/lib/apt/lists/*
 
+# Add repo for postgres-9.6
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
+RUN apt-get update && apt-get install -y --no-install-recommends  \
+    postgresql-9.6        \
+  && rm -rf /var/lib/apt/lists/*
 
 # fix locals
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
@@ -69,10 +79,10 @@ RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
 
 # install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
-    'tornado==4.5.3'               \
-    'jupyterhub==0.8.1'            \
+    'tornado==5.0.2'               \
+    'jupyterhub==0.9.2'            \
     'notebook==5.5.0'              \
-    'appmode==0.3.0'
+    'appmode==0.4.0'
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
@@ -128,8 +138,6 @@ RUN mkdir /project                                                 && \
 EXPOSE 8888
 USER scientist
 COPY postgres.sh /opt/
-COPY setup-singleuser.sh /opt/
-RUN /opt/setup-singleuser.sh
 
 COPY start-singleuser.sh /opt/
 COPY matcloud-jupyterhub-singleuser /opt/
