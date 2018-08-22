@@ -4,13 +4,16 @@
 # https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
 # https://github.com/jupyter/docker-stacks/blob/master/scipy-notebook/Dockerfile
 #
-FROM ubuntu:17.10
+# Using latest LTS release, see https://hub.docker.com/_/ubuntu/
+FROM ubuntu:latest
 
 USER root
-RUN sed -i -e "s/\/\/archive\.ubuntu/\/\/au.archive.ubuntu/" /etc/apt/sources.list
 
 # install debian packages
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update && apt-get install -y --no-install-recommends  \
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    tzdata
+RUN apt-get install -y --no-install-recommends  \
     graphviz              \
     locales               \
     less                  \
@@ -124,8 +127,13 @@ RUN mkdir /project                                                 && \
 
 EXPOSE 8888
 USER scientist
+COPY postgres.sh /opt/
+COPY setup-singleuser.sh /opt/
+RUN /opt/setup-singleuser.sh
+
 COPY start-singleuser.sh /opt/
 COPY matcloud-jupyterhub-singleuser /opt/
+
 WORKDIR /project
 CMD ["/opt/start-singleuser.sh"]
 
