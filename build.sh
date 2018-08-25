@@ -2,6 +2,6 @@
 
 set -x
 
-docker build -t mc-docker-stack:develop ./
+docker build -t mc-docker-stack:master ./
 
 #EOF
