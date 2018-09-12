@@ -143,10 +143,6 @@ COPY postgres.sh /opt/
 COPY start-singleuser.sh /opt/
 COPY matcloud-jupyterhub-singleuser /opt/
 
-# modify appmode loader
-RUN jupyter notebook --generate-config
-COPY static/custom.js /project/.jupyter/custom/
-
 WORKDIR /project
 CMD ["/opt/start-singleuser.sh"]
 
