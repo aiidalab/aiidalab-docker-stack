@@ -83,11 +83,11 @@ RUN pip3 install --upgrade         \
     'tornado==5.0.2'               \
     'jupyterhub==0.9.2'            \
     'notebook==5.5.0'              \
-    'appmode==0.4.0'
+    'appmode-aiidalab==0.4.0'
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc6
+RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.08.0
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
@@ -144,7 +144,8 @@ COPY start-singleuser.sh /opt/
 COPY matcloud-jupyterhub-singleuser /opt/
 
 # modify appmode loader
-COPY static/custom.js /project/.jupyter/
+RUN jupyter notebook --generate-config
+COPY static/custom.js /project/.jupyter/custom/
 
 WORKDIR /project
 CMD ["/opt/start-singleuser.sh"]
