@@ -83,11 +83,11 @@ RUN pip3 install --upgrade         \
     'tornado==5.0.2'               \
     'jupyterhub==0.9.2'            \
     'notebook==5.5.0'              \
-    'appmode-aiidalab==0.4.0'
+    'appmode-aiidalab==0.4.0.1'
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.08.0
+RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.09.0
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
