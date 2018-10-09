@@ -81,7 +81,7 @@ RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
 # install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
     'tornado==5.0.2'               \
-    'jupyterhub==0.9.2'            \
+    'jupyterhub==0.9.4'            \
     'notebook==5.5.0'              \
     'appmode-aiidalab==0.4.0.1'
 
