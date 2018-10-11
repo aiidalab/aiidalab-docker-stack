@@ -14,10 +14,11 @@ USER root
 RUN echo "deb http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \ndeb-src http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \n" >> /etc/apt/sources.list
 
 # install debian packages
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+# Note: prefix all 'apt-get install' lines with 'apt-get update' to prevent failures in partial rebuilds
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     tzdata 
-RUN apt-get install -y --no-install-recommends  \
+RUN apt-get update && apt-get install -y --no-install-recommends  \
     graphviz              \
     locales               \
     less                  \
@@ -55,7 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     postgresql-9.6        \
   && rm -rf /var/lib/apt/lists/*
 
-# fix locals
+# fix locales
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -71,29 +72,34 @@ RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
     chown -R root:root /opt/pseudos/;                                          \
     chmod -R +r /opt/pseudos/
 
-# install rclone
-WORKDIR /opt/rclone
-RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
-    unzip rclone-v1.38-linux-amd64.zip;                              \
-    ln -s rclone-v1.38-linux-amd64/rclone .
+## install rclone
+#WORKDIR /opt/rclone
+#RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
+#    unzip rclone-v1.38-linux-amd64.zip;                              \
+#    ln -s rclone-v1.38-linux-amd64/rclone .
 
 # install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
     'tornado==5.0.2'               \
-    'jupyterhub==0.9.2'            \
+    'jupyterhub==0.9.4'            \
     'notebook==5.5.0'              \
-    'appmode==0.4.0'
+    'nbserverproxy==0.8.3'         \
+    'appmode-aiidalab==0.4.0.1'
+
+# enable nbserverproxy extension
+RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc6
+RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.09.0
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
 
 ## Get latest bugfixes from aiida-core
 RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
-## TODO: Remove this after aiida-core 0.11.2 is released
+
+# Install editable aiida version
 #WORKDIR /opt/aiida-core
 #RUN git clone https://github.com/aiidateam/aiida_core.git && \
 #    cd aiida_core && \
@@ -122,13 +128,6 @@ RUN reentry scan
 # disable MPI warnings that confuse ASE
 # https://www.mail-archive.com/users@lists.open-mpi.org/msg30611.html
 RUN echo "btl_base_warn_component_unused = 0" >> /etc/openmpi/openmpi-mca-params.conf
-
-## install Tini
-## TODO: might not be needed in the future, Docker now has an init build-in
-#WORKDIR /opt
-#RUN wget https://github.com/krallin/tini/releases/download/v0.15.0/tini && \
-#    chmod +x /opt/tini
-#ENTRYPOINT ["/opt/tini", "--"]
 
 #===============================================================================
 RUN mkdir /project                                                 && \
