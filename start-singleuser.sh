@@ -100,7 +100,7 @@ fi
 if [ ! -e /project/apps ]; then
    mkdir /project/apps
    touch /project/apps/__init__.py
-   git clone https://github.com/materialscloud-org/mc-home /project/apps/home
+   git clone https://github.com/aiidalab/aiidalab-home /project/apps/home
 fi
 
 #===============================================================================
