@@ -10,7 +10,7 @@ FROM ubuntu:latest
 USER root
 
 # Add switch mirror to fix issue #9
-# https://github.com/materialscloud-org/mc-docker-stack/issues/9
+# https://github.com/aiidalab/aiidalab-docker-stack/issues/9
 RUN echo "deb http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \ndeb-src http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \n" >> /etc/apt/sources.list
 
 # install debian packages
@@ -86,7 +86,7 @@ RUN pip3 install --upgrade         \
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip2 install --upgrade --process-dependency-links git+https://github.com/materialscloud-org/aiidalab-metapkg@v18.06.0rc6
+RUN pip2 install --upgrade --process-dependency-links git+https://github.com/aiidalab/aiidalab-metapkg@v18.06.0rc6
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload

@@ -5,7 +5,7 @@ This repo contains the Docker file used in the [AiiDA Lab](https://aiidalab.mate
 ## Deploy
 To deploy changes, log into the AiiDA Lab server and execute the following commands:
 ```
-cd /home/ubuntu/mc-docker-stack/
+cd /home/ubuntu/aiidalab-docker-stack/
 git pull
 ./build.sh
 ./inspect.sh  (optionally)
@@ -42,3 +42,13 @@ Inside the Docker image, try
 su scientist
 /opt/start-singleuser.sh
 ```
+
+## Acknowledgements
+
+This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
+funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX
+European Centre of Excellence](<http://www.max-centre.eu/>) funded by the Horizon 2020 EINFRA-5 program,
+Grant No. 676598.
+
+![MARVEL](miscellaneous/logos/MARVEL.png)
+![MaX](miscellaneous/logos/MaX.png)

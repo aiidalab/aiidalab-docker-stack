@@ -2,6 +2,6 @@
 
 set -x
 
-docker build -t mc-docker-stack:master ./
+docker build -t aiidalab-docker-stack:master ./
 
 #EOF
