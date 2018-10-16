@@ -104,14 +104,25 @@ if [ ! -e /project/apps ]; then
 fi
 
 #===============================================================================
-#start Jupyter notebook server
-cd /project
-/opt/matcloud-jupyterhub-singleuser                              \
-  --ip=0.0.0.0                                                   \
-  --port=8888                                                    \
-  --notebook-dir="/project"                                      \
-  --NotebookApp.iopub_data_rate_limit=1000000000                 \
-  --NotebookApp.default_url="/apps/apps/home/start.ipynb"
+if [[ -z "${HEADLESS}" ]]; then
+
+  # running in normal mode
+  # start Jupyter notebook server
+  cd /project
+  /opt/matcloud-jupyterhub-singleuser                              \
+    --ip=0.0.0.0                                                   \
+    --port=8888                                                    \
+    --notebook-dir="/project"                                      \
+    --NotebookApp.iopub_data_rate_limit=1000000000                 \
+    --NotebookApp.default_url="/apps/apps/home/start.ipynb"
+    
+else
+
+  # running in headless mode
+  # used for testing
+  sleep infinity
+
+fi
 
 #===============================================================================
 
