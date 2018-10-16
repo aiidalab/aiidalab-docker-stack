@@ -118,10 +118,6 @@ RUN cd /usr/local/lib/python2.7/dist-packages/aiida/workflows; rm -rf user; ln -
 # populate reentry cache for root user https://pypi.python.org/pypi/reentry/
 RUN reentry scan
 
-# disable MPI warnings that confuse ASE
-# https://www.mail-archive.com/users@lists.open-mpi.org/msg30611.html
-RUN echo "btl_base_warn_component_unused = 0" >> /etc/openmpi/openmpi-mca-params.conf
-
 #===============================================================================
 RUN mkdir /project                                                 && \
     useradd --home /project --uid 1234 --shell /bin/bash scientist && \
