@@ -119,7 +119,8 @@ if [[ -z "${HEADLESS}" ]]; then
 else
 
   # running in headless mode
-  # used for testing
+  # (will simply exit)
+  echo "Startup complete."
   sleep infinity
 
 fi
