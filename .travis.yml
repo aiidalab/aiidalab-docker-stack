@@ -1,0 +1,20 @@
+---
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+    - container_id: docker-stack-container
+    - distribution: docker-stack
+    - ansible_user: ubuntu
+
+before_install:
+  - 'sudo docker build --no-cache --rm --file=Dockerfile --tag=${distribution}:latest .'
+
+script:
+  - 'sudo docker run --name ${container_id} --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest'
+  - 'sudo docker exec --user ${ansible_user} "${container_id}" env ANSIBLE_FORCE_COLOR=1 verdi calculation plugins'
+  - 'sudo docker exec --user ${ansible_user} "${container_id}" env ANSIBLE_FORCE_COLOR=1 verdi daemon status'
+

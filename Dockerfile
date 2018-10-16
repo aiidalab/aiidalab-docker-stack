@@ -1,11 +1,6 @@
-# Using ubuntu:latest to get recent versions of CP2K and QE.
-#
-# see also:
-# https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
-# https://github.com/jupyter/docker-stacks/blob/master/scipy-notebook/Dockerfile
-#
-# Using latest LTS release, see https://hub.docker.com/_/ubuntu/
-FROM ubuntu:latest
+# See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md
+# Based on Ubuntu 18.04 since v0.11
+FROM phusion/baseimage:0.11
 
 USER root
 
@@ -30,8 +25,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     python-dev            \
     git                   \
     gnupg                 \
-    cp2k                  \
-    quantum-espresso      \
     python-pip            \
     python-setuptools     \
     python-wheel          \
@@ -91,13 +84,13 @@ RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip2 install --upgrade --process-dependency-links git+https://github.com/aiidalab/aiidalab-metapkg@v18.06.0rc6
+RUN pip2 install git+https://github.com/aiidalab/aiidalab-metapkg@v18.10.1
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
 
 ## Get latest bugfixes from aiida-core
-RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
+#RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
 
 # Install editable aiida version
 #WORKDIR /opt/aiida-core
