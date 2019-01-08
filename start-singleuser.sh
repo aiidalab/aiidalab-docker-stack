@@ -54,7 +54,7 @@ True
 local
 direct
 #!/bin/bash
-/home/{username}/aiida_run/
+/project/aiida_run/
 mpirun -np {tot_num_mpiprocs}
 1" | verdi computer setup && verdi computer configure ${compname} )
 
