@@ -40,6 +40,53 @@ if [ ! -d /project/.aiida ]; then
    verdi profile setdefault daemon default
    bash -c 'echo -e "y\nsome.body@xyz.com" | verdi daemon configureuser'
 
+   # setup localhost and codes
+   compname=localhost
+   codename=pw
+   codeplugin=quantumespresso.pw
+   codexec=pw.x
+   codepath=`which $codexec`
+
+   verdi computer show ${compname} || ( echo "${compname}
+localhost
+this computer
+True
+local
+direct
+#!/bin/bash
+/home/{username}/aiida_run/
+mpirun -np {tot_num_mpiprocs}
+1" | verdi computer setup && verdi computer configure ${compname} )
+
+    # Quantum Espresso
+    verdi code show ${codename}@${compname} || echo "${codename}
+pw.x on this computer
+False
+${codeplugin}
+${compname}
+${codepath}" | verdi code setup
+
+    # import pseudo family for QE
+    base_url=http://archive.materialscloud.org/file/2018.0001/v1
+    pseudo_name=SSSP_efficiency_pseudos
+    wget ${base_url}/${pseudo_name}.aiida
+    verdi import ${pseudo_name}.aiida
+
+
+    # Cp2k
+    codename=cp2k
+    codeplugin=cp2k
+    codexec=cp2k.popt
+    codepath=`which $codexec`
+
+    verdi code show ${codename}@${compname} || echo "${codename}
+cp2k on this computer
+False
+${codeplugin}
+${compname}
+${codepath}" | verdi code setup
+
+##EOF
    # increase logging level
    #verdi devel setproperty logging.celery_loglevel DEBUG
    #verdi devel setproperty logging.aiida_loglevel DEBUG
@@ -101,6 +148,17 @@ if [ ! -e /project/apps ]; then
    mkdir /project/apps
    touch /project/apps/__init__.py
    git clone https://github.com/aiidalab/aiidalab-home /project/apps/home
+   echo '{
+  "hidden": [],
+  "order": [
+    "aiida-tutorials",
+    "cscs",
+    "calcexamples"
+  ]
+}' > /project/apps/home/.launcher.json
+   git clone https://github.com/aiidateam/aiida_demos /project/apps/aiida-tutorials
+   git clone https://github.com/aiidalab/aiidalab-cscs /project/apps/cscs
+
 fi
 
 #===============================================================================
