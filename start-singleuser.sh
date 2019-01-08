@@ -158,6 +158,7 @@ if [ ! -e /project/apps ]; then
 }' > /project/apps/home/.launcher.json
    git clone https://github.com/aiidateam/aiida_demos /project/apps/aiida-tutorials
    git clone https://github.com/aiidalab/aiidalab-cscs /project/apps/cscs
+   git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /project/apps/calcexamples
 
 fi
 
