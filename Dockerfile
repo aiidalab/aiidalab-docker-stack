@@ -14,17 +14,20 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     tzdata 
 RUN apt-get update && apt-get install -y --no-install-recommends  \
+    bzip2                 \
+    build-essential       \
+    ca-certificates       \
+    cp2k                  \
+    file                  \
+    git                   \
+    gnupg                 \
     graphviz              \
     locales               \
     less                  \
-    psmisc                \
-    bzip2                 \
-    build-essential       \
     libssl-dev            \
     libffi-dev            \
+    psmisc                \
     python-dev            \
-    git                   \
-    gnupg                 \
     python-pip            \
     python-setuptools     \
     python-wheel          \
@@ -32,14 +35,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     python3-setuptools    \
     python3-wheel         \
     python-tk             \
-    wget                  \
-    ca-certificates       \
-    vim                   \
-    ssh                   \
-    file                  \
-    zip                   \
-    unzip                 \
+    quantum-espresso      \
     rsync                 \
+    ssh                   \
+    unzip                 \
+    vim                   \
+    wget                  \
+    zip                   \
   && rm -rf /var/lib/apt/lists/*
 
 # Add repo for postgres-9.6
