@@ -128,6 +128,7 @@ if [ ! -e /project/.bashrc ]; then
    cp -v /etc/skel/.bashrc /etc/skel/.bash_logout /etc/skel/.profile /project/
    echo 'eval "$(verdi completioncommand)"' >> /project/.bashrc
    echo 'export PYTHONPATH="/project"' >> /project/.bashrc
+   echo 'export PATH=$PATH:"/project/.local/bin"' >> /project/.bashrc
 fi
 
 # update the list of installed plugins
