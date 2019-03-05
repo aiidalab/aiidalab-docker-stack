@@ -44,6 +44,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     zip                   \
   && rm -rf /var/lib/apt/lists/*
 
+# needed for jupyterlab
+RUN apt-get update && apt-get install -y \
+    nodejs                \
+    npm                   \
+  && rm -rf /var/lib/apt/lists/*
+
 # Add repo for postgres-9.6
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
@@ -75,10 +81,11 @@ RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
 
 # install PyPI packages for Python 3
 RUN pip3 install --upgrade         \
-    'tornado==5.0.2'               \
+    'tornado==5.1.1'               \
     'jupyterhub==0.9.4'            \
-    'notebook==5.5.0'              \
-    'nbserverproxy==0.8.3'         \
+    'notebook==5.7.4'              \
+    'nbserverproxy==0.8.8'         \
+    'jupyterlab==0.35.4'           \
     'appmode-aiidalab==0.4.0.1'
 
 # enable nbserverproxy extension
@@ -90,6 +97,22 @@ RUN pip install aiidalab==v19.02.0
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
+
+# enables better integration with jupyterhub
+# https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
+RUN jupyter labextension install @jupyterlab/hub-extension
+
+
+## Install jupyterlab theme
+#WORKDIR /opt/jupyterlab
+#RUN git clone https://github.com/casperwa/aiidalab-jlab-theme && \
+#    cd aiidalab-jlab-theme && \
+#     npm install \
+#     npm run build \
+#     npm run build:webpack \
+#     npm pack ./ \ 
+#     jupyter labextension install *.tgz \
+#    cd ..
 
 ## Get latest bugfixes from aiida-core
 #RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false

@@ -2,6 +2,6 @@
 
 set -x
 
-docker tag aiidalab-docker-stack:master aiidalab-docker-stack:latest
+docker tag aiidalab-docker-stack:jlab aiidalab-docker-stack:latest
 
 #EOF
