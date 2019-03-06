@@ -2,6 +2,16 @@
 # Based on Ubuntu 18.04 since v0.11
 FROM phusion/baseimage:0.11
 
+LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
+
+
+# Note: The following config can be changed at build time:
+#   docker build  --build-arg NB_UID=200
+ARG NB_USER="scientist"
+ARG NB_UID="1000"
+ARG NB_GID="1000"
+
+
 USER root
 
 # Add switch mirror to fix issue #9
@@ -103,16 +113,16 @@ RUN jupyter nbextension install --sys-prefix --py fileupload
 RUN jupyter labextension install @jupyterlab/hub-extension
 
 
-## Install jupyterlab theme
-#WORKDIR /opt/jupyterlab
-#RUN git clone https://github.com/casperwa/aiidalab-jlab-theme && \
-#    cd aiidalab-jlab-theme && \
-#     npm install \
-#     npm run build \
-#     npm run build:webpack \
-#     npm pack ./ \ 
-#     jupyter labextension install *.tgz \
-#    cd ..
+# Install jupyterlab theme
+WORKDIR /opt/jupyterlab-theme
+RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
+    cd jupyterlab-theme && \
+     npm install && \
+     npm run build && \
+     npm run build:webpack && \
+     npm pack ./ && \ 
+     jupyter labextension install *.tgz && \
+    cd ..
 
 ## Get latest bugfixes from aiida-core
 #RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
@@ -144,14 +154,15 @@ RUN cd /usr/local/lib/python2.7/dist-packages/aiida/workflows; rm -rf user; ln -
 RUN reentry scan
 
 #===============================================================================
+ADD fix-permissions /usr/local/bin/fix-permissions
 RUN mkdir /project                                                 && \
-    useradd --home /project --uid 1234 --shell /bin/bash scientist && \
-    chown -R scientist:scientist /project
+    useradd --home /project --uid $NB_UID --shell /bin/bash $NB_USER
+RUN fix-permissions /project
 
 EXPOSE 8888
-USER scientist
-COPY postgres.sh /opt/
 
+USER $NB_USER
+COPY postgres.sh /opt/
 COPY start-singleuser.sh /opt/
 COPY matcloud-jupyterhub-singleuser /opt/
 
