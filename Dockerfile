@@ -79,14 +79,14 @@ RUN pip3 install --upgrade         \
     'jupyterhub==0.9.4'            \
     'notebook==5.5.0'              \
     'nbserverproxy==0.8.3'         \
-    'appmode-aiidalab==0.4.0.1'
+    'appmode-aiidalab==0.5.0.1'
 
 # enable nbserverproxy extension
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip install aiidalab==v19.03.1
+RUN pip install aiidalab==v19.04.0
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
