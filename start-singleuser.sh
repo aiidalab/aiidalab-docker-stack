@@ -79,21 +79,16 @@ ${codeplugin}
 ${compname}
 ${codepath}" | verdi code setup
 
-##EOF
-   # increase logging level
-   #verdi devel setproperty logging.celery_loglevel DEBUG
-   #verdi devel setproperty logging.aiida_loglevel DEBUG
+# start the daemon
+verdi daemon start
 
-   # start the daemon
-   verdi daemon start
-
-   # setup pseudopotentials
-   if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
-      cd /opt/pseudos
-      for i in *; do
-         verdi import $i
-      done
-   fi
+# setup pseudopotentials
+if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
+   cd /opt/pseudos
+   for i in *; do
+      verdi import $i
+   done
+fi
 
 else
     if [ $aiida_backend = "django" ]; then
