@@ -17,85 +17,68 @@ export PYTHONPATH=/project
 export SHELL=/bin/bash
 
 #===============================================================================
+reentry scan
+
+#===============================================================================
 # setup AiiDA
 aiida_backend=django
 
 if [ ! -d /project/.aiida ]; then
-   verdi setup                          \
-      --non-interactive                 \
-      --email some.body@xyz.com         \
-      --first-name Some                 \
-      --last-name Body                  \
-      --institution XYZ                 \
-      --backend $aiida_backend          \
-      --db_user aiida                   \
-      --db_pass aiida_db_passwd         \
-      --db_name aiidadb                 \
-      --db_host localhost               \
-      --db_port 5432                    \
-      --repo /project/aiida_repository \
-      default
-
-   verdi profile setdefault verdi default
-   verdi profile setdefault daemon default
-   bash -c 'echo -e "y\nsome.body@xyz.com" | verdi daemon configureuser'
-
-# setup localhost and codes
-compname=localhost
-codename=pw
-codeplugin=quantumespresso.pw
-codexec=pw.x
-codepath=`which $codexec`
-
-verdi computer show ${compname} || ( echo "${compname}
-localhost
-this computer
-True
-local
-direct
-#!/bin/bash
-/project/aiida_run/
-mpirun -np {tot_num_mpiprocs}
-1" | verdi computer setup && verdi computer configure ${compname} )
-
-# Quantum Espresso
-verdi code show ${codename}@${compname} || echo "${codename}
-pw.x on this computer
-False
-${codeplugin}
-${compname}
-${codepath}" | verdi code setup
-
-# Cp2k
-codename=cp2k
-codeplugin=cp2k
-codexec=cp2k.popt
-codepath=`which $codexec`
-
-verdi code show ${codename}@${compname} || echo "${codename}
-cp2k on this computer
-False
-${codeplugin}
-${compname}
-${codepath}" | verdi code setup
-
-# start the daemon
-verdi daemon start
-
-# setup pseudopotentials
-if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
-   cd /opt/pseudos
-   for i in *; do
-      verdi import $i
-   done
+    verdi setup                                \
+        --non-interactive                      \
+        --email some.body@xyz.com              \
+        --first-name Some                      \
+        --last-name Body                       \
+        --institution XYZ                      \
+        --backend $aiida_backend               \
+        --db-username aiida                    \
+        --db-password aiida_db_passwd          \
+        --db-name aiidadb                      \
+        --db-host localhost                    \
+        --db-port 5432                         \
+        --repository /project/aiida_repository \
+        default
+   verdi profile setdefault default
 fi
 
-else
-    if [ $aiida_backend = "django" ]; then
-        verdi daemon stop || true
-        echo "yes" | python /usr/local/lib/python2.7/dist-packages/aiida/backends/djsite/manage.py --aiida-profile=default migrate
-        verdi daemon start
-    fi
+#===============================================================================
+# setup local computer
+
+computer_name=localhost
+verdi computer show $computer_name || verdi computer setup \
+    --non-interactive                                      \
+    --label ${computer_name}                               \
+    --description "this computer"                          \
+    --hostname ${computer_name}                            \
+    --transport local                                      \
+    --scheduler direct                                     \
+    --work-dir /project/aiida_run/                         \
+    --mpirun-command "mpirun -np {tot_num_mpiprocs}"       \
+    --mpiprocs-per-machine 1 &&                            \
+    verdi computer configure local ${computer_name} --non-interactive
+
+#===============================================================================
+# setup Quantum ESPRESSO pw.x code
+
+code_name=pw
+verdi code show ${code_name}@${computer_name} || verdi code setup \
+    --non-interactive                                             \
+    --label ${code_name}                                          \
+    --description "pw.x on this computer"                         \
+    --input-plugin quantumespresso.pw                             \
+    --computer localhost                                          \
+    --remote-abs-path `which pw.x`
+
+#===============================================================================
+# start the AiiDA daemon
+verdi daemon start
+
+#===============================================================================
+# setup pseudopotentials
+if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
+      cd /opt/pseudos
+      verdi data upf uploadfamily SSSP_efficiency_pseudos 'SSSP_efficiency_v1.0' 'SSSP pseudopotential library'
+      verdi data upf uploadfamily SSSP_precision_pseudos 'SSSP_precision_v1.0' 'SSSP pseudopotential library'
 fi
 
 #===============================================================================
@@ -119,6 +102,7 @@ if [ ! -e /project/.bashrc ]; then
    echo 'export PATH=$PATH:"/project/.local/bin"' >> /project/.bashrc
 fi
 
+#===============================================================================
 # update the list of installed plugins
 grep "reentry scan" /project/.bashrc || echo "reentry scan" >> /project/.bashrc
 
@@ -128,8 +112,6 @@ if [ ! -e /project/.ssh/id_rsa ]; then
    mkdir -p /project/.ssh
    ssh-keygen -f /project/.ssh/id_rsa -t rsa -N ''
 fi
-
-
 
 #===============================================================================
 # install/upgrade apps
