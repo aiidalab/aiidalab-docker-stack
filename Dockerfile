@@ -62,7 +62,8 @@ ENV LANGUAGE en_US.UTF-8
 WORKDIR /opt/pseudos
 RUN base_url=http://archive.materialscloud.org/file/2018.0001/v2;  \
     for name in SSSP_efficiency_pseudos SSSP_precision_pseudos; do \
-       wget ${base_url}/${name}.aiida;                             \
+       wget ${base_url}/${name}.tar.gz;                            \
+       tar -zxvf ${name}.tar.gz;                                   \
     done;                                                          \
     chown -R root:root /opt/pseudos/;                              \
     chmod -R +r /opt/pseudos/
