@@ -133,6 +133,6 @@ COPY start-singleuser.sh /opt/
 COPY matcloud-jupyterhub-singleuser /opt/
 
 WORKDIR /project
-CMD ["/opt/start-singleuser.sh"]
+#CMD ["/opt/start-singleuser.sh"]
 
 #EOF
