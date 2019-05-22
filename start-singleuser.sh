@@ -120,6 +120,9 @@ if [ ! -e /project/apps ]; then
    mkdir /project/apps
    touch /project/apps/__init__.py
    git clone https://github.com/aiidalab/aiidalab-home /project/apps/home
+   cd /project/apps/home
+   git checkout aiida_v1.0
+   cd -
    echo '{
   "hidden": [],
   "order": [
@@ -129,10 +132,10 @@ if [ ! -e /project/apps ]; then
   ]
 }' > /project/apps/home/.launcher.json
    git clone https://github.com/aiidalab/aiidalab-widgets-base /project/apps/aiidalab-widgets-base
-   git clone https://github.com/aiidateam/aiida_demos /project/apps/aiida-tutorials
-   git clone https://github.com/aiidalab/aiidalab-cscs /project/apps/cscs
+   cd /project/apps/aiidalab-widgets-base
+   git checkout aiida-1.0
+   cd -
    git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /project/apps/calcexamples
-
 fi
 
 #===============================================================================
