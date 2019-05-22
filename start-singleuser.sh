@@ -25,19 +25,20 @@ aiida_backend=django
 
 if [ ! -d /project/.aiida ]; then
     verdi setup                                \
+        --profile default                      \
         --non-interactive                      \
         --email some.body@xyz.com              \
         --first-name Some                      \
         --last-name Body                       \
         --institution XYZ                      \
-        --backend $aiida_backend               \
+        --db-backend $aiida_backend            \
         --db-username aiida                    \
         --db-password aiida_db_passwd          \
         --db-name aiidadb                      \
         --db-host localhost                    \
         --db-port 5432                         \
-        --repository /project/aiida_repository \
-        default
+        --repository /project/aiida_repository
+
    verdi profile setdefault default
 fi
 

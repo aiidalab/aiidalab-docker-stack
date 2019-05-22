@@ -80,28 +80,14 @@ RUN pip3 install --upgrade         \
     'jupyterhub==0.9.4'            \
     'notebook==5.5.0'              \
     'nbserverproxy==0.8.3'         \
-    'appmode-aiidalab==0.5.0.1'
+    'appmode-aiidalab==0.5.0.1'    \
+    'aiidalab==v19.06.0a2'
 
 # enable nbserverproxy extension
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
-# install PyPI packages for Python 2.
-# This already enables jupyter notebook and server extensions
-RUN pip install aiidalab==v19.06.0a2
-
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
-
-## Get latest bugfixes from aiida-core
-#RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
-
-# Install editable aiida version
-#WORKDIR /opt/aiida-core
-#RUN git clone https://github.com/aiidateam/aiida_core.git && \
-#    cd aiida_core && \
-#     git checkout release_v0.11.2 && \
-#     pip install --no-deps . && \
-#    cd ..
 
 # activate ipython kernels
 RUN python2 -m ipykernel install
