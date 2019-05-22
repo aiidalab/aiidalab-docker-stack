@@ -25,21 +25,28 @@ aiida_backend=django
 
 if [ ! -d /project/.aiida ]; then
     verdi setup                                \
+        --profile default                      \
         --non-interactive                      \
         --email some.body@xyz.com              \
         --first-name Some                      \
         --last-name Body                       \
         --institution XYZ                      \
-        --backend $aiida_backend               \
+        --db-backend $aiida_backend            \
         --db-username aiida                    \
         --db-password aiida_db_passwd          \
         --db-name aiidadb                      \
         --db-host localhost                    \
         --db-port 5432                         \
-        --repository /project/aiida_repository \
-        default
+        --repository /project/aiida_repository
+
    verdi profile setdefault default
 fi
+
+#===============================================================================
+# start the AiiDA daemon
+verdi daemon start || ( verdi daemon stop && echo "I DO HAVE A BACKUP
+I HAVE STOPPED THE DAEMON
+MAKE IT SO" | verdi database migrate && verdi daemon start )
 
 #===============================================================================
 # setup local computer
@@ -70,15 +77,11 @@ verdi code show ${code_name}@${computer_name} || verdi code setup \
     --remote-abs-path `which pw.x`
 
 #===============================================================================
-# start the AiiDA daemon
-verdi daemon start
-
-#===============================================================================
 # setup pseudopotentials
 if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
       cd /opt/pseudos
-      verdi data upf uploadfamily SSSP_efficiency_pseudos 'SSSP_efficiency_v1.0' 'SSSP pseudopotential library'
-      verdi data upf uploadfamily SSSP_precision_pseudos 'SSSP_precision_v1.0' 'SSSP pseudopotential library'
+      verdi data upf listfamilies | grep 'SSSP_efficiency_v1.0'|| verdi data upf uploadfamily SSSP_efficiency_pseudos 'SSSP_efficiency_v1.0' 'SSSP pseudopotential library'
+      verdi data upf listfamilies | grep 'SSSP_precision_v1.0' || verdi data upf uploadfamily SSSP_precision_pseudos 'SSSP_precision_v1.0' 'SSSP pseudopotential library'
 fi
 
 #===============================================================================
@@ -119,6 +122,9 @@ if [ ! -e /project/apps ]; then
    mkdir /project/apps
    touch /project/apps/__init__.py
    git clone https://github.com/aiidalab/aiidalab-home /project/apps/home
+   cd /project/apps/home
+   git checkout aiida_v1.0
+   cd -
    echo '{
   "hidden": [],
   "order": [
@@ -128,10 +134,12 @@ if [ ! -e /project/apps ]; then
   ]
 }' > /project/apps/home/.launcher.json
    git clone https://github.com/aiidalab/aiidalab-widgets-base /project/apps/aiidalab-widgets-base
-   git clone https://github.com/aiidateam/aiida_demos /project/apps/aiida-tutorials
-   git clone https://github.com/aiidalab/aiidalab-cscs /project/apps/cscs
+   cd /project/apps/aiidalab-widgets-base
+   git checkout aiida-1.0
+   cd -
    git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /project/apps/calcexamples
-
+   git checkout aiida-1.0
+   cd -
 fi
 
 #===============================================================================
