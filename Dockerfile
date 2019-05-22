@@ -92,17 +92,6 @@ RUN pip install aiidalab==v19.06.0a6
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
 
-## Get latest bugfixes from aiida-core
-#RUN pip2 install --no-dependencies git+https://github.com/ltalirz/aiida_core@v0.12.1_expire_on_commit_false
-
-# Install editable aiida version
-#WORKDIR /opt/aiida-core
-#RUN git clone https://github.com/aiidateam/aiida_core.git && \
-#    cd aiida_core && \
-#     git checkout release_v0.11.2 && \
-#     pip install --no-deps . && \
-#    cd ..
-
 # activate ipython kernels
 RUN python2 -m ipykernel install
 RUN python3 -m ipykernel install
