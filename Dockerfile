@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     python3-wheel         \
     python-tk             \
     quantum-espresso      \
+    rabbitmq-server       \
     rsync                 \
     ssh                   \
     unzip                 \
