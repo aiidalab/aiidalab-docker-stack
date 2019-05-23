@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     python3-wheel         \
     python-tk             \
     quantum-espresso      \
+    rabbitmq-server       \
     rsync                 \
     ssh                   \
     unzip                 \
@@ -115,14 +116,29 @@ RUN mkdir /project                                                 && \
     useradd --home /project --uid 1234 --shell /bin/bash scientist && \
     chown -R scientist:scientist /project
 
+# launch postgres server
+COPY opt/postgres.sh /opt/
+COPY my_init.d/start-postgres.sh /etc/my_init.d/20_start-postgres.sh
+
+# launch start-singleuser
+COPY opt/start-singleuser.sh /opt/
+COPY my_init.d/start-singleuser.sh /etc/my_init.d/30_start-singleuser.sh
+
+# launch rabbitmq server
+RUN mkdir /etc/service/rabbitmq
+COPY service/rabbitmq /etc/service/rabbitmq/run
+
+# launch jupyterhub-singleuser
+COPY opt/aiidalab-jupyterhub-singleuser /opt/
+COPY opt/start-jupytehub-singleuser.sh /opt/
+COPY service/jupyterhub-singleuser /etc/service/jupyterhub-singleuser/run
+
+# launch aiida
+RUN mkdir /etc/service/aiida
+COPY service/aiida /etc/service/aiida/run
+
 EXPOSE 8888
-USER scientist
-COPY postgres.sh /opt/
 
-COPY start-singleuser.sh /opt/
-COPY matcloud-jupyterhub-singleuser /opt/
-
-WORKDIR /project
-CMD ["/opt/start-singleuser.sh"]
+CMD ["/sbin/my_init"]
 
 #EOF

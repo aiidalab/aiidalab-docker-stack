@@ -7,13 +7,7 @@
 set -x
 
 #===============================================================================
-# start postgresql
-source /opt/postgres.sh
-psql_start
-
-#===============================================================================
 # environment
-export PYTHONPATH=/project
 export SHELL=/bin/bash
 
 #===============================================================================
@@ -43,10 +37,12 @@ if [ ! -d /project/.aiida ]; then
 fi
 
 #===============================================================================
-# start the AiiDA daemon
+# perform the database migration if needed
+#
 verdi daemon start || ( verdi daemon stop && echo "I DO HAVE A BACKUP
 I HAVE STOPPED THE DAEMON
-MAKE IT SO" | verdi database migrate && verdi daemon start )
+MAKE IT SO" | verdi database migrate )
+verdi daemon stop
 
 #===============================================================================
 # setup local computer
@@ -109,6 +105,7 @@ fi
 # update the list of installed plugins
 grep "reentry scan" /project/.bashrc || echo "reentry scan" >> /project/.bashrc
 
+
 #===============================================================================
 # generate ssh key
 if [ ! -e /project/.ssh/id_rsa ]; then
@@ -138,32 +135,9 @@ if [ ! -e /project/apps ]; then
    git checkout aiida-1.0
    cd -
    git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /project/apps/calcexamples
+   cd /project/apps/calcexamples
    git checkout aiida-1.0
    cd -
 fi
-
-#===============================================================================
-if [[ -z "${HEADLESS}" ]]; then
-
-  # running in normal mode
-  # start Jupyter notebook server
-  cd /project
-  /opt/matcloud-jupyterhub-singleuser                              \
-    --ip=0.0.0.0                                                   \
-    --port=8888                                                    \
-    --notebook-dir="/project"                                      \
-    --NotebookApp.iopub_data_rate_limit=1000000000                 \
-    --NotebookApp.default_url="/apps/apps/home/start.ipynb"
-    
-else
-
-  # running in headless mode
-  # (will simply exit)
-  echo "Startup complete."
-  sleep infinity
-
-fi
-
-#===============================================================================
 
 #EOF
