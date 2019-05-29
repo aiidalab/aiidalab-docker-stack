@@ -2,6 +2,6 @@
 
 set -x
 
-docker build -t aiidalab-docker-stack:jlab ./
+docker build -t aiidalab-docker-stack:develop ./
 
 #EOF

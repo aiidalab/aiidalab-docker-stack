@@ -76,11 +76,11 @@ ENV LANGUAGE en_US.UTF-8
 
 # Quantum-Espresso Pseudo Potentials
 WORKDIR /opt/pseudos
-RUN base_url=http://archive.materialscloud.org/file/2018.0001/v1;  \
-    for name in SSSP_efficiency_pseudos SSSP_accuracy_pseudos; do  \
+RUN base_url=http://archive.materialscloud.org/file/2018.0001/v2;  \
+    for name in SSSP_efficiency_pseudos SSSP_precision_pseudos; do \
        wget ${base_url}/${name}.aiida;                             \
-    done;                                                                      \
-    chown -R root:root /opt/pseudos/;                                          \
+    done;                                                          \
+    chown -R root:root /opt/pseudos/;                              \
     chmod -R +r /opt/pseudos/
 
 ## install rclone
@@ -96,14 +96,14 @@ RUN pip3 install --upgrade         \
     'notebook==5.7.4'              \
     'nbserverproxy==0.8.8'         \
     'jupyterlab==0.35.4'           \
-    'appmode-aiidalab==0.4.0.1'
+    'appmode-aiidalab==0.5.0.1'
 
 # enable nbserverproxy extension
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip install aiidalab==v19.03.1
+RUN pip install aiidalab==v19.05.2
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
