@@ -2,6 +2,16 @@
 # Based on Ubuntu 18.04 since v0.11
 FROM phusion/baseimage:0.11
 
+LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
+
+
+# Note: The following config can be changed at build time:
+#   docker build  --build-arg NB_UID=200
+ARG NB_USER="scientist"
+ARG NB_UID="1000"
+ARG NB_GID="1000"
+
+
 USER root
 
 # Add switch mirror to fix issue #9
@@ -53,6 +63,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     zip                   \
   && rm -rf /var/lib/apt/lists/*
 
+# needed for jupyterlab
+RUN apt-get update && apt-get install -y \
+    nodejs                \
+    npm                   \
+  && rm -rf /var/lib/apt/lists/*
+
+# Add repo for postgres-9.6
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
+RUN apt-get update && apt-get install -y --no-install-recommends  \
+    postgresql-9.6        \
+  && rm -rf /var/lib/apt/lists/*
+
 # fix locales
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LC_ALL en_US.UTF-8
@@ -76,9 +99,20 @@ RUN pip2 install ipykernel
 # install packages that are not in the aiidalab meta package
 # 'fastentrypoints' is to fix problems with aiida-quantumespresso plugin installation
 RUN pip3 install --upgrade         \
-    'jupyterhub==0.9.4'            \
     'nbserverproxy==0.8.3'         \
-    'fastentrypoints'
+    'fastentrypoints'              \
+    'tornado==5.1.1'               \
+    'jupyterhub==0.9.4'            \
+    'notebook==5.7.4'              \
+    'nbserverproxy==0.8.8'         \
+    'jupyterlab==0.35.4'           \
+    'appmode-aiidalab==0.5.0.1'
+
+# enable nbserverproxy extension
+RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
+
+# workaround to fix pymatgen installation
+RUN pip install numpy==1.15.4
 
 # This already enables jupyter notebook and server extensions
 RUN pip3 install aiidalab==v19.08.0a1
@@ -95,6 +129,21 @@ RUN jupyter nbextension install --sys-prefix --py fileupload
 
 # enable nbserverproxy extension
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
+# enables better integration with jupyterhub
+# https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
+RUN jupyter labextension install @jupyterlab/hub-extension
+
+
+# Install jupyterlab theme
+WORKDIR /opt/jupyterlab-theme
+RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
+    cd jupyterlab-theme && \
+     npm install && \
+     npm run build && \
+     npm run build:webpack && \
+     npm pack ./ && \ 
+     jupyter labextension install *.tgz && \
+    cd ..
 
 # install MolPad
 WORKDIR /opt
@@ -108,9 +157,10 @@ RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
 RUN reentry scan
 
 #===============================================================================
+ADD fix-permissions /usr/local/bin/fix-permissions
 RUN mkdir /project                                                 && \
-    useradd --home /project --uid 1234 --shell /bin/bash scientist && \
-    chown -R scientist:scientist /project
+    useradd --home /project --uid $NB_UID --shell /bin/bash $NB_USER
+RUN fix-permissions /project
 
 # launch postgres server
 COPY opt/postgres.sh /opt/
