@@ -77,15 +77,11 @@ verdi code show ${code_name}@${computer_name} || verdi code setup \
     --remote-abs-path `which pw.x`
 
 #===============================================================================
-# start the AiiDA daemon
-verdi daemon start
-
-#===============================================================================
 # setup pseudopotentials
 if [ ! -e /project/SKIP_IMPORT_PSEUDOS ]; then
       cd /opt/pseudos
-      verdi data upf uploadfamily SSSP_efficiency_pseudos 'SSSP_efficiency_v1.0' 'SSSP pseudopotential library'
-      verdi data upf uploadfamily SSSP_precision_pseudos 'SSSP_precision_v1.0' 'SSSP pseudopotential library'
+      verdi data upf listfamilies | grep 'SSSP_efficiency_v1.0'|| verdi data upf uploadfamily SSSP_efficiency_pseudos 'SSSP_efficiency_v1.0' 'SSSP pseudopotential library'
+      verdi data upf listfamilies | grep 'SSSP_precision_v1.0' || verdi data upf uploadfamily SSSP_precision_pseudos 'SSSP_precision_v1.0' 'SSSP pseudopotential library'
 fi
 
 #===============================================================================
