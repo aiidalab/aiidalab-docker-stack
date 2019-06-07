@@ -43,6 +43,12 @@ if [ ! -d /project/.aiida ]; then
 fi
 
 #===============================================================================
+# start the AiiDA daemon
+verdi daemon start || ( verdi daemon stop && echo "I DO HAVE A BACKUP
+I HAVE STOPPED THE DAEMON
+MAKE IT SO" | verdi database migrate && verdi daemon start )
+
+#===============================================================================
 # setup local computer
 
 computer_name=localhost
@@ -136,6 +142,8 @@ if [ ! -e /project/apps ]; then
    git checkout aiida-1.0
    cd -
    git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /project/apps/calcexamples
+   git checkout aiida-1.0
+   cd -
 fi
 
 #===============================================================================
