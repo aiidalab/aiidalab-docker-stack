@@ -7,11 +7,6 @@
 set -x
 
 #===============================================================================
-# start postgresql
-source /opt/postgres.sh
-psql_start
-
-#===============================================================================
 # environment
 export PYTHONPATH=/project
 export SHELL=/bin/bash
@@ -138,32 +133,10 @@ if [ ! -e /project/apps ]; then
    git checkout aiida-1.0
    cd -
    git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /project/apps/calcexamples
+   cd /project/apps/calcexamples
    git checkout aiida-1.0
    cd -
 fi
 
 #===============================================================================
-if [[ -z "${HEADLESS}" ]]; then
-
-  # running in normal mode
-  # start Jupyter notebook server
-  cd /project
-  /opt/matcloud-jupyterhub-singleuser                              \
-    --ip=0.0.0.0                                                   \
-    --port=8888                                                    \
-    --notebook-dir="/project"                                      \
-    --NotebookApp.iopub_data_rate_limit=1000000000                 \
-    --NotebookApp.default_url="/apps/apps/home/start.ipynb"
-    
-else
-
-  # running in headless mode
-  # (will simply exit)
-  echo "Startup complete."
-  sleep infinity
-
-fi
-
-#===============================================================================
-
 #EOF
