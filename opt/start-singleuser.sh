@@ -8,7 +8,6 @@ set -x
 
 #===============================================================================
 # environment
-export PYTHONPATH=/project
 export SHELL=/bin/bash
 
 #===============================================================================
@@ -38,10 +37,12 @@ if [ ! -d /project/.aiida ]; then
 fi
 
 #===============================================================================
-# start the AiiDA daemon
+# perform the database migration if needed
+#
 verdi daemon start || ( verdi daemon stop && echo "I DO HAVE A BACKUP
 I HAVE STOPPED THE DAEMON
-MAKE IT SO" | verdi database migrate && verdi daemon start )
+MAKE IT SO" | verdi database migrate )
+verdi daemon stop
 
 #===============================================================================
 # setup local computer
@@ -104,6 +105,7 @@ fi
 # update the list of installed plugins
 grep "reentry scan" /project/.bashrc || echo "reentry scan" >> /project/.bashrc
 
+
 #===============================================================================
 # generate ssh key
 if [ ! -e /project/.ssh/id_rsa ]; then
@@ -138,5 +140,4 @@ if [ ! -e /project/apps ]; then
    cd -
 fi
 
-#===============================================================================
 #EOF

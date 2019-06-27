@@ -2,4 +2,4 @@
 set -em
 
 
-/usr/sbin/rabbitmq-server
+/usr/sbin/rabbitmq-server # -detached

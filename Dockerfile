@@ -116,22 +116,26 @@ RUN mkdir /project                                                 && \
     useradd --home /project --uid 1234 --shell /bin/bash scientist && \
     chown -R scientist:scientist /project
 
+# launch postgres server
+COPY opt/postgres.sh /opt/
+COPY my_init.d/start-postgres.sh /etc/my_init.d/20_start-postgres.sh
+
+# launch start-singleuser
+COPY opt/start-singleuser.sh /opt/
+COPY my_init.d/start-singleuser.sh /etc/my_init.d/30_start-singleuser.sh
+
 # launch rabbitmq server
 RUN mkdir /etc/service/rabbitmq
 COPY service/rabbitmq /etc/service/rabbitmq/run
 
-# launch postgres server
-COPY my_init.d/run_postgres.sh /etc/my_init.d/15_start_postgres.sh
-COPY postgres.sh /opt/
-
 # launch jupyterhub-singleuser
-COPY matcloud-jupyterhub-singleuser /opt/
+COPY opt/aiidalab-jupyterhub-singleuser /opt/
+COPY opt/start-jupytehub-singleuser.sh /opt/
 COPY service/jupyterhub-singleuser /etc/service/jupyterhub-singleuser/run
 
-# launch start-singleuser
-COPY my_init.d/run_start-singleuser.sh /etc/my_init.d/20_run_start-singleuser.sh
-COPY start-singleuser.sh /opt/
-
+# launch aiida
+RUN mkdir /etc/service/aiida
+COPY service/aiida /etc/service/aiida/run
 
 EXPOSE 8888
 
