@@ -16,6 +16,6 @@ before_install:
 script:
   - 'sudo docker run --name ${container_id} -e HEADLESS=True --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest'
   - sleep 15
-  - 'sudo docker exec --user ${container_user} "${container_id}" verdi calculation plugins'
+  - 'sudo docker exec --user ${container_user} "${container_id}" verdi plugin list aiida.calculations'
   - 'sudo docker exec --user ${container_user} "${container_id}" verdi daemon status'
 
