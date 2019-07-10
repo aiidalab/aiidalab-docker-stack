@@ -6,6 +6,7 @@ set -x
 export PYTHONPATH=/project
 export SHELL=/bin/bash
 
+cd /project
 /opt/aiidalab-jupyterhub-singleuser                                \
     --ip=0.0.0.0                                                   \
     --port=8888                                                    \
