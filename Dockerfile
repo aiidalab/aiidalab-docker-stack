@@ -91,7 +91,7 @@ RUN pip install numpy==1.15.4
 
 # install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip install aiidalab==v19.06.0a5
+RUN pip install aiidalab==v19.06.0a6
 
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
