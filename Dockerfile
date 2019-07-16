@@ -93,6 +93,9 @@ RUN pip install numpy==1.15.4
 # This already enables jupyter notebook and server extensions
 RUN pip install aiidalab==v19.06.0a6
 
+# Fix aiida problems
+RUN pip install tornado==4.5.3
+
 # the fileupload extension also needs to be "installed"
 RUN jupyter nbextension install --sys-prefix --py fileupload
 

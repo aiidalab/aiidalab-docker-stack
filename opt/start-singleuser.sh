@@ -58,7 +58,21 @@ verdi computer show $computer_name || verdi computer setup \
     --work-dir /project/aiida_run/                         \
     --mpirun-command "mpirun -np {tot_num_mpiprocs}"       \
     --mpiprocs-per-machine 1 &&                            \
-    verdi computer configure local ${computer_name} --non-interactive
+    verdi computer configure local ${computer_name}        \
+    --non-interactive                                      \
+    --safe-interval 0.0
+
+#===============================================================================
+# setup CP2K code
+
+code_name=cp2k
+verdi code show ${code_name}@${computer_name} || verdi code setup \
+    --non-interactive                                             \
+    --label ${code_name}                                          \
+    --description "cp2k on this computer"                         \
+    --input-plugin cp2k                                           \
+    --computer localhost                                          \
+    --remote-abs-path `which cp2k.popt`
 
 #===============================================================================
 # setup Quantum ESPRESSO pw.x code
