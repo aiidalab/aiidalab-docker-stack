@@ -39,9 +39,7 @@ fi
 #===============================================================================
 # perform the database migration if needed
 #
-verdi daemon start || ( verdi daemon stop && echo "I DO HAVE A BACKUP
-I HAVE STOPPED THE DAEMON
-MAKE IT SO" | verdi database migrate )
+verdi daemon start || ( verdi daemon stop && verdi database migrate --force )
 verdi daemon stop
 
 #===============================================================================
@@ -96,13 +94,28 @@ fi
 
 #===============================================================================
 # setup AiiDA jupyter extension
-if [ ! -e /project/.ipython/profile_default/ipython_config.py ]; then
-   mkdir -p /project/.ipython/profile_default/
-   echo > /project/.ipython/profile_default/ipython_config.py <<EOF
-c = get_config()
-c.InteractiveShellApp.extensions = [
-   'aiida.common.ipython.ipython_magics'
-]
+# don't forget to copy this file to .ipython/profile_default/startup/
+# aiida/tools/ipython/aiida_magic_register.py
+if [ ! -e /project/.ipython/profile_default/startup/aiida_magic_register.py ]; then
+   mkdir -p /project/.ipython/profile_default/startup/
+   cat << EOF > /project/.ipython/profile_default/startup/aiida_magic_register.py
+if __name__ == "__main__":
+
+    try:
+        import aiida
+        del aiida
+    except ImportError:
+        pass
+    else:
+        import IPython
+        # pylint: disable=ungrouped-imports
+        from aiida.tools.ipython.ipython_magics import load_ipython_extension
+
+        # Get the current Ipython session
+        IPYSESSION = IPython.get_ipython()
+
+        # Register the line magic
+        load_ipython_extension(IPYSESSION)
 EOF
 fi
 

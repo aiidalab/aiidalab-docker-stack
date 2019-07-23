@@ -12,7 +12,8 @@ RUN echo "deb http://mirror.switch.ch/ftp/mirror/ubuntu/ bionic main \ndeb-src h
 # Note: prefix all 'apt-get install' lines with 'apt-get update' to prevent failures in partial rebuilds
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    tzdata 
+    tzdata
+
 RUN apt-get update && apt-get install -y --no-install-recommends  \
     bzip2                 \
     build-essential       \
@@ -20,19 +21,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     cp2k                  \
     file                  \
     git                   \
+    gir1.2-gtk-3.0        \
     gnupg                 \
     graphviz              \
     locales               \
     less                  \
     libssl-dev            \
     libffi-dev            \
+    postgresql            \
     psmisc                \
     python-dev            \
     python-pip            \
     python-setuptools     \
     python-wheel          \
+    python3-dev           \
+    python3-gi            \
+    python3-gi-cairo      \
     python3-pip           \
+    python3-psycopg2      \
     python3-setuptools    \
+    python3-tk            \
     python3-wheel         \
     python-tk             \
     quantum-espresso      \
@@ -45,19 +53,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends  \
     zip                   \
   && rm -rf /var/lib/apt/lists/*
 
-# Add repo for postgres-9.6
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
-RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
-RUN apt-get update && apt-get install -y --no-install-recommends  \
-    postgresql-9.6        \
-  && rm -rf /var/lib/apt/lists/*
-
 # fix locales
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
-
 
 # Quantum-Espresso Pseudo Potentials
 WORKDIR /opt/pseudos
@@ -69,39 +69,32 @@ RUN base_url=http://archive.materialscloud.org/file/2018.0001/v2;  \
     chown -R root:root /opt/pseudos/;                              \
     chmod -R +r /opt/pseudos/
 
-## install rclone
-#WORKDIR /opt/rclone
-#RUN wget https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip;  \
-#    unzip rclone-v1.38-linux-amd64.zip;                              \
-#    ln -s rclone-v1.38-linux-amd64/rclone .
 
-# install PyPI packages for Python 3
+# keep Python2 kernel for the back-compatibility only
+RUN pip2 install ipykernel
+
+# install packages that are not in the aiidalab meta package
+# 'fastentrypoints' is to fix problems with aiida-quantumespresso plugin installation
 RUN pip3 install --upgrade         \
-    'tornado==5.0.2'               \
     'jupyterhub==0.9.4'            \
-    'notebook==5.5.0'              \
     'nbserverproxy==0.8.3'         \
-    'appmode-aiidalab==0.5.0.1'
+    'fastentrypoints'
 
-# enable nbserverproxy extension
-RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
-
-# workaround to fix pymatgen installation
-RUN pip install numpy==1.15.4
-
-# install PyPI packages for Python 2.
 # This already enables jupyter notebook and server extensions
-RUN pip install aiidalab==v19.06.0a6
-
-# Fix aiida problems
-RUN pip install tornado==4.5.3
-
-# the fileupload extension also needs to be "installed"
-RUN jupyter nbextension install --sys-prefix --py fileupload
+RUN pip3 install aiidalab==v19.07.0a2
 
 # activate ipython kernels
 RUN python2 -m ipykernel install
 RUN python3 -m ipykernel install
+
+# Set Python3 be the default python version
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+# the fileupload extension also needs to be "installed"
+RUN jupyter nbextension install --sys-prefix --py fileupload
+
+# enable nbserverproxy extension
+RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # install MolPad
 WORKDIR /opt
@@ -110,9 +103,6 @@ RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
     ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python3.6/dist-packages/molview_ipywidget  && \
     jupyter nbextension     install --sys-prefix --py --symlink molview_ipywidget  && \
     jupyter nbextension     enable  --sys-prefix --py           molview_ipywidget
-
-# create symlink for legacy workflows
-RUN cd /usr/local/lib/python2.7/dist-packages/aiida/workflows; rm -rf user; ln -s /project/workflows user
 
 # populate reentry cache for root user https://pypi.python.org/pypi/reentry/
 RUN reentry scan
