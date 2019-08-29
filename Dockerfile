@@ -81,7 +81,7 @@ RUN pip3 install --upgrade         \
     'fastentrypoints'
 
 # This already enables jupyter notebook and server extensions
-RUN pip3 install aiidalab==v19.07.0a2
+RUN pip3 install aiidalab==v19.08.0a1
 
 # activate ipython kernels
 RUN python2 -m ipykernel install
