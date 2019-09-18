@@ -99,7 +99,6 @@ RUN pip2 install ipykernel
 # install packages that are not in the aiidalab meta package
 # 'fastentrypoints' is to fix problems with aiida-quantumespresso plugin installation
 RUN pip3 install --upgrade         \
-    'nbserverproxy==0.8.3'         \
     'fastentrypoints'              \
     'tornado==5.1.1'               \
     'jupyterhub==0.9.4'            \
