@@ -8,7 +8,7 @@ LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 # Note: The following config can be changed at build time:
 #   docker build  --build-arg NB_UID=200
 ARG NB_USER="scientist"
-ARG NB_UID="1234"
+ARG NB_UID="1000"
 ARG NB_GID="1000"
 
 
