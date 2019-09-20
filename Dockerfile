@@ -184,6 +184,9 @@ COPY service/aiida /etc/service/aiida/run
 
 EXPOSE 8888
 
-CMD ["/sbin/my_init"]
+# remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319
+COPY my_my_init /sbin/my_my_init
+
+CMD ["/sbin/my_my_init"]
 
 #EOF
