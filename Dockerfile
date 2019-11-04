@@ -107,7 +107,7 @@ RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 RUN pip install numpy==1.15.4
 
 # This already enables jupyter notebook and server extensions
-RUN pip3 install aiidalab==v19.09.0a1
+RUN pip3 install aiidalab==v19.11.0a1
 
 # activate ipython kernels
 RUN python2 -m ipykernel install
