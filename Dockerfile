@@ -94,7 +94,7 @@ RUN pip2 install ipykernel
 RUN pip3 install --upgrade         \
     'fastentrypoints'              \
     'tornado==5.1.1'               \
-    'jupyterhub==1.0.0'            \
+    'jupyterhub==0.9.4'            \
     'notebook==5.7.4'              \
     'nbserverproxy==0.8.8'         \
     'jupyterlab==0.35.4'           \
