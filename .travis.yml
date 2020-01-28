@@ -8,14 +8,14 @@ env:
   global:
     - distribution: docker-stack
     - container_id: docker-stack-container
-    - container_user: scientist
+    - container_user: aiida
 
 before_install:
   - 'sudo docker build --no-cache --rm --file=Dockerfile --tag=${distribution}:latest .'
 
 script:
   - 'sudo docker run --name ${container_id} -e HEADLESS=True --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest'
-  - sleep 15
+  - 'sudo docker exec --user ${container_user} "${container_id}" wait-for-services'
   - 'sudo docker exec --user ${container_user} "${container_id}" verdi plugin list aiida.calculations'
   - 'sudo docker exec --user ${container_user} "${container_id}" verdi daemon status'
 
