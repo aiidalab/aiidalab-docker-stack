@@ -6,14 +6,16 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
+
 # Setup CP2K code.
+computer_name=localhost
 code_name=cp2k
 verdi code show ${code_name}@${computer_name} || verdi code setup \
     --non-interactive                                             \
     --label ${code_name}                                          \
     --description "cp2k on this computer"                         \
     --input-plugin cp2k                                           \
-    --computer localhost                                          \
+    --computer ${computer_name}                                   \
     --remote-abs-path `which cp2k.popt`
 
 # Setup Quantum ESPRESSO pw.x code.
@@ -23,7 +25,7 @@ verdi code show ${code_name}@${computer_name} || verdi code setup \
     --label ${code_name}                                          \
     --description "pw.x on this computer"                         \
     --input-plugin quantumespresso.pw                             \
-    --computer localhost                                          \
+    --computer ${computer_name}                                   \
     --remote-abs-path `which pw.x`
 
 # Setup pseudopotentials.
@@ -88,7 +90,7 @@ fi
 
 # Enter home folder and start jupyterhub-singleuser.
 cd /home/$SYSTEM_USER
-/opt/aiidalab-singleuser                                \
+/opt/aiidalab-singleuser                                           \
     --ip=0.0.0.0                                                   \
     --port=8888                                                    \
     --notebook-dir="/home/$SYSTEM_USER"                            \

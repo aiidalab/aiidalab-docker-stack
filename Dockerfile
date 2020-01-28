@@ -9,6 +9,8 @@ ARG NB_USER="scientist"
 ARG NB_UID="1000"
 ARG NB_GID="1000"
 
+ENV AIIDALAB_HOME /home/${SYSTEM_USER}
+ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
 
 USER root
 
@@ -72,7 +74,6 @@ RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
 RUN jupyter labextension install @jupyterlab/hub-extension
 
-
 # Install jupyterlab theme.
 WORKDIR /opt/jupyterlab-theme
 RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
@@ -95,14 +96,8 @@ RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
 # populate reentry cache for root user https://pypi.python.org/pypi/reentry/
 RUN reentry scan
 
-#===============================================================================
-ADD fix-permissions /usr/local/bin/fix-permissions
-RUN mkdir /project                                                 && \
-    useradd --home /project --uid $NB_UID --shell /bin/bash $NB_USER
-RUN fix-permissions /project
-
 # Launch jupyterhub-singleuser.
-COPY opt/aiidalab-jupyterhub-singleuser /opt/
+COPY opt/aiidalab-singleuser /opt/
 COPY opt/start-aiidalab.sh /opt/
 COPY my_init.d/start-aiidalab.sh /etc/my_init.d/80_start-aiidalab.sh
 
