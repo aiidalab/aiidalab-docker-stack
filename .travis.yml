@@ -11,11 +11,10 @@ env:
     - container_user: aiida
 
 before_install:
-  - docker build --no-cache --rm --file=Dockerfile --tag=${distribution}:latest .
+  - 'sudo docker build --no-cache --rm --file=Dockerfile --tag=${distribution}:latest .'
 
 script:
-  - docker run --name ${container_id} -e HEADLESS=True --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest
-  - docker exec --tty --user root "${container_id}" wait-for-services
-  - docker exec --tty --user ${container_user} "${container_id}" verdi plugin list aiida.calculations
-  - docker exec --tty --user ${container_user} "${container_id}" verdi daemon status
-
+  - 'sudo docker run --name ${container_id} -e HEADLESS=True --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest'
+  - 'sudo docker exec --user root "${container_id}" wait-for-services'
+  - 'sudo docker exec --user ${container_user} "${container_id}" verdi plugin list aiida.calculations'
+  - 'sudo docker exec --user ${container_user} "${container_id}" verdi daemon status'
