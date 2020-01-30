@@ -99,7 +99,7 @@ COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Start Jupyter notebook
 COPY opt/start-notebook.sh /opt/
-COPY my_init.d/start-notebook.sh /etc/my_init.d/XX_start-notebook.sh
+COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
 # Expose port 8888.
 EXPOSE 8888
