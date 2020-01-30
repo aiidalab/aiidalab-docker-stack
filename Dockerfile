@@ -54,10 +54,6 @@ RUN pip3 install --upgrade         \
 # enable nbserverproxy extension
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
-# TODO: remove, if it works
-# workaround to fix pymatgen installation
-# RUN pip install numpy==1.15.4
-
 # This already enables jupyter notebook and server extensions
 RUN pip3 install aiidalab==v19.11.0a2
 
