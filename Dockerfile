@@ -39,9 +39,11 @@ chmod -R +r /opt/pseudos/
 RUN pip3 install --upgrade         \
     'fastentrypoints'              \
     'jupyterhub==0.9.4'            \
-    'nbserverproxy==0.8.8'         \
     'jupyterlab==0.35.4'           \
-    'aiidalab==v19.11.0a2'
+    'nbserverproxy==0.8.8'
+
+# AiiDA lab package goes last, because it overrides tornado.
+RUN pip3 install --upgrade 'aiidalab==v19.11.0a2'
 
 # Activate ipython kernel.
 RUN python3 -m ipykernel install
@@ -51,6 +53,7 @@ RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # Enables better integration with Jupyter Hub.
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
+# Quite a slow part.
 RUN jupyter labextension install @jupyterlab/hub-extension
 
 # TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
@@ -58,6 +61,7 @@ RUN jupyter labextension install @jupyterlab/hub-extension
 RUN jupyter nbextension install --sys-prefix --py fileupload
 
 # Install jupyterlab theme.
+# Also quite slow.
 WORKDIR /opt/jupyterlab-theme
 RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
     cd jupyterlab-theme && \
