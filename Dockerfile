@@ -79,14 +79,6 @@ RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
      jupyter labextension install *.tgz && \
     cd ..
 
-# install MolPad
-WORKDIR /opt
-RUN git clone https://github.com/oschuett/molview-ipywidget.git  && \
-    ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python2.7/dist-packages/molview_ipywidget  && \
-    ln -s /opt/molview-ipywidget/molview_ipywidget /usr/local/lib/python3.6/dist-packages/molview_ipywidget  && \
-    jupyter nbextension     install --sys-prefix --py --symlink molview_ipywidget  && \
-    jupyter nbextension     enable  --sys-prefix --py           molview_ipywidget
-
 # populate reentry cache for root user https://pypi.python.org/pypi/reentry/
 RUN reentry scan
 
