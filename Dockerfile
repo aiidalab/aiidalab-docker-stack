@@ -2,18 +2,15 @@ FROM aiidateam/aiida-core:latest
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
-
-# Note: The following config can be changed at build time:
-#   docker build  --build-arg NB_UID=200
-ARG NB_USER="scientist"
-ARG NB_UID="1000"
-ARG NB_GID="1000"
-
+# Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
+ENV CONDA_DIR=/opt/conda
+ENV PATH=$CONDA_DIR/bin:$PATH
 
 USER root
 
+# Install OS dependencies.
 RUN apt-get update && apt-get install -y  \
     ca-certificates       \
     cp2k                  \
@@ -23,14 +20,7 @@ RUN apt-get update && apt-get install -y  \
     quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
-# needed for jupyterlab
-RUN apt-get update && apt-get install -y \
-     nodejs                \
-     npm                   \
-  && rm -rf /var/lib/apt/lists/*
-
-
-# Quantum-Espresso Pseudo Potentials
+# Quantum-Espresso Pseudo Potentials.
 WORKDIR /opt/pseudos
 RUN base_url=http://archive.materialscloud.org/file/2018.0001/v3;  \
 wget ${base_url}/SSSP_efficiency_pseudos.aiida;                    \
@@ -38,35 +28,28 @@ wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
 chown -R root:root /opt/pseudos/;                                  \
 chmod -R +r /opt/pseudos/
 
-# install packages that are not in the aiidalab meta package
+# Install Python packages needed for AiiDA lab.
 # 'fastentrypoints' is to fix problems with aiida-quantumespresso plugin installation
 RUN pip3 install --upgrade         \
     'fastentrypoints'              \
-    'tornado==5.1.1'               \
     'jupyterhub==0.9.4'            \
-    'notebook==5.7.4'              \
     'nbserverproxy==0.8.8'         \
     'jupyterlab==0.35.4'           \
-    'appmode-aiidalab==0.5.0.1'
+    'aiidalab==v19.11.0a2'
 
-# enable nbserverproxy extension
-RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
-
-# This already enables jupyter notebook and server extensions
-RUN pip3 install aiidalab==v19.11.0a2
-
-# activate ipython kernel
+# Activate ipython kernel.
 RUN python3 -m ipykernel install
-
-# TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
-# the fileupload extension also needs to be "installed"
-RUN jupyter nbextension install --sys-prefix --py fileupload
 
 # Enable nbserverproxy extension.
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
-# Enables better integration with jupyterhub.
+
+# Enables better integration with Jupyter Hub.
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
 RUN jupyter labextension install @jupyterlab/hub-extension
+
+# TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
+# the fileupload extension also needs to be "installed".
+RUN jupyter nbextension install --sys-prefix --py fileupload
 
 # Install jupyterlab theme.
 WORKDIR /opt/jupyterlab-theme
@@ -79,7 +62,7 @@ RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
      jupyter labextension install *.tgz && \
     cd ..
 
-# populate reentry cache for root user https://pypi.python.org/pypi/reentry/
+# Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.
 RUN reentry scan
 
 # Prepare user's folders for AiiDA lab launch.
@@ -87,14 +70,14 @@ COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
-# Start Jupyter notebook
+# Start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
 # Expose port 8888.
 EXPOSE 8888
 
-# Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319
+# Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
 
 CMD ["/sbin/my_my_init"]
