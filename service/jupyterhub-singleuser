@@ -1,6 +1,0 @@
-#!/bin/bash
-# running in normal mode
-# start Jupyter notebook server
-set -em
-
-su -c  /opt/start-jupytehub-singleuser.sh scientist
