@@ -20,6 +20,12 @@ RUN apt-get update && apt-get install -y  \
     quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
+# Install what is needed for Jupyter Lab.
+RUN apt-get update && apt-get install -y \
+     nodejs                \
+     npm                   \
+  && rm -rf /var/lib/apt/lists/*
+
 # Quantum-Espresso Pseudo Potentials.
 WORKDIR /opt/pseudos
 RUN base_url=http://archive.materialscloud.org/file/2018.0001/v3;  \
