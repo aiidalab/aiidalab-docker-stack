@@ -35,9 +35,7 @@ chown -R root:root /opt/pseudos/;                                  \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-# 'fastentrypoints' is to fix problems with aiida-quantumespresso plugin installation
 RUN pip3 install --upgrade         \
-    'fastentrypoints'              \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
