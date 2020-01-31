@@ -34,6 +34,26 @@ wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
 chown -R root:root /opt/pseudos/;                                  \
 chmod -R +r /opt/pseudos/
 
+ENV MINICONDA_VERSION=4.7.12.1 \
+    MINICONDA_MD5=81c773ff87af5cfac79ab862942ab6b3 \
+    CONDA_VERSION=4.7.12
+
+RUN cd /tmp && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
+    echo "${MINICONDA_MD5} *Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
+    /bin/bash Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
+    echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
+    conda config --system --prepend channels conda-forge && \
+    conda config --system --set auto_update_conda false && \
+    conda config --system --set show_channel_urls true && \
+    conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
+    conda install --quiet --yes conda && \
+    conda install --quiet --yes pip && \
+    conda update --all --quiet --yes && \
+    conda clean --all -f -y
+
+
 # Install Python packages needed for AiiDA lab.
 RUN pip3 install --upgrade         \
     'jupyterhub==0.9.4'            \
