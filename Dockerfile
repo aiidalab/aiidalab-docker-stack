@@ -32,13 +32,11 @@ RUN apt-get update && apt-get install -y \
 
 # Quantum-Espresso Pseudo Potentials
 WORKDIR /opt/pseudos
-RUN base_url=http://archive.materialscloud.org/file/2018.0001/v2;  \
-    for name in SSSP_efficiency_pseudos SSSP_precision_pseudos; do \
-       wget ${base_url}/${name}.tar.gz;                            \
-       tar -zxvf ${name}.tar.gz;                                   \
-    done;                                                          \
-    chown -R root:root /opt/pseudos/;                              \
-    chmod -R +r /opt/pseudos/
+RUN base_url=http://archive.materialscloud.org/file/2018.0001/v3;  \
+wget ${base_url}/SSSP_efficiency_pseudos.aiida;                    \
+wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
+chown -R root:root /opt/pseudos/;                                  \
+chmod -R +r /opt/pseudos/
 
 # install packages that are not in the aiidalab meta package
 # 'fastentrypoints' is to fix problems with aiida-quantumespresso plugin installation

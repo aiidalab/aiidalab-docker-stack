@@ -13,7 +13,7 @@ code_name=cp2k
 verdi code show ${code_name}@${computer_name} || verdi code setup \
     --non-interactive                                             \
     --label ${code_name}                                          \
-    --description "cp2k on this computer"                         \
+    --description "cp2k v5.1 in AiiDA lab container."             \
     --input-plugin cp2k                                           \
     --computer ${computer_name}                                   \
     --remote-abs-path `which cp2k.popt`
@@ -23,16 +23,15 @@ code_name=pw
 verdi code show ${code_name}@${computer_name} || verdi code setup \
     --non-interactive                                             \
     --label ${code_name}                                          \
-    --description "pw.x on this computer"                         \
+    --description "pw.x v.6.0 in AiiDA lab container."            \
     --input-plugin quantumespresso.pw                             \
     --computer ${computer_name}                                   \
     --remote-abs-path `which pw.x`
 
 # Setup pseudopotentials.
 if [ ! -e /home/$SYSTEM_USER/SKIP_IMPORT_PSEUDOS ]; then
-      cd /opt/pseudos
-      verdi data upf listfamilies | grep 'SSSP_efficiency_v1.0'|| verdi data upf uploadfamily SSSP_efficiency_pseudos 'SSSP_efficiency_v1.0' 'SSSP pseudopotential library'
-      verdi data upf listfamilies | grep 'SSSP_precision_v1.0' || verdi data upf uploadfamily SSSP_precision_pseudos 'SSSP_precision_v1.0' 'SSSP pseudopotential library'
+   verdi data upf listfamilies | grep 'SSSP_efficiency_v1.0'|| verdi import -n /opt/pseudos/SSSP_efficiency_pseudos.aiida
+   verdi data upf listfamilies | grep 'SSSP_precision_v1.0' || verdi import -n /opt/pseudos/SSSP_precision_pseudos.aiida
 fi
 
 # Setup AiiDA jupyter extension.
