@@ -53,7 +53,6 @@ RUN cd /tmp && \
     conda update --all --quiet --yes && \
     conda clean --all -f -y
 
-
 # Install Python packages needed for AiiDA lab.
 RUN pip3 install --upgrade         \
     'jupyterhub==0.9.4'            \
@@ -64,7 +63,7 @@ RUN pip3 install --upgrade         \
 RUN pip3 install --upgrade 'aiidalab==v19.11.0a2'
 
 # Activate ipython kernel.
-RUN python3 -m ipykernel install
+# RUN python3 -m ipykernel install
 
 # Enable nbserverproxy extension.
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
@@ -92,6 +91,9 @@ RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
 
 # Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.
 RUN reentry scan
+
+# Prepare conda.
+COPY my_init.d/prepare-conda.sh /etc/my_init.d/70_prepare-conda.sh
 
 # Prepare user's folders for AiiDA lab launch.
 COPY opt/aiidalab-singleuser /opt/
