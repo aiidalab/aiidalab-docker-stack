@@ -5,8 +5,6 @@ LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 # Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
-ENV CONDA_DIR=/opt/conda
-ENV PATH=$CONDA_DIR/bin:$PATH
 
 USER root
 
@@ -34,24 +32,6 @@ wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
 chown -R root:root /opt/pseudos/;                                  \
 chmod -R +r /opt/pseudos/
 
-ENV MINICONDA_VERSION=4.7.12.1 \
-    MINICONDA_MD5=81c773ff87af5cfac79ab862942ab6b3 \
-    CONDA_VERSION=4.8.2
-
-RUN cd /tmp && \
-    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    echo "${MINICONDA_MD5} *Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
-    /bin/bash Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
-    conda config --system --prepend channels conda-forge && \
-    conda config --system --set auto_update_conda false && \
-    conda config --system --set show_channel_urls true && \
-    conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-    conda install --quiet --yes conda && \
-    conda install --quiet --yes pip && \
-    conda update --all --quiet --yes && \
-    conda clean --all -f -y
 
 # Install Python packages needed for AiiDA lab.
 RUN pip install --upgrade         \
@@ -92,9 +72,6 @@ RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
 # Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.
 RUN reentry scan
 
-# Prepare conda.
-COPY my_init.d/prepare-conda.sh /etc/my_init.d/70_prepare-conda.sh
-
 # Prepare user's folders for AiiDA lab launch.
 COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
@@ -103,11 +80,6 @@ COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 # Start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
-
-RUN pip3 uninstall aiida-core --yes
-COPY activate-conda .
-RUN {  head -n 2 /opt/configure-aiida.sh & cat activate-conda & tail -n +3 /opt/configure-aiida.sh; } > configure-aiida.sh
-RUN cp configure-aiida.sh /opt/configure-aiida.sh && chmod 755 /opt/configure-aiida.sh
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
