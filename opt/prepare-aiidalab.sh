@@ -6,6 +6,18 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
+# Activating conda
+__conda_setup="$('/opt/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/conda/etc/profile.d/conda.sh" ]; then
+        . "/opt/conda/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/conda/bin:$PATH"
+    fi
+fi
+unset __conda_setup
 
 # Setup CP2K code.
 computer_name=localhost
@@ -66,7 +78,7 @@ if [ ! -e /home/$SYSTEM_USER/apps ]; then
    touch /home/$SYSTEM_USER/apps/__init__.py
    git clone https://github.com/aiidalab/aiidalab-home /home/$SYSTEM_USER/apps/home
    cd /home/$SYSTEM_USER/apps/home
-   git checkout aiida_v1.0
+   git checkout develop
    cd -
    echo '{
   "hidden": [],
@@ -78,10 +90,10 @@ if [ ! -e /home/$SYSTEM_USER/apps ]; then
 }' > /home/$SYSTEM_USER/apps/home/.launcher.json
    git clone https://github.com/aiidalab/aiidalab-widgets-base /home/$SYSTEM_USER/apps/aiidalab-widgets-base
    cd /home/$SYSTEM_USER/apps/aiidalab-widgets-base
-   git checkout aiida-1.0
+   git checkout develop
    cd -
    git clone https://github.com/aiidalab/aiidalab-calculation-examples.git /home/$SYSTEM_USER/apps/calcexamples
    cd /home/$SYSTEM_USER/apps/calcexamples
-   git checkout aiida-1.0
+   git checkout develop
    cd -
 fi

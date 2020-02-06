@@ -36,7 +36,7 @@ chmod -R +r /opt/pseudos/
 
 ENV MINICONDA_VERSION=4.7.12.1 \
     MINICONDA_MD5=81c773ff87af5cfac79ab862942ab6b3 \
-    CONDA_VERSION=4.7.12
+    CONDA_VERSION=4.8.2
 
 RUN cd /tmp && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
@@ -54,13 +54,13 @@ RUN cd /tmp && \
     conda clean --all -f -y
 
 # Install Python packages needed for AiiDA lab.
-RUN pip3 install --upgrade         \
+RUN pip install --upgrade         \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
 
 # AiiDA lab package goes last, because it overrides tornado.
-RUN pip3 install --upgrade 'aiidalab==v19.11.0a2'
+RUN pip install --upgrade 'aiidalab==v20.02.0a1'
 
 # Activate ipython kernel.
 # RUN python3 -m ipykernel install
@@ -103,6 +103,16 @@ COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 # Start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
+
+RUN pip3 uninstall aiida-core --yes
+COPY activate-conda .
+RUN {  head -n 2 /opt/configure-aiida.sh & cat activate-conda & tail -n +3 /opt/configure-aiida.sh; } > configure-aiida.sh
+RUN cp configure-aiida.sh /opt/configure-aiida.sh && chmod 755 /opt/configure-aiida.sh
+
+# Install some useful packages that are not available on PyPi
+RUN conda install --yes -c conda-forge rdkit
+RUN conda install --yes -c openbabel openbabel "tornado<5"
+RUN conda install --yes -c conda-forge dscribe
 
 # Expose port 8888.
 EXPOSE 8888
