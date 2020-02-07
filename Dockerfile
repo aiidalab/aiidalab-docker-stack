@@ -34,13 +34,14 @@ chmod -R +r /opt/pseudos/
 
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install --upgrade         \
+RUN pip install                    \
+    'aiidalab==v20.02.a1'          \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
 
 # AiiDA lab package goes last, because it overrides tornado.
-RUN pip install --upgrade 'aiidalab==v20.02.0a1'
+# RUN pip install --upgrade 'aiidalab==v20.02.0a1'
 
 # Activate ipython kernel.
 # RUN python3 -m ipykernel install
@@ -50,7 +51,7 @@ RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
 
 # Enables better integration with Jupyter Hub.
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
-# Quite a slow part.
+# Takes about 3 minutes and 20 seconds.
 RUN jupyter labextension install @jupyterlab/hub-extension
 
 # TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
@@ -58,7 +59,7 @@ RUN jupyter labextension install @jupyterlab/hub-extension
 RUN jupyter nbextension install --sys-prefix --py fileupload
 
 # Install jupyterlab theme.
-# Also quite slow.
+# Takes about 4 minutes and 10 seconds.
 WORKDIR /opt/jupyterlab-theme
 RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
     cd jupyterlab-theme && \
@@ -83,7 +84,7 @@ COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
-RUN conda install --yes -c openbabel openbabel "tornado<5"
+RUN conda install --yes -c openbabel openbabel
 RUN conda install --yes -c conda-forge dscribe
 
 # Expose port 8888.
