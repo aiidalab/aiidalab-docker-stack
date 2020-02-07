@@ -32,19 +32,12 @@ wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
 chown -R root:root /opt/pseudos/;                                  \
 chmod -R +r /opt/pseudos/
 
-
 # Install Python packages needed for AiiDA lab.
 RUN pip install                    \
     'aiidalab==v20.02.a1'          \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
-
-# AiiDA lab package goes last, because it overrides tornado.
-# RUN pip install --upgrade 'aiidalab==v20.02.0a1'
-
-# Activate ipython kernel.
-# RUN python3 -m ipykernel install
 
 # Enable nbserverproxy extension.
 RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
