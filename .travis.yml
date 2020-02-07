@@ -16,5 +16,6 @@ before_install:
 script:
   - docker run --name ${container_id} -e HEADLESS=True --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest
   - docker exec --tty --user root "${container_id}" wait-for-services
+  - docker logs ${container_id}
   - docker exec --tty --user ${container_user} "${container_id}" verdi plugin list aiida.calculations
   - docker exec --tty --user ${container_user} "${container_id}" verdi daemon status
