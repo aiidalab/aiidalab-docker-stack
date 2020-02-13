@@ -35,7 +35,7 @@ chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
 RUN pip install                    \
-    'aiidalab==v20.02.a1'          \
+    'aiidalab==v20.02.b1'          \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
