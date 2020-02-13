@@ -79,6 +79,12 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   mkdir /home/${SYSTEM_USER}/apps
   touch /home/${SYSTEM_USER}/apps/__init__.py
 
+  # First install the home app.
+  git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
+  cd /home/${SYSTEM_USER}/apps/home
+  git checkout ${DEFAULT_APP_GIT_BRANCH}
+  cd -
+
   # Define the order how the apps should appear.
   echo '{
     "hidden": [],
@@ -88,18 +94,13 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
     ]
   }' > /home/${SYSTEM_USER}/apps/home/.launcher.json
 
-   git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
-   cd /home/${SYSTEM_USER}/apps/home
-   git checkout ${DEFAULT_APP_GIT_BRANCH}
-   cd -
+  git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
+  cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
+  git checkout ${DEFAULT_APP_GIT_BRANCH}
+  cd -
 
-   git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-   cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-   git checkout ${DEFAULT_APP_GIT_BRANCH}
-   cd -
-
-   git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
-   cd /home/${SYSTEM_USER}/apps/quantum-espresso
-   git checkout ${DEFAULT_APP_GIT_BRANCH}
-   cd -
+  git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
+  cd /home/${SYSTEM_USER}/apps/quantum-espresso
+  git checkout ${DEFAULT_APP_GIT_BRANCH}
+ cd -
 fi
