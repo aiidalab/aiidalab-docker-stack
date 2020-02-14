@@ -79,7 +79,7 @@ COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
-RUN conda install --yes -c conda-forge dscribe
+RUN conda install --yes -c conda-forge dscribe "tornado<5"
 
 # Expose port 8888.
 EXPOSE 8888
