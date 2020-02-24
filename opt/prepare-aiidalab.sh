@@ -69,7 +69,7 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   # First install the home app.
   git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
   cd /home/${SYSTEM_USER}/apps/home
-  git checkout ${DEFAULT_APP_GIT_BRANCH}
+  git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
   cd -
 
   # Define the order how the apps should appear.
@@ -83,11 +83,11 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
 
   git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
   cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-  git checkout ${DEFAULT_APP_GIT_BRANCH}
+  git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
   cd -
 
   git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
   cd /home/${SYSTEM_USER}/apps/quantum-espresso
-  git checkout ${DEFAULT_APP_GIT_BRANCH}
+  git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
  cd -
 fi

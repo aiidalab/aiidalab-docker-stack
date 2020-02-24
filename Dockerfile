@@ -5,7 +5,7 @@ LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 # Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
-ENV DEFAULT_APP_GIT_BRANCH master
+ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 
 USER root
 
