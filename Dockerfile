@@ -5,7 +5,7 @@ LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 # Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
-ENV DEFAULT_APP_GIT_BRANCH master
+ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 
 USER root
 
@@ -35,7 +35,7 @@ chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
 RUN pip install                    \
-    'aiidalab==v20.02.b1'          \
+    'aiidalab==v20.02.b2'          \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
@@ -79,7 +79,7 @@ COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
-RUN conda install --yes -c conda-forge dscribe
+RUN conda install --yes -c conda-forge dscribe "tornado<5"
 
 # Expose port 8888.
 EXPOSE 8888
