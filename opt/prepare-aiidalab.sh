@@ -29,8 +29,8 @@ verdi code show ${code_name}@${computer_name} || verdi code setup \
 
 # Setup pseudopotentials.
 if [ ! -e /home/${SYSTEM_USER}/SKIP_IMPORT_PSEUDOS ]; then
-   verdi data upf listfamilies | grep 'SSSP_efficiency_v1.0'|| verdi import -n /opt/pseudos/SSSP_efficiency_pseudos.aiida
-   verdi data upf listfamilies | grep 'SSSP_precision_v1.0' || verdi import -n /opt/pseudos/SSSP_precision_pseudos.aiida
+   verdi data upf listfamilies | grep 'SSSP_1.1_efficiency'|| verdi import -n /opt/pseudos/SSSP_efficiency_pseudos.aiida
+   verdi data upf listfamilies | grep 'SSSP_1.1_precision' || verdi import -n /opt/pseudos/SSSP_precision_pseudos.aiida
 fi
 
 # Setup AiiDA jupyter extension.
