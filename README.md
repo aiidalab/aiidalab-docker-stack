@@ -25,19 +25,18 @@ Options:
 ...
 ```
 
-If this is the case, everything proceed with the next steps. Otherwise, please visit the [Docker installation page](http://www.docker.com/install) and install Docker on your machine.
+If this is the case, everything is set and you can proceed with the next steps. Otherwise, please visit the [Docker installation page](http://www.docker.com/install) and install Docker on your machine.
 
 To pull image from DockerHub and start the container do the following:
 ```
-docker pull aiidalab/aiidalab-docker-stack:latest
-mkdir ${HOME}/aiidalab # Create a new folder where your data vill be stored
-docker run -d -p 8888:8888 -v ${HOME}/aiidalab:/home/aiida aiidalab/aiidalab-docker-stack:latest
-# Note the Docker ID that was displayed after the last command and put it into the following run
-./get_token.sh DOCKER_ID # This will display the authentication token once the container is ready.
+$ docker pull aiidalab/aiidalab-docker-stack:latest
+$ mkdir ${HOME}/aiidalab # Create a new folder where your data vill be stored
+$ docker run -d -p 8888:8888 -v ${HOME}/aiidalab:/home/aiida aiidalab/aiidalab-docker-stack:latest # Note the Docker ID that was displayed
+$ ./get_token.sh DOCKER_ID # This will display the authentication token once the container is ready.
 ```
 
-To open AiiDA lab home page go to your browswer and type 'localhost:8888' in the address field. Jupyter will require
-to provide the token use the one you've got when running `./get_token.sh DOCKER_ID`.
+To open AiiDA lab home page go to your browser and type 'localhost:8888' in the address field. Jupyter will require token authentication.
+Use the toket that was printed by `./get_token.sh ...` command.
 
 # Cheat Sheet
 
