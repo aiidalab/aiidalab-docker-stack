@@ -13,13 +13,10 @@ fi
 PORT=${1}
 FOLDER=${2}
 TOKEN=`date | md5`
-
-#IMAGE='aiidalab/aiidalab-docker-stack:latest'
-IMAGE='aiidalab'
-
+IMAGE='aiidalab/aiidalab-docker-stack:latest'
 
 echo "Pulling the image from the Docker Hub..."
-#docker pull ${IMAGE}
+docker pull ${IMAGE}
 
 echo "Launching the container..."
 CONTAINERID=`docker run -d -p 8888:${PORT} -e JUPYTER_TOKEN=${TOKEN} -v ${FOLDER}:/home/aiida ${IMAGE}`
