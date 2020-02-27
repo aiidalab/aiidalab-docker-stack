@@ -25,5 +25,5 @@ echo "Waiting for container to start..."
 docker exec --tty ${CONTAINERID} wait-for-services
 
 echo "Container started successfully."
-echo "Put this link to browser to run AiiDA lab:"
+echo "Open this link in the browser to enter AiiDA lab:"
 echo "localhost:${PORT}/?token=${TOKEN}"
