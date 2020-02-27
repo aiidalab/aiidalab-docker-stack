@@ -27,7 +27,7 @@ else
       --port=8888                                                    \
       --no-browser                                                   \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
-      --NotebookApp.token='' # Not sure if this is the best solution, but to run locally I think it is not a problem.
+      --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 fi
 
 
