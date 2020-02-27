@@ -15,22 +15,13 @@ The users will gradually pick up the new image, whenever they restart their cont
 
 # Deploy locally
 
-To run AiiDA lab image image locally, you first need to make sure that [Docker](https://www.docker.com/) is installed on your computer. Run `$ docker` in the command line and see if you get something like
-```
-Usage:	docker [OPTIONS] COMMAND
-
-A self-sufficient runtime for containers
-
-Options:
-...
-```
-
-If this is the case, everything is set and you can proceed with the next steps. Otherwise, please visit the [Docker installation page](http://www.docker.com/install) and install Docker on your machine.
+Make sure that Docker is installed on your machine, otherwise go to [Docker installation page](http://www.docker.com/install)
+and follow the instructions for your operating system.
 
 To pull image from DockerHub and start the container do the following:
 ```
 $ docker pull aiidalab/aiidalab-docker-stack:latest
-$ mkdir ${HOME}/aiidalab # Create a new folder where your data vill be stored
+$ mkdir ${HOME}/aiidalab # Create a new folder where your data will be stored
 $ docker run -d -p 8888:8888 -v ${HOME}/aiidalab:/home/aiida aiidalab/aiidalab-docker-stack:latest # Note the Docker ID that was displayed
 $ ./get_token.sh DOCKER_ID # This will display the authentication token once the container is ready.
 ```
