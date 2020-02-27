@@ -18,16 +18,13 @@ The users will gradually pick up the new image, whenever they restart their cont
 Make sure that Docker is installed on your machine, otherwise go to [Docker installation page](http://www.docker.com/install)
 and follow the instructions for your operating system.
 
-Then, pull the `aiidalab-docker-stack` image from DockerHub and start a container:
+Then, start AiiDA lab:
 ```
-$ docker pull aiidalab/aiidalab-docker-stack:latest
-$ mkdir ${HOME}/aiidalab # Create a new folder where your data will be stored
-$ docker run -d -p 8888:8888 -v ${HOME}/aiidalab:/home/aiida aiidalab/aiidalab-docker-stack:latest # Note the Docker ID that was displayed
-$ ./get_token.sh DOCKER_ID # This will display the authentication token once the container is ready.
+./run_aiidalab.sh PORT FOLDER_ABS_PATH
 ```
-
-To open AiiDA lab home page go to your browser and type 'localhost:8888' in the address field. Jupyter will require token authentication.
-Use the toket that was printed by `./get_token.sh ...` command.
+Where `PORT` is any free port on your machine (typically it is 8888) and `FOLDER_ABS_PATH` is an absolute path to the folder where user's data will be stored
+(typically it is `${HOME}/aiidalab`).
+The last line of the output of the command above will contain the link to access AiiDA lab in your browser.
 
 # Cheat Sheet
 
