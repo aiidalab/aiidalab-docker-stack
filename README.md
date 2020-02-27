@@ -18,7 +18,7 @@ The users will gradually pick up the new image, whenever they restart their cont
 Make sure that Docker is installed on your machine, otherwise go to [Docker installation page](http://www.docker.com/install)
 and follow the instructions for your operating system.
 
-To pull image from DockerHub and start the container do the following:
+Then, pull the `aiidalab-docker-stack` image from DockerHub and start a container:
 ```
 $ docker pull aiidalab/aiidalab-docker-stack:latest
 $ mkdir ${HOME}/aiidalab # Create a new folder where your data will be stored
