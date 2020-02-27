@@ -27,7 +27,7 @@ Options:
 
 If this is the case, everything is set and you can proceed with the next steps. Otherwise, please visit the [Docker installation page](http://www.docker.com/install) and install Docker on your machine.
 
-To pull image from DockerHub and start the container do the following:
+Then, pull the `aiidalab-docker-stack` image from DockerHub and start a container:
 ```
 $ docker pull aiidalab/aiidalab-docker-stack:latest
 $ mkdir ${HOME}/aiidalab # Create a new folder where your data vill be stored
