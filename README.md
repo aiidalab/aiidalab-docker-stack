@@ -22,6 +22,7 @@ Then, start AiiDA lab:
 ```
 ./run_aiidalab.sh PORT FOLDER_ABS_PATH
 ```
+
 Where `PORT` is any free port on your machine (typically it is 8888) and `FOLDER_ABS_PATH` is an absolute path to the folder where user's data will be stored
 (typically it is `${HOME}/aiidalab`).
 The last line of the output of the command above will contain the link to access AiiDA lab in your browser.
