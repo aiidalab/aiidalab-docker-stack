@@ -35,7 +35,7 @@ chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
 RUN pip install                    \
-    'aiidalab==v20.02.b2'          \
+    'aiidalab==v20.03.0b1'         \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
     'nbserverproxy==0.8.8'
@@ -67,6 +67,14 @@ RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
 # Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.
 RUN reentry scan
 
+# Install some useful packages that are not available on PyPi
+RUN conda install --yes -c conda-forge rdkit
+RUN conda install --yes -c openbabel openbabel
+RUN conda install --yes -c conda-forge dscribe "tornado<5"
+
+# Expose port 8888.
+EXPOSE 8888
+
 # Prepare user's folders for AiiDA lab launch.
 COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
@@ -76,13 +84,6 @@ COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
-# Install some useful packages that are not available on PyPi
-RUN conda install --yes -c conda-forge rdkit
-RUN conda install --yes -c openbabel openbabel
-RUN conda install --yes -c conda-forge dscribe "tornado<5"
-
-# Expose port 8888.
-EXPOSE 8888
 
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init

@@ -4,19 +4,31 @@ This repo contains the Docker file used in the [AiiDA lab](https://www.materials
 
 Docker images are available from Dockerhub via `docker pull aiidalab/aiidalab-docker-stack:latest`.
 
-## Deploy
+# Deploy on AiiDA lab server
+
 To deploy changes, log into the AiiDA lab server and execute the following commands:
 ```
-cd /home/ubuntu/aiidalab-docker-stack/
-git pull
-./build.sh
-./inspect.sh  (optionally)
-./activate.sh
+docker pull aiidalab/aiidalab-docker-stack:latest
+docker tag aiidalab/aiidalab-docker-stack:latest aiidalab-docker-stack:latest
 ```
-
 The users will gradually pick up the new image, whenever they restart their container via the _Control Panel_.
 
-## Cheat Sheet
+# Deploy locally
+
+Make sure that Docker is installed on your machine, otherwise go to [Docker installation page](http://www.docker.com/install)
+and follow the instructions for your operating system.
+
+Then, start AiiDA lab:
+```
+./run_aiidalab.sh PORT FOLDER_ABS_PATH
+```
+
+Where `PORT` is any free port on your machine (typically it is 8888) and `FOLDER_ABS_PATH` is an absolute path to the folder where user's data will be stored
+(typically it is `${HOME}/aiidalab`).
+The last line of the output of the command above will contain the link to access AiiDA lab in your browser.
+
+# Cheat Sheet
+
 - List running containers: `docker ps`
 - List resource usage: `docker stats`
 - View log of a container: `docker container logs  <container_id>`
@@ -24,28 +36,17 @@ The users will gradually pick up the new image, whenever they restart their cont
 - Restart JupyterHub: `sudo service jupyterhub restart`
 - Restart Apache: `sudo apachectl graceful`
 
-## Slow IO
+# Slow IO
+
 To check for issues with OpenStack's block storage observe the following command for a **few minutes**:
 ```
 watch -n 0.1 "ps axu| awk '{print \$8, \"   \", \$11}' | sort | head -n 10"
 ```
 Pretty much all processes should be in the `S` state. If a process stays in the `D` state for a longer time it is most likely waiting for slow IO.
 
-## Local Testing
-In order to test the docker image locally, just clone this repository locally, and
-```
-./build.sh
-./activate.sh
-./inspect.sh
-```
 
-Inside the Docker image, try
-```
-su scientist
-/opt/start-singleuser.sh
-```
 
-## Acknowledgements
+# Acknowledgements
 
 This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
 funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX
