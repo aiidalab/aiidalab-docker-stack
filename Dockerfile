@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y  \
     file                  \
     libssl-dev            \
     libffi-dev            \
+    python3-pip           \
+    python3-setuptools    \
+    python3-wheel         \
     quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
@@ -34,23 +37,34 @@ chown -R root:root /opt/pseudos/;                                  \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install                    \
-    'aiidalab==v20.05.0b1'         \
+RUN pip install 'aiidalab==v20.05.0b1'
+
+# Installing Jupyter-related things in the root environment.
+RUN /usr/bin/pip3 install          \
     'jupyterhub==0.9.4'            \
     'jupyterlab==0.35.4'           \
-    'nbserverproxy==0.8.8'
+    'fileupload==0.1.5'            \
+    'nbserverproxy==0.8.8'         \
+    'appmode-aiidalab==0.5.0.1'    \
+    'notebook==5.7.8'              \
+    'nglview'                      \
+    'voila'
 
-# Enable nbserverproxy extension.
-RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
+RUN python -m ipykernel install --user
+
+# Enable extensions.
+RUN /usr/local/bin/jupyter serverextension enable --sys-prefix --py nbserverproxy
+RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
+RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
+RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
+# TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
+# the fileupload extension also needs to be "installed".
+RUN /usr/local/bin/jupyter nbextension install --sys-prefix --py fileupload
 
 # Enables better integration with Jupyter Hub.
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
 # Takes about 3 minutes and 20 seconds.
 RUN jupyter labextension install @jupyterlab/hub-extension
-
-# TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
-# the fileupload extension also needs to be "installed".
-RUN jupyter nbextension install --sys-prefix --py fileupload
 
 # Install jupyterlab theme.
 # Takes about 4 minutes and 10 seconds.
@@ -61,7 +75,7 @@ RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
      npm run build && \
      npm run build:webpack && \
      npm pack ./ && \ 
-     jupyter labextension install *.tgz && \
+     /usr/local/bin/jupyter labextension install *.tgz && \
     cd ..
 
 # Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.

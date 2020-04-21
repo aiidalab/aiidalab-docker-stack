@@ -13,7 +13,7 @@ cd /home/${SYSTEM_USER}
 if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
 
   # Launched by JupyterHub, use single-user entrypoint.
-  /opt/conda/bin/python /opt/aiidalab-singleuser                     \
+  /usr/bin/python /opt/aiidalab-singleuser                           \
       --ip=0.0.0.0                                                   \
       --port=8888                                                    \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
@@ -22,7 +22,7 @@ if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
 else
 
   # Otherwise launch notebook server directly.
-  jupyter-notebook                                                   \
+  /usr/local/bin/jupyter-notebook                                    \
       --ip=0.0.0.0                                                   \
       --port=8888                                                    \
       --no-browser                                                   \
