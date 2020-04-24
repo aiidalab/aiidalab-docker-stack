@@ -12,7 +12,7 @@ fi
 
 PORT=${1}
 FOLDER=${2}
-TOKEN=`date | md5`
+TOKEN=`openssl rand -hex 32`
 IMAGE='aiidalab/aiidalab-docker-stack:latest'
 
 echo "Pulling the image from the Docker Hub..."
