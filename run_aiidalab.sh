@@ -12,8 +12,8 @@ fi
 
 PORT=${1}
 FOLDER=${2}
-TOKEN=`date | md5`
-IMAGE='aiidalab/aiidalab-docker-stack:latest'
+TOKEN=`openssl rand -hex 32`
+IMAGE='aiidalab/aiidalab-docker-stack'
 
 echo "Pulling the image from the Docker Hub..."
 docker pull ${IMAGE}
@@ -26,4 +26,4 @@ docker exec --tty ${CONTAINERID} wait-for-services
 
 echo "Container started successfully."
 echo "Open this link in the browser to enter AiiDA lab:"
-echo "localhost:${PORT}/?token=${TOKEN}"
+echo "http://localhost:${PORT}/?token=${TOKEN}"
