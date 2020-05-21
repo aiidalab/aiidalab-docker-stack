@@ -91,3 +91,6 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
  cd -
 fi
+
+# Activate the right python kernel.
+python -m ipykernel install --user

@@ -50,8 +50,6 @@ RUN /usr/bin/pip3 install          \
     'nglview'                      \
     'voila'
 
-RUN python -m ipykernel install --user
-
 # Enable extensions.
 RUN /usr/local/bin/jupyter serverextension enable --sys-prefix --py nbserverproxy
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
