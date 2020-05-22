@@ -51,13 +51,13 @@ RUN /usr/bin/pip3 install          \
     'voila'
 
 # Enable extensions.
-RUN /usr/local/bin/jupyter serverextension enable --sys-prefix --py nbserverproxy
+RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverproxy
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 # TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
 # the fileupload extension also needs to be "installed".
-RUN /usr/local/bin/jupyter nbextension install --sys-prefix --py fileupload
+RUN /usr/local/bin/jupyter nbextension install --py --sys-prefix fileupload
 
 # Enables better integration with Jupyter Hub.
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
