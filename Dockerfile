@@ -29,6 +29,8 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Quantum-Espresso Pseudo Potentials.
+# TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
+# and installed on AiiDA lab
 WORKDIR /opt/pseudos
 RUN base_url=http://archive.materialscloud.org/file/2018.0001/v3;  \
 wget ${base_url}/SSSP_efficiency_pseudos.aiida;                    \
@@ -53,6 +55,8 @@ RUN /usr/bin/pip3 install          \
 RUN python -m ipykernel install
 
 # Enable extensions.
+# NOTE: for this to work I had to install nglview and appmode-aiidalab to the
+# /usr/bin/pip3 python environment
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverproxy
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
