@@ -20,7 +20,6 @@ RUN apt-get update && apt-get install -y  \
     python3-setuptools    \
     python3-wheel         \
     quantum-espresso      \
-    ripgrep               \
   && rm -rf /var/lib/apt/lists/*
 
 # Install what is needed for Jupyter Lab.
