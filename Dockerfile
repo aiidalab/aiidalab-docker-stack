@@ -32,10 +32,10 @@ RUN apt-get update && apt-get install -y \
 # TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
 # and installed on AiiDA lab
 WORKDIR /opt/pseudos
-RUN base_url=http://archive.materialscloud.org/file/2018.0001/v3;  \
-wget ${base_url}/SSSP_efficiency_pseudos.aiida;                    \
-wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
-chown -R root:root /opt/pseudos/;                                  \
+RUN base_url=http://legacy-archive.materialscloud.org/file/2018.0001/v3;  \
+wget ${base_url}/SSSP_efficiency_pseudos.aiida;                           \
+wget ${base_url}/SSSP_precision_pseudos.aiida;                            \
+chown -R root:root /opt/pseudos/;                                         \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
