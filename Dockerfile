@@ -43,12 +43,12 @@ RUN pip install 'aiidalab==v20.05.0b1'
 
 # Installing Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
-    'jupyterhub==0.9.4'            \
-    'jupyterlab==0.35.4'           \
+    'jupyterhub==1.1.0'            \
+    'jupyterlab==2.1.4'            \
     'fileupload==0.1.5'            \
     'nbserverproxy==0.8.8'         \
     'appmode-aiidalab==0.5.0.1'    \
-    'notebook==5.7.8'              \
+    'notebook==6.0.3'              \
     'nglview'                      \
     'voila'
 
