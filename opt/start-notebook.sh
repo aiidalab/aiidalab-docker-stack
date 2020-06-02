@@ -13,7 +13,7 @@ cd /home/${SYSTEM_USER}
 if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
 
   # Launched by JupyterHub, use single-user entrypoint.
-  /usr/bin/python /opt/aiidalab-singleuser                           \
+  /usr/bin/python3 /opt/aiidalab-singleuser                           \
       --ip=0.0.0.0                                                   \
       --port=8888                                                    \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
