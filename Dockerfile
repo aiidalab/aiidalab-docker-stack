@@ -68,19 +68,19 @@ RUN /usr/local/bin/jupyter nbextension install --py --sys-prefix fileupload
 # Enables better integration with Jupyter Hub.
 # https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
 # Takes about 3 minutes and 20 seconds.
-RUN jupyter labextension install @jupyterlab/hub-extension
+#RUN jupyter labextension install @jupyterlab/hub-extension
 
 # Install jupyterlab theme.
 # Takes about 4 minutes and 10 seconds.
-WORKDIR /opt/jupyterlab-theme
-RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
-    cd jupyterlab-theme && \
-     npm install && \
-     npm run build && \
-     npm run build:webpack && \
-     npm pack ./ && \ 
-     /usr/local/bin/jupyter labextension install *.tgz && \
-    cd ..
+#WORKDIR /opt/jupyterlab-theme
+#RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
+#    cd jupyterlab-theme && \
+#     npm install && \
+#     npm run build && \
+#     npm run build:webpack && \
+#     npm pack ./ && \ 
+#     /usr/local/bin/jupyter labextension install *.tgz && \
+#    cd ..
 
 # Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.
 RUN reentry scan
