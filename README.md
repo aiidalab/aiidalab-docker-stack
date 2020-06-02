@@ -3,6 +3,7 @@
 This repo contains the Docker file used in the [AiiDA lab](https://www.materialscloud.org/aiidalab).
 
 Docker images are available from Dockerhub via `docker pull aiidalab/aiidalab-docker-stack:latest`.
+See [aiidalab/aiidalab-docker-stack](https://hub.docker.com/repository/docker/aiidalab/aiidalab-docker-stack) for a list of available tags.
 
 # Deploy on AiiDA lab server
 
