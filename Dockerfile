@@ -65,11 +65,6 @@ RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 # the fileupload extension also needs to be "installed".
 RUN /usr/local/bin/jupyter nbextension install --py --sys-prefix fileupload
 
-# Enables better integration with Jupyter Hub.
-# https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
-# Takes about 3 minutes and 20 seconds.
-#RUN jupyter labextension install @jupyterlab/hub-extension
-
 # Install jupyterlab theme.
 # Takes about 4 minutes and 10 seconds.
 #WORKDIR /opt/jupyterlab-theme
