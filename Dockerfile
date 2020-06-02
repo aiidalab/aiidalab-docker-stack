@@ -49,8 +49,8 @@ RUN /usr/bin/pip3 install          \
     'nbserverproxy==0.8.8'         \
     'appmode==0.7.0'               \
     'notebook==6.0.3'              \
-    'nglview'                      \
-    'voila'
+    'nglview==2.7.5'               \
+    'voila==0.1.21'
 
 RUN python -m ipykernel install
 
