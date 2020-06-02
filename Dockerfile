@@ -47,7 +47,7 @@ RUN /usr/bin/pip3 install          \
     'jupyterlab==2.1.4'            \
     'fileupload==0.1.5'            \
     'nbserverproxy==0.8.8'         \
-    'appmode-aiidalab==0.5.0.1'    \
+    'appmode==0.7.0'               \
     'notebook==6.0.3'              \
     'nglview'                      \
     'voila'
