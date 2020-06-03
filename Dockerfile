@@ -39,7 +39,7 @@ chown -R root:root /opt/pseudos/;                                         \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install 'aiidalab==v20.05.0b1'
+RUN pip install 'aiidalab==v20.06.0b1'
 
 # Installing Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
