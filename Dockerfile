@@ -45,7 +45,6 @@ RUN pip install 'aiidalab==v20.05.0b1'
 RUN /usr/bin/pip3 install          \
     'jupyterhub==1.1.0'            \
     'jupyterlab==2.1.4'            \
-    'fileupload==0.1.5'            \
     'nbserverproxy==0.8.8'         \
     'appmode==0.7.0'               \
     'notebook==6.0.3'              \
@@ -61,9 +60,6 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverprox
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
-# TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
-# the fileupload extension also needs to be "installed".
-RUN /usr/local/bin/jupyter nbextension install --py --sys-prefix fileupload
 
 # Install jupyterlab theme.
 # Takes about 4 minutes and 10 seconds.
