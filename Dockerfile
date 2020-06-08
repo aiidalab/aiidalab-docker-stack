@@ -92,7 +92,7 @@ COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
 # Activate appmode
 WORKDIR /opt/
-RUN git clone https://github.com/oschuett/appmode.git
+RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard 8665aa6474164023a9f59a3744ee5ffe5c3a8b4a
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN /usr/bin/pip3 install ./appmode
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
