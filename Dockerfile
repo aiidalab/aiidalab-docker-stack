@@ -46,7 +46,6 @@ RUN /usr/bin/pip3 install          \
     'jupyterhub==1.1.0'            \
     'jupyterlab==2.1.4'            \
     'nbserverproxy==0.8.8'         \
-    'appmode==0.7.0'               \
     'notebook==6.0.3'              \
     'nglview==2.7.5'               \
     'voila==0.1.21'
@@ -57,8 +56,6 @@ RUN python -m ipykernel install
 # NOTE: for this to work I had to install nglview and appmode-aiidalab to the
 # /usr/bin/pip3 python environment
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverproxy
-RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
-RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 
 # Install jupyterlab theme.
@@ -93,6 +90,13 @@ COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
+# Activate appmode
+WORKDIR /opt/
+RUN git clone https://github.com/oschuett/appmode.git
+COPY gears.svg ./appmode/appmode/static/gears.svg
+RUN /usr/bin/pip3 install ./appmode
+RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
+RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
