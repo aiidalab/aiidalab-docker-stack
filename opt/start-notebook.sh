@@ -3,8 +3,7 @@
 # Debugging.
 set -x
 
-# Environment.
-export SHELL=/bin/bash
+# Environment.  export SHELL=/bin/bash
 
 
 # Enter home folder and start jupyterhub-singleuser.
@@ -17,6 +16,7 @@ if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
       --ip=0.0.0.0                                                   \
       --port=8888                                                    \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
+      --VoilaConfiguration.template=aiidalab                         \
       --NotebookApp.iopub_data_rate_limit=1000000000                 \
       --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 else
@@ -27,6 +27,7 @@ else
       --port=8888                                                    \
       --no-browser                                                   \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
+      --VoilaConfiguration.template=aiidalab                         \
       --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 fi
 
