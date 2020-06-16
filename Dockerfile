@@ -90,13 +90,17 @@ COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
-# Activate appmode
+# Activate appmode.
 WORKDIR /opt/
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard 8665aa6474164023a9f59a3744ee5ffe5c3a8b4a
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN /usr/bin/pip3 install ./appmode
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
+
+# Install AiiDA lab voila template.
+RUN git clone https://github.com/aiidalab/aiidalab-voila-template.git && cd aiidalab-voila-template && git reset --hard bbcfc1cc
+RUN cp -r aiidalab-voila-template/aiidalab /usr/local/share/jupyter/voila/templates/
 
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
