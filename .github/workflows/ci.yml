@@ -10,6 +10,7 @@ jobs:
   build-docker-image:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     outputs:
       image: ${{ steps.tag.outputs.image }}
@@ -35,6 +36,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: build-docker-image
+    timeout-minutes: 15
 
     strategy:
       matrix:
