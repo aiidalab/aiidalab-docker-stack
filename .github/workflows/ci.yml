@@ -41,7 +41,13 @@ jobs:
 
     strategy:
       matrix:
-        app: [csadorf/aiidalab-hello-world]
+        app: [
+            csadorf/aiidalab-hello-world,
+            aiidalab/aiidalab-home,
+            aiidalab/aiidalab-qe,
+            aiidalab/aiidalab-widgets-base,
+            aiidalab/aiidalab-optimade,
+          ]
 
     steps:
 
