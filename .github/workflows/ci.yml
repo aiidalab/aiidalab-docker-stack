@@ -11,6 +11,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      image: ${{ steps.tag.outputs.image }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -22,9 +25,16 @@ jobs:
           tag_with_ref: true
           tag_with_sha: true
 
+      - name: set output image
+        id: tag
+        run: |
+          IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
+          echo "::set-output name=image::sha-${IMAGE_REF}"
+
   test-apps:
 
     runs-on: ubuntu-latest
+    needs: build-docker-image
 
     strategy:
       matrix:
@@ -39,3 +49,5 @@ jobs:
 
       - name: Test app
         uses: aiidalab/aiidalab-test-app-action@releases/v2
+        with:
+          image: ${{ needs.build-docker-image.outputs.image }}
