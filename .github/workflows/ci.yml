@@ -31,7 +31,7 @@ jobs:
         id: tag
         run: |
           IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
-          echo "::set-output name=image::sha-${IMAGE_REF}"
+          echo "::set-output name=image::${{ github.repository }}:sha-${IMAGE_REF}"
 
   test-apps:
 
