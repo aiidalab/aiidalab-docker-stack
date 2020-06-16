@@ -25,6 +25,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           tag_with_ref: true
           tag_with_sha: true
+          cache_froms: "aiidalab/aiidalab-docker-stack:latest,aiidalab/aiidalab-docker-stack:stable,aiidateam/aiida-core:latest"
 
       - name: set output image
         id: tag
