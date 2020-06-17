@@ -60,10 +60,11 @@ EOF
 fi
 
 # Install/upgrade apps.
-if [ ! -e /home/${SYSTEM_USER}/apps ]; then
+if [ ! -e /home/${SYSTEM_USER}/apps ] || [ "${AIIDALAB_SETUP}" == "true" ]; then
+   echo "Install / upgrade apps..."
 
   # Create apps folder and make it importable from python.
-  mkdir /home/${SYSTEM_USER}/apps
+  mkdir -p /home/${SYSTEM_USER}/apps
   touch /home/${SYSTEM_USER}/apps/__init__.py
 
   # First install the home app.
