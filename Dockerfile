@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:latest
+FROM aiidateam/aiida-core:1.2.1
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y  \
     file                  \
     libssl-dev            \
     libffi-dev            \
+    python3-pip           \
+    python3-setuptools    \
+    python3-wheel         \
     quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
@@ -26,43 +29,46 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Quantum-Espresso Pseudo Potentials.
+# TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
+# and installed on AiiDA lab
 WORKDIR /opt/pseudos
-RUN base_url=http://archive.materialscloud.org/file/2018.0001/v3;  \
-wget ${base_url}/SSSP_efficiency_pseudos.aiida;                    \
-wget ${base_url}/SSSP_precision_pseudos.aiida;                     \
-chown -R root:root /opt/pseudos/;                                  \
+RUN base_url=http://legacy-archive.materialscloud.org/file/2018.0001/v3;  \
+wget ${base_url}/SSSP_efficiency_pseudos.aiida;                           \
+wget ${base_url}/SSSP_precision_pseudos.aiida;                            \
+chown -R root:root /opt/pseudos/;                                         \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install                    \
-    'aiidalab==v20.05.0b1'         \
-    'jupyterhub==0.9.4'            \
-    'jupyterlab==0.35.4'           \
-    'nbserverproxy==0.8.8'
+RUN pip install 'aiidalab==v20.06.0b2'
 
-# Enable nbserverproxy extension.
-RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
+# Installing Jupyter-related things in the root environment.
+RUN /usr/bin/pip3 install          \
+    'jupyterhub==1.1.0'            \
+    'jupyterlab==2.1.4'            \
+    'nbserverproxy==0.8.8'         \
+    'notebook==6.0.3'              \
+    'nglview==2.7.5'               \
+    'voila==0.1.21'
 
-# Enables better integration with Jupyter Hub.
-# https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html#further-integration
-# Takes about 3 minutes and 20 seconds.
-RUN jupyter labextension install @jupyterlab/hub-extension
+RUN python -m ipykernel install
 
-# TODO: delete, when https://github.com/aiidalab/aiidalab-widgets-base/issues/31 is fixed
-# the fileupload extension also needs to be "installed".
-RUN jupyter nbextension install --sys-prefix --py fileupload
+# Enable extensions.
+# NOTE: for this to work I had to install nglview and appmode-aiidalab to the
+# /usr/bin/pip3 python environment
+RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverproxy
+RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 
 # Install jupyterlab theme.
 # Takes about 4 minutes and 10 seconds.
-WORKDIR /opt/jupyterlab-theme
-RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
-    cd jupyterlab-theme && \
-     npm install && \
-     npm run build && \
-     npm run build:webpack && \
-     npm pack ./ && \ 
-     jupyter labextension install *.tgz && \
-    cd ..
+#WORKDIR /opt/jupyterlab-theme
+#RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
+#    cd jupyterlab-theme && \
+#     npm install && \
+#     npm run build && \
+#     npm run build:webpack && \
+#     npm pack ./ && \ 
+#     /usr/local/bin/jupyter labextension install *.tgz && \
+#    cd ..
 
 # Populate reentry cache for root user https://pypi.python.org/pypi/reentry/.
 RUN reentry scan
@@ -80,10 +86,21 @@ COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
-# Start Jupyter notebook.
+# Copy scripts to start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
+# Install and activate appmode.
+WORKDIR /opt/
+RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard 8665aa6474164023a9f59a3744ee5ffe5c3a8b4a
+COPY gears.svg ./appmode/appmode/static/gears.svg
+RUN /usr/bin/pip3 install ./appmode
+RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
+RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
+
+# Install AiiDA lab voila template.
+RUN git clone https://github.com/aiidalab/aiidalab-voila-template.git && cd aiidalab-voila-template && git reset --hard bbcfc1cc
+RUN cp -r aiidalab-voila-template/aiidalab /usr/local/share/jupyter/voila/templates/
 
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
