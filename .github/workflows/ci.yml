@@ -7,36 +7,36 @@ on:
 
 jobs:
 
-  build-docker-image:
+  #build-docker-image:
 
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+  #  runs-on: ubuntu-latest
+  #  timeout-minutes: 15
 
-    outputs:
-      image: ${{ steps.tag.outputs.image }}
+  #  outputs:
+  #    image: ${{ steps.tag.outputs.image }}
 
-    steps:
-      - uses: actions/checkout@v2
+  #  steps:
+  #    - uses: actions/checkout@v2
 
-      - name: build image
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tag_with_ref: true
-          tag_with_sha: true
-          cache_froms: "aiidalab/aiidalab-docker-stack:latest,aiidalab/aiidalab-docker-stack:stable,aiidateam/aiida-core:latest"
+  #    - name: build image
+  #      uses: docker/build-push-action@v1
+  #      with:
+  #        username: ${{ secrets.DOCKER_USERNAME }}
+  #        password: ${{ secrets.DOCKER_PASSWORD }}
+  #        tag_with_ref: true
+  #        tag_with_sha: true
+  #        cache_froms: "aiidalab/aiidalab-docker-stack:latest,aiidalab/aiidalab-docker-stack:stable,aiidateam/aiida-core:latest"
 
-      - name: set output image
-        id: tag
-        run: |
-          IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
-          echo "::set-output name=image::${{ github.repository }}:sha-${IMAGE_REF}"
+  #    - name: set output image
+  #      id: tag
+  #      run: |
+  #        IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
+  #        echo "::set-output name=image::${{ github.repository }}:sha-${IMAGE_REF}"
 
   test-apps:
 
     runs-on: ubuntu-latest
-    needs: build-docker-image
+    #needs: build-docker-image
     timeout-minutes: 15
 
     strategy:
@@ -59,4 +59,5 @@ jobs:
       - name: Test app
         uses: aiidalab/aiidalab-test-app-action@releases/v2
         with:
-          image: ${{ needs.build-docker-image.outputs.image }}
+          image: aiidalab/aiidalab-docker-stack:latest
+          #image: ${{ needs.build-docker-image.outputs.image }}
