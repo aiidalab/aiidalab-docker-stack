@@ -39,7 +39,7 @@ chown -R root:root /opt/pseudos/;                                         \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install 'aiidalab==v20.06.0b1'
+RUN pip install 'aiidalab==v20.06.0b2'
 
 # Installing Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
@@ -86,11 +86,11 @@ COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
-# Start Jupyter notebook.
+# Copy scripts to start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 
-# Activate appmode.
+# Install and activate appmode.
 WORKDIR /opt/
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard 8665aa6474164023a9f59a3744ee5ffe5c3a8b4a
 COPY gears.svg ./appmode/appmode/static/gears.svg
