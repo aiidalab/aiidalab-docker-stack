@@ -37,17 +37,19 @@ jobs:
 
     runs-on: ubuntu-latest
     #needs: build-docker-image
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     strategy:
       matrix:
         app: [
-            csadorf/aiidalab-hello-world,
             aiidalab/aiidalab-home,
-            aiidalab/aiidalab-qe,
-            aiidalab/aiidalab-widgets-base,
-            aiidalab/aiidalab-optimade,
+            csadorf/aiidalab-hello-world,
+            #aiidalab/aiidalab-widgets-base,
+            #aiidalab/aiidalab-qe,
+            #aiidalab/aiidalab-optimade,
           ]
+        browser: [ chrome ] # firefox ]
+      fail-fast: false
 
     steps:
 
@@ -61,3 +63,4 @@ jobs:
         with:
           image: aiidalab/aiidalab-docker-stack:latest
           #image: ${{ needs.build-docker-image.outputs.image }}
+          browser: ${{ matrix.browser }}
