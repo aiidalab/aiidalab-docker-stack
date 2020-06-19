@@ -44,9 +44,9 @@ jobs:
         app: [
             aiidalab/aiidalab-home,
             csadorf/aiidalab-hello-world,
-            #aiidalab/aiidalab-widgets-base,
-            #aiidalab/aiidalab-qe,
-            #aiidalab/aiidalab-optimade,
+            aiidalab/aiidalab-widgets-base,
+            aiidalab/aiidalab-qe,
+            aiidalab/aiidalab-optimade,
           ]
         browser: [ chrome ] # firefox ]
       fail-fast: false
