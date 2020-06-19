@@ -59,7 +59,7 @@ jobs:
           repository: ${{ matrix.app }}
 
       - name: Test app
-        uses: aiidalab/aiidalab-test-app-action@v2-beta
+        uses: aiidalab/aiidalab-test-app-action@v2
         with:
           image: ${{ needs.build-docker-image.outputs.image }}
           browser: ${{ matrix.browser }}
