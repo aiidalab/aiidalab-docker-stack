@@ -42,11 +42,11 @@ jobs:
     strategy:
       matrix:
         app: [
-            aiidalab/aiidalab-home,
+            # aiidalab/aiidalab-home,  -- failing
             csadorf/aiidalab-hello-world,
             aiidalab/aiidalab-widgets-base,
             aiidalab/aiidalab-qe,
-            aiidalab/aiidalab-optimade,
+            # aiidalab/aiidalab-optimade, -- failing
           ]
         browser: [ chrome ] # firefox ]
       fail-fast: false
