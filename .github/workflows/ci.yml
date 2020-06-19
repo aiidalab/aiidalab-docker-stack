@@ -48,7 +48,7 @@ jobs:
             aiidalab/aiidalab-qe,
             # aiidalab/aiidalab-optimade, -- failing
           ]
-        browser: [ chrome ] # firefox ]
+        browser: [ chrome, firefox ]
       fail-fast: false
 
     steps:
