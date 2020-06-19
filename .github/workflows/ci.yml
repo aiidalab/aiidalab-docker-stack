@@ -59,7 +59,7 @@ jobs:
           repository: ${{ matrix.app }}
 
       - name: Test app
-        uses: aiidalab/aiidalab-test-app-action@v2-selenium
+        uses: aiidalab/aiidalab-test-app-action@v2-beta
         with:
           image: aiidalab/aiidalab-docker-stack:latest
           #image: ${{ needs.build-docker-image.outputs.image }}
