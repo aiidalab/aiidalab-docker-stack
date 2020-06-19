@@ -10,7 +10,7 @@ jobs:
   build-docker-image:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     outputs:
       image: ${{ steps.tag.outputs.image }}
