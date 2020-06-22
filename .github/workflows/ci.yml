@@ -1,4 +1,6 @@
-# Run basic tests for this app on the latest aiidalab-docker image.
+# Execute continuous integration tests for this docker image. This is to ensure that
+# new versions of the image do not break currently expected behavior and that the
+# environment provided by this image is compatible with a selected set of apps.
 
 name: continuous-integration
 
@@ -53,11 +55,27 @@ jobs:
 
     steps:
 
+      # This step checks out the app (not the docker image repository!) that will be
+      # mounted onto an aiidalab container instance with the image built in the
+      # previous job.
       - name: Checkout app
         uses: actions/checkout@v2
         with:
           repository: ${{ matrix.app }}
 
+      # Start the aiida lab instance with the docker image built in the previous job.
+      # The container is launched as part of a network with a selenium hub.
+      # The app checked out in the previous step is mounted into the container under
+      # `/home/aiida/apps/app`.
+      #
+      # Then execute platform and app tests that include backend and frontend tests
+      # implemented as unit tests and browser tests (with selenium), e.g., check that
+      # notebooks that are part of the app can be openend in the browser in app mode
+      # without triggering an exception.
+      #
+      # Please refer to the action's documentation for more information on what tests
+      # in particular are executed and how to implement new tests for both the aiida
+      # lab platform and aiida lab apps.
       - name: Test app
         uses: aiidalab/aiidalab-test-app-action@v2
         with:
