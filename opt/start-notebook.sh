@@ -28,6 +28,7 @@ else
       --no-browser                                                   \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
       --VoilaConfiguration.template=aiidalab                         \
+      --VoilaConfiguration.enable_nbextensions=True                  \
       --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 fi
 
