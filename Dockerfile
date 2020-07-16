@@ -101,6 +101,11 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 # Install AiiDA lab voila template.
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
+
+# Install widget_periodictable.
+RUN pip install widget_periodictable==2.0.0
+RUN jupyter nbextension enable --py --system widget_periodictable
+
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
 
