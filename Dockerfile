@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.2.1
+FROM aiidateam/aiida-core:1.3.0
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -39,7 +39,7 @@ chown -R root:root /opt/pseudos/;                                         \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install 'aiidalab==v20.06.0b2'
+RUN pip install 'aiidalab==v20.07.0b3'
 
 # Installing Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
@@ -99,8 +99,11 @@ RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 
 # Install AiiDA lab voila template.
-RUN git clone https://github.com/aiidalab/aiidalab-voila-template.git && cd aiidalab-voila-template && git reset --hard bbcfc1cc
-RUN cp -r aiidalab-voila-template/aiidalab /usr/local/share/jupyter/voila/templates/
+RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
+
+
+# Install widget_periodictable.
+RUN jupyter nbextension enable --py --system widget_periodictable
 
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
