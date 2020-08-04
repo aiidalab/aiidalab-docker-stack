@@ -39,7 +39,9 @@ chown -R root:root /opt/pseudos/;                                         \
 chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
-RUN pip install 'aiidalab==v20.07.0b3'
+#RUN pip install 'aiidalab==v20.07.0b3'
+RUN python -m pip install git+https://github.com/aiidalab/aiidalab.git@23f005ceacf39a237cdb3199cfce51d605421fcc
+
 
 # Installing Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
@@ -78,9 +80,6 @@ RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
 RUN conda install --yes -c conda-forge dscribe "tornado<5"
 
-# Expose port 8888.
-EXPOSE 8888
-
 # Prepare user's folders for AiiDA lab launch.
 COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
@@ -101,9 +100,11 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 # Install AiiDA lab voila template.
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
-
 # Install widget_periodictable.
 RUN jupyter nbextension enable --py --system widget_periodictable
+
+# Expose port 8888.
+EXPOSE 8888
 
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
