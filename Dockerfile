@@ -97,6 +97,11 @@ RUN /usr/bin/pip3 install ./appmode
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 
+# Activate bqplot.
+RUN /usr/bin/pip3 install bqplot
+RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplot
+RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
+
 # Install AiiDA lab voila template.
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
