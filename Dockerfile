@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y \
 RUN /usr/bin/pip3 install          \
     'jupyterhub==1.1.0'            \
     'jupyterlab==2.2.2'            \
-    'notebook==6.1.1'
+    'notebook==6.0.3'
 
 # Quantum-Espresso Pseudo Potentials.
 # TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
