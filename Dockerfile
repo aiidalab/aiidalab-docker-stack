@@ -40,7 +40,7 @@ chmod -R +r /opt/pseudos/
 
 # Install Python packages needed for AiiDA lab.
 #RUN pip install 'aiidalab==v20.07.0b3'
-RUN python -m pip install git+https://github.com/aiidalab/aiidalab.git@23f005ceacf39a237cdb3199cfce51d605421fcc
+RUN python -m pip install git+https://github.com/aiidalab/aiidalab.git@fd6b0914dba28b96f117b0cd078740f2b92e4aa9
 
 
 # Installing Jupyter-related things in the root environment.
