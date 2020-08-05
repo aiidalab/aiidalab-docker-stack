@@ -28,15 +28,6 @@ Where `PORT` is any free port on your machine (typically it is 8888) and `FOLDER
 (typically it is `${HOME}/aiidalab`).
 The last line of the output of the command above will contain the link to access AiiDA lab in your browser.
 
-# Cheat Sheet
-
-- List running containers: `docker ps`
-- List resource usage: `docker stats`
-- View log of a container: `docker container logs  <container_id>`
-- View JupyterHub log: `tail -f /var/log/syslog | grep jupyterhub`
-- Restart JupyterHub: `sudo service jupyterhub restart`
-- Restart Apache: `sudo apachectl graceful`
-
 # Slow IO
 
 To check for issues with OpenStack's block storage observe the following command for a **few minutes**:
@@ -44,8 +35,6 @@ To check for issues with OpenStack's block storage observe the following command
 watch -n 0.1 "ps axu| awk '{print \$8, \"   \", \$11}' | sort | head -n 10"
 ```
 Pretty much all processes should be in the `S` state. If a process stays in the `D` state for a longer time it is most likely waiting for slow IO.
-
-
 
 # Acknowledgements
 
