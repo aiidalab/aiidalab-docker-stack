@@ -89,7 +89,9 @@ RUN /usr/bin/pip3 install voila==0.1.21
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
 # Enable widget_periodictable (installed with aiidalab package).
-RUN jupyter nbextension enable --py --system widget_periodictable
+RUN /usr/bin/pip3 install widget-periodictable==2.1.2
+RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
+RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
