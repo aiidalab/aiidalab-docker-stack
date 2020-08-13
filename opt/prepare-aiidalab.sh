@@ -47,10 +47,12 @@ if [ ! -e /home/${SYSTEM_USER}/apps ] || [ "${AIIDALAB_SETUP}" == "true" ]; then
   touch /home/${SYSTEM_USER}/apps/__init__.py
 
   # First install the home app.
-  git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
-  cd /home/${SYSTEM_USER}/apps/home
-  git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
-  cd -
+  if [ ! -e /home/${SYSTEM_USER}/apps/home ]; then
+    git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
+    cd /home/${SYSTEM_USER}/apps/home
+    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
+    cd -
+  fi
 
   # Define the order how the apps should appear.
   echo '{
@@ -61,13 +63,17 @@ if [ ! -e /home/${SYSTEM_USER}/apps ] || [ "${AIIDALAB_SETUP}" == "true" ]; then
     ]
   }' > /home/${SYSTEM_USER}/apps/home/.launcher.json
 
-  git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-  cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-  git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
-  cd -
+  if [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
+    git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
+    cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
+    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
+    cd -
+  fi
 
-  git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
-  cd /home/${SYSTEM_USER}/apps/quantum-espresso
-  git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
- cd -
+  if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
+    git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
+    cd /home/${SYSTEM_USER}/apps/quantum-espresso
+    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
+    cd -
+  fi
 fi
