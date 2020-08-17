@@ -38,38 +38,33 @@ if __name__ == "__main__":
 EOF
 fi
 
-# Install/upgrade apps.
-if [ ! -e /home/${SYSTEM_USER}/apps ] || [ "${AIIDALAB_SETUP}" == "true" ]; then
-   echo "Install / upgrade apps..."
-
+# Create apps folder and make its subfolders importable from Python.
+if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   # Create apps folder and make it importable from python.
   mkdir -p /home/${SYSTEM_USER}/apps
   touch /home/${SYSTEM_USER}/apps/__init__.py
+  INITIAL_SETUP=true
+fi
 
-  # First install the home app.
-  if [ ! -e /home/${SYSTEM_USER}/apps/home ]; then
-    git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
-    cd /home/${SYSTEM_USER}/apps/home
-    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
-    cd -
-  fi
+# Install the home app.
+if [ ! -e /home/${SYSTEM_USER}/apps/home ]; then
+    echo "Install home app."
+    ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
+elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home ]]; then
+  mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home-`date --iso-8601=seconds`
+  ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
+fi
 
-  # Define the order how the apps should appear.
-  echo '{
-    "hidden": [],
-    "order": [
-      "aiidalab-widgets-base",
-      "quantum-espresso"
-    ]
-  }' > /home/${SYSTEM_USER}/apps/home/.launcher.json
-
+# Install/upgrade apps.
+if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
+  # Base widgets app.
   if [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
     cd -
-  fi
-
+  fi 
+  # Quantum Espresso app.
   if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
     git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
     cd /home/${SYSTEM_USER}/apps/quantum-espresso
@@ -77,3 +72,4 @@ if [ ! -e /home/${SYSTEM_USER}/apps ] || [ "${AIIDALAB_SETUP}" == "true" ]; then
     cd -
   fi
 fi
+

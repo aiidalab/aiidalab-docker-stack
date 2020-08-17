@@ -108,6 +108,10 @@ COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
+# Get aiidalab-home app.
+RUN git clone https://github.com/aiidalab/aiidalab-home
+RUN chmod 774 aiidalab-home
+
 # Copy scripts to start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
 COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
