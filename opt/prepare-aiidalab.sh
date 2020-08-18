@@ -51,7 +51,7 @@ if [ ! -e /home/${SYSTEM_USER}/apps/home ]; then
     echo "Install home app."
     ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
 elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home ]]; then
-  mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home-`date --iso-8601=seconds`
+  mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home~`date --iso-8601=seconds`
   ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
 fi
 
@@ -72,4 +72,3 @@ if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
     cd -
   fi
 fi
-
