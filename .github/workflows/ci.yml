@@ -35,16 +35,31 @@ jobs:
           IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
           echo "::set-output name=image::${{ github.repository }}:sha-${IMAGE_REF}"
 
-  test-apps:
+  test-platform:
 
     runs-on: ubuntu-latest
     needs: build-docker-image
     timeout-minutes: 10
 
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: run platform tests
+        uses: aiidalab/aiidalab-test-app-action@v2
+        with:
+          image: ${{ needs.build-docker-image.outputs.image }}
+          browser: 'chrome'
+
+  test-apps:
+
+    runs-on: ubuntu-latest
+    needs: [build-docker-image, test-platform]
+    timeout-minutes: 10
+
     strategy:
       matrix:
         app: [
-            # aiidalab/aiidalab-home,  -- failing
             aiidalab/aiidalab-hello-world,
             aiidalab/aiidalab-widgets-base,
             aiidalab/aiidalab-qe,
