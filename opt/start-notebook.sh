@@ -17,6 +17,7 @@ if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
       --port=8888                                                    \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
       --VoilaConfiguration.template=aiidalab                         \
+      --VoilaConfiguration.enable_nbextensions=True                  \
       --NotebookApp.iopub_data_rate_limit=1000000000                 \
       --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 else
@@ -28,6 +29,7 @@ else
       --no-browser                                                   \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
       --VoilaConfiguration.template=aiidalab                         \
+      --VoilaConfiguration.enable_nbextensions=True                  \
       --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 fi
 

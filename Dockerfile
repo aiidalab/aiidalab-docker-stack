@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.3.0
+FROM aiidateam/aiida-core:1.3.0.1
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -89,7 +89,14 @@ RUN /usr/bin/pip3 install voila==0.1.21
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
 # Enable widget_periodictable (installed with aiidalab package).
-RUN jupyter nbextension enable --py --system widget_periodictable
+RUN /usr/bin/pip3 install widget-periodictable==2.1.2
+RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
+RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
+
+# Install OPTIMADE.
+WORKDIR /opt/
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard e008ca3f00bfbcceea52512e7dfe1c24f803c775
+RUN pip install ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
@@ -100,6 +107,10 @@ RUN conda install --yes -c conda-forge dscribe "tornado<5"
 COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
+
+# Get aiidalab-home app.
+RUN git clone --branch='master' --single-branch --depth=1 https://github.com/aiidalab/aiidalab-home
+RUN chmod 774 aiidalab-home
 
 # Copy scripts to start Jupyter notebook.
 COPY opt/start-notebook.sh /opt/
