@@ -60,8 +60,8 @@ elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home
   # This mechanism preserves potential development work on a manually installed repository
   # of the home app and also constitutes a migration path for existing aiidalab accounts, where
   # the home app was installed directly into user space by default.
-  mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home~`date --iso-8601=seconds`
-  ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
+  mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home~`date --iso-8601=seconds` \
+    && ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home || echo "WARNING: Unable to install home app."
 fi
 
 # Install/upgrade apps.
