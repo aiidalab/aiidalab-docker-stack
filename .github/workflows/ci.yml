@@ -44,11 +44,11 @@ jobs:
     strategy:
       matrix:
         app: [
-            # aiidalab/aiidalab-home,  -- failing
-            aiidalab/aiidalab-hello-world,
-            aiidalab/aiidalab-widgets-base,
-            aiidalab/aiidalab-qe,
-            # aiidalab/aiidalab-optimade, -- failing
+            [aiidalab/aiidalab-home, home, true],
+            [aiidalab/aiidalab-hello-world, app, false],
+            [aiidalab/aiidalab-widgets-base, aiidalab-widgets-base, true],
+            [aiidalab/aiidalab-qe, quantum-espresso, true],
+            #[ aiidalab/aiidalab-optimade, optimade, true], -- failing
           ]
         browser: [ chrome, firefox ]
       fail-fast: false
@@ -61,7 +61,7 @@ jobs:
       - name: Checkout app
         uses: actions/checkout@v2
         with:
-          repository: ${{ matrix.app }}
+          repository: ${{ matrix.app[0] }}
 
       # Start the aiida lab instance with the docker image built in the previous job.
       # The container is launched as part of a network with a selenium hub.
@@ -81,3 +81,5 @@ jobs:
         with:
           image: ${{ needs.build-docker-image.outputs.image }}
           browser: ${{ matrix.browser }}
+          name: ${{ matrix.app[1] }}
+          bundled: ${{ matrix.app[2] }}
