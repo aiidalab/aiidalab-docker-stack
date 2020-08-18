@@ -49,10 +49,17 @@ fi
 # Install the home app.
 if [ ! -e /home/${SYSTEM_USER}/apps/home ]; then
     echo "Install home app."
+    # The home app is installed in system space and linked to from user space.
+    # That ensures that users are not inadvertently running the wrong version of
+    # the home app for a given system environment, but still makes it possible to
+    # manually install a specific version of the home app in between upgrades, e.g.,
+    # for development work, by simply replacing the link with a clone of the repository.
     ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
 elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home ]]; then
-  # Here we perform a transition of existing aiidalab accounts. We are backing up the home app folder and 
-  # replacing it with a link to `/opt/aiidalab-home`.
+  # Backup an existing repository of the home app and replace with link to /opt/aiidalab-home.
+  # This mechanism preserves potential development work on a manually installed repository
+  # of the home app and also constitutes a migration path for existing aiidalab accounts, where
+  # the home app was installed directly into user space by default.
   mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home~`date --iso-8601=seconds`
   ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
 fi
