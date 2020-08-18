@@ -51,6 +51,8 @@ if [ ! -e /home/${SYSTEM_USER}/apps/home ]; then
     echo "Install home app."
     ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
 elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home ]]; then
+  # Here we perform a transition of existing aiidalab accounts. We are backing up the home app folder and 
+  # replacing it with a link to `/opt/aiidalab-home`.
   mv /home/${SYSTEM_USER}/apps/home /home/${SYSTEM_USER}/apps/.home~`date --iso-8601=seconds`
   ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home
 fi
