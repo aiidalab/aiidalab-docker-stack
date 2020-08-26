@@ -101,7 +101,6 @@ RUN pip install ./aiidalab-optimade
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
-RUN conda install --yes -c conda-forge dscribe "tornado<5"
 
 # Prepare user's folders for AiiDA lab launch.
 COPY opt/aiidalab-singleuser /opt/
