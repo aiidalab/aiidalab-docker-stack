@@ -95,13 +95,12 @@ RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard e008ca3f00bfbcceea52512e7dfe1c24f803c775
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard 25d56cc8ae992044265aaaad4968d904b4afb487
 RUN pip install ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
-RUN conda install --yes -c conda-forge dscribe "tornado<5"
 
 # Prepare user's folders for AiiDA lab launch.
 COPY opt/aiidalab-singleuser /opt/
