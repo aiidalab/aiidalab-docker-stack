@@ -94,7 +94,7 @@ RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v3.3.1+aiidalab
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v3.3.2+aiidalab
 RUN pip install ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
