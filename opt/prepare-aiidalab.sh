@@ -77,7 +77,7 @@ if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
   if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
     git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
     cd /home/${SYSTEM_USER}/apps/quantum-espresso
-    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
+    git reset --hard v20.09.0
     cd -
   fi
 fi
