@@ -107,7 +107,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Get aiidalab-home app.
-RUN git clone --branch='master' --single-branch --depth=1 https://github.com/aiidalab/aiidalab-home
+RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v20.09.0
 RUN chmod 774 aiidalab-home
 
 # Copy scripts to start Jupyter notebook.
