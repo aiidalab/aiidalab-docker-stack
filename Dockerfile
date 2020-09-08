@@ -56,8 +56,7 @@ chmod -R +r /opt/pseudos/
 #    cd ..
 
 # Install Python packages needed for AiiDA lab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.08.0b2'
-#RUN python -m pip install git+https://github.com/aiidalab/aiidalab.git@fd6b0914dba28b96f117b0cd078740f2b92e4aa9
+RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
 RUN reentry scan
 
 # Install python kernel from the conda environment (comes with the aiidalab package).
