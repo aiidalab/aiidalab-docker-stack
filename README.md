@@ -21,11 +21,11 @@ and follow the instructions for your operating system.
 
 Then, start AiiDA lab:
 ```
-./run_aiidalab.sh PORT FOLDER_ABS_PATH
+./run.sh PORT PATH_TO_AIIDALAB_HOME_DIR
 ```
 
-Where `PORT` is any free port on your machine (typically it is 8888) and `FOLDER_ABS_PATH` is an absolute path to the folder where user's data will be stored
-(typically it is `${HOME}/aiidalab`).
+Where `PORT` is any free port on your machine (typically it is 8888) and `PATH_TO_AIIDALAB_HOME_DIR` is an absolute path to the folder where user's data will be stored
+(typically it is something like `${HOME}/aiidalab`).
 The last line of the output of the command above will contain the link to access AiiDA lab in your browser.
 
 # Slow IO
