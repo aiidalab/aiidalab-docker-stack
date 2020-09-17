@@ -31,8 +31,8 @@ RUN apt-get update && apt-get install -y \
 # Install Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
     'jupyterhub==1.1.0'            \
-    'jupyterlab==2.2.2'            \
-    'notebook==6.0.3'
+    'jupyterlab==2.2.8'            \
+    'notebook==6.1.4'
 
 # Quantum-Espresso Pseudo Potentials.
 # TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
@@ -56,7 +56,7 @@ chmod -R +r /opt/pseudos/
 #    cd ..
 
 # Install Python packages needed for AiiDA lab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.09.0b0'
+RUN pip install 'aiidalab==v20.09.0b1'
 #RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
 RUN reentry scan
 
@@ -73,7 +73,7 @@ RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 
 # Install and enable appmode.
 WORKDIR /opt/
-RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard 8665aa6474164023a9f59a3744ee5ffe5c3a8b4a
+RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN /usr/bin/pip3 install ./appmode
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
@@ -85,7 +85,7 @@ RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplo
 RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
 # Install voila package and AiiDA lab voila template.
-RUN /usr/bin/pip3 install voila==0.1.21
+RUN /usr/bin/pip3 install voila==0.2.1
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
 # Enable widget_periodictable (installed with aiidalab package).
@@ -95,8 +95,8 @@ RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v3.3.2+aiidalab
-RUN pip install ./aiidalab-optimade
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.0.0
+RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
