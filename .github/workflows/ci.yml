@@ -83,3 +83,9 @@ jobs:
           browser: ${{ matrix.browser }}
           name: ${{ matrix.app[1] }}
           bundled: ${{ matrix.app[2] }}
+
+      - name: Upload screenshots as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Screenshots-${{ matrix.app[1] }}-${{ matrix.browser }}
+          path: 'screenshots/'
