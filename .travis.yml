@@ -17,7 +17,7 @@ script:
   - docker run --name ${container_id} -e HEADLESS=True --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro ${distribution}:latest
   - docker exec --tty --user root "${container_id}" wait-for-services
   - docker exec --tty --user ${container_user} "${container_id}" verdi plugin list aiida.calculations
-    # We don't want do break AiiDA while making the AiiDA lab container. So we check that AiiDA daemon is still alive.
+    # We don't want do break AiiDA while making the AiiDAlab container. So we check that AiiDA daemon is still alive.
   - docker exec --tty --user ${container_user} "${container_id}" verdi daemon status
 
 after_script:

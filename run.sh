@@ -158,6 +158,6 @@ echo "Waiting for container to start..."
 docker exec --tty ${CONTAINER_ID} wait-for-services
 
 echo "Container started successfully."
-echo "Open this link in the browser to enter AiiDA lab:"
+echo "Open this link in the browser to enter AiiDAlab:"
 echo "http://localhost:${_arg_port}/?token=${_arg_token}"
 # ] <-- needed because of Argbash
