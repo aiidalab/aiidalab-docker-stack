@@ -36,7 +36,7 @@ RUN /usr/bin/pip3 install          \
 
 # Quantum-Espresso Pseudo Potentials.
 # TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
-# and installed on AiiDA lab
+# and installed on AiiDAlab
 WORKDIR /opt/pseudos
 RUN base_url=http://legacy-archive.materialscloud.org/file/2018.0001/v3;  \
 wget ${base_url}/SSSP_efficiency_pseudos.aiida;                           \
@@ -55,7 +55,7 @@ chmod -R +r /opt/pseudos/
 #     /usr/local/bin/jupyter labextension install *.tgz && \
 #    cd ..
 
-# Install Python packages needed for AiiDA lab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
+# Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
 RUN pip install 'aiidalab==v20.09.0b1'
 #RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
 RUN reentry scan
@@ -84,7 +84,7 @@ RUN /usr/bin/pip3 install bqplot
 RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplot
 RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
-# Install voila package and AiiDA lab voila template.
+# Install voila package and AiiDAlab voila template.
 RUN /usr/bin/pip3 install voila==0.2.1
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
@@ -102,7 +102,7 @@ RUN pip install -e ./aiidalab-optimade
 RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
 
-# Prepare user's folders for AiiDA lab launch.
+# Prepare user's folders for AiiDAlab launch.
 COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
