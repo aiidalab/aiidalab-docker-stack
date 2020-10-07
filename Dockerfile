@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.3.1
+FROM aiidateam/aiida-core:1.4.2
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -56,7 +56,7 @@ chmod -R +r /opt/pseudos/
 #    cd ..
 
 # Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.09.0b1'
+RUN pip install 'aiidalab==v20.10.0b0'
 #RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
 RUN reentry scan
 
@@ -85,17 +85,17 @@ RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplo
 RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
 # Install voila package and AiiDAlab voila template.
-RUN /usr/bin/pip3 install voila==0.2.1
+RUN /usr/bin/pip3 install voila==0.2.3
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
 # Enable widget_periodictable (installed with aiidalab package).
-RUN /usr/bin/pip3 install widget-periodictable==2.1.2
+RUN /usr/bin/pip3 install widget-periodictable==2.1.5
 RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
 RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.0.0
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.1.1
 RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
