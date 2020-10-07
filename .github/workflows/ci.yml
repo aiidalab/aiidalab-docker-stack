@@ -85,6 +85,7 @@ jobs:
           bundled: ${{ matrix.app[2] }}
 
       - name: Upload screenshots as artifacts
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: Screenshots-${{ matrix.app[1] }}-${{ matrix.browser }}
