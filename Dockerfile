@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.3.1
+FROM aiidateam/aiida-core:1.4.2
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -36,7 +36,7 @@ RUN /usr/bin/pip3 install          \
 
 # Quantum-Espresso Pseudo Potentials.
 # TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
-# and installed on AiiDA lab
+# and installed on AiiDAlab
 WORKDIR /opt/pseudos
 RUN base_url=http://legacy-archive.materialscloud.org/file/2018.0001/v3;  \
 wget ${base_url}/SSSP_efficiency_pseudos.aiida;                           \
@@ -55,8 +55,8 @@ chmod -R +r /opt/pseudos/
 #     /usr/local/bin/jupyter labextension install *.tgz && \
 #    cd ..
 
-# Install Python packages needed for AiiDA lab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.09.0b1'
+# Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
+RUN pip install 'aiidalab==v20.10.0b0'
 #RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
 RUN reentry scan
 
@@ -84,25 +84,25 @@ RUN /usr/bin/pip3 install bqplot
 RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplot
 RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
-# Install voila package and AiiDA lab voila template.
-RUN /usr/bin/pip3 install voila==0.2.1
+# Install voila package and AiiDAlab voila template.
+RUN /usr/bin/pip3 install voila==0.2.3
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.0.2
 
 # Enable widget_periodictable (installed with aiidalab package).
-RUN /usr/bin/pip3 install widget-periodictable==2.1.2
+RUN /usr/bin/pip3 install widget-periodictable==2.1.5
 RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
 RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.0.0
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.1.1
 RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge rdkit
 RUN conda install --yes -c openbabel openbabel
 
-# Prepare user's folders for AiiDA lab launch.
+# Prepare user's folders for AiiDAlab launch.
 COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
