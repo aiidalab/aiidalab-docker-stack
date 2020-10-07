@@ -56,7 +56,7 @@ chmod -R +r /opt/pseudos/
 #    cd ..
 
 # Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.09.0b1'
+RUN pip install 'aiidalab==v20.10.0b0'
 #RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
 RUN reentry scan
 
