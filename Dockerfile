@@ -118,9 +118,6 @@ COPY service/jupyter-notebook /etc/service/jupyter-notebook/run
 # Expose port 8888.
 EXPOSE 8888
 
-# Set the AiiDAlab environment version.
-ENV AIIDALAB_ENVIRONMENT_VERSION 1.0.0
-
 # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
 COPY my_my_init /sbin/my_my_init
 
