@@ -15,25 +15,52 @@ jobs:
     timeout-minutes: 20
 
     outputs:
-      image: ${{ steps.tag.outputs.image }}
+      tag: ${{ steps.setup.outputs.tag }}
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: build image
-        uses: docker/build-push-action@v1
+      -
+        uses: actions/checkout@v2
+      -
+        name: Set image tag
+        id: setup
+        run: |
+          IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
+          TAG="sha-${IMAGE_REF}"
+          echo "::set-output name=tag::sha-${IMAGE_REF}"
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          tag_with_ref: true
-          tag_with_sha: true
-          cache_froms: "aiidalab/aiidalab-docker-stack:latest,aiidalab/aiidalab-docker-stack:stable,aiidateam/aiida-core:latest"
-
-      - name: set output image
-        id: tag
-        run: |
-          IMAGE_REF=`echo ${{ github.sha }} | sed 's/^\(.......\).*/\1/'`
-          echo "::set-output name=image::${{ github.repository }}:sha-${IMAGE_REF}"
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            ${{ github.repository }}:latest
+            ${{ github.repository }}:${{ steps.setup.outputs.tag }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
   test-apps:
 
@@ -58,7 +85,8 @@ jobs:
       # This step checks out the app (not the docker image repository!) that will be
       # mounted onto an aiidalab container instance with the image built in the
       # previous job.
-      - name: Checkout app
+      -
+        name: Checkout app
         uses: actions/checkout@v2
         with:
           repository: ${{ matrix.app[0] }}
@@ -76,15 +104,17 @@ jobs:
       # Please refer to the action's documentation for more information on what tests
       # in particular are executed and how to implement new tests for both the aiida
       # lab platform and aiida lab apps.
-      - name: Test app
+      -
+        name: Test app
         uses: aiidalab/aiidalab-test-app-action@v2
         with:
-          image: ${{ needs.build-docker-image.outputs.image }}
+          image: ${{ github.repository }}:${{ needs.build-docker-image.outputs.tag }}
           browser: ${{ matrix.browser }}
           name: ${{ matrix.app[1] }}
           bundled: ${{ matrix.app[2] }}
-
-      - name: Upload screenshots as artifacts
+      -
+        name: Upload screenshots as artifacts
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: Screenshots-${{ matrix.app[1] }}-${{ matrix.browser }}
