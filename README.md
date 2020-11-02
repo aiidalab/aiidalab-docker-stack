@@ -38,7 +38,7 @@ pip install pipenv # If it is already installed, make sure it is the latest vers
 pipenv lock --python 3.7 # To generate Pipfile.lock (takes 1-2 minutes).
 pipenv lock --requirements > requirements.txt_stable # To extract the dependencies of the stable packages.
 pipenv lock --dev --requirements > requirements.txt_dev # To extract the dependencies of the development packages.
-cat requirements.txt_stable requirements.txt_dev | sort | uniq | sed '/-e \./d' > requirements.txt
+cat requirements.txt_stable requirements.txt_dev | sort | uniq > requirements.txt
 ```
 
 Note: We try to keep the number of explicit dependencies in the `Pipfile` to a minimum.
