@@ -28,6 +28,23 @@ Where `PORT` is any free port on your machine (typically it is 8888) and `PATH_T
 (typically it is something like `${HOME}/aiidalab`).
 The last line of the output of the command above will contain the link to access AiiDAlab in your browser.
 
+# Update requirements.txt
+
+First make sure you have python 3.7 available in your system.
+If that is the case, then adjust the [`Pipfile`](Pipfile) according to the latest releases.
+Then do:
+```
+pip install pipenv # If it is already installed, make sure it is the latest version.
+pipenv lock --python 3.7 # To generate Pipfile.lock (takes 1-2 minutes).
+pipenv lock --requirements > requirements.txt_stable # To extract the dependencies of the stable packages.
+pipenv lock --dev --requirements > requirements.txt_dev # To extract the dependencies of the development packages.
+cat requirements.txt_stable requirements.txt_dev | sort | uniq | sed '/-e \./d' > requirements.txt
+```
+
+Note: We try to keep the number of explicit dependencies in the `Pipfile` to a minimum.
+Consider using [pipdeptree](https://pypi.org/project/pipdeptree/) to figure out the dependency tree and which dependencies are actually needed.
+
+
 # Slow IO
 
 To check for issues with OpenStack's block storage observe the following command for a **few minutes**:

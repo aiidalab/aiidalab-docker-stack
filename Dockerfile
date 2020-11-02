@@ -55,9 +55,12 @@ chmod -R +r /opt/pseudos/
 #     /usr/local/bin/jupyter labextension install *.tgz && \
 #    cd ..
 
+# Change workdir.
+WORKDIR /opt/
+
 # Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.10.0b1'
-#RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 RUN reentry scan
 
 # Install python kernel from the conda environment (comes with the aiidalab package).
@@ -72,7 +75,6 @@ RUN /usr/bin/pip3 install nglview==2.7.7
 RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 
 # Install and enable appmode.
-WORKDIR /opt/
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN /usr/bin/pip3 install ./appmode
