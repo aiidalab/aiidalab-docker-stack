@@ -35,8 +35,7 @@ If that is the case, then adjust the [`Pipfile`](Pipfile) according to the lates
 Then do:
 ```
 pip install pipenv # If it is already installed, make sure it is the latest version.
-pipenv lock --python 3.7 # To generate Pipfile.lock (takes 1-2 minutes).
-pipenv lock --requirements > requirements.txt
+pipenv lock --python 3.7 --requirements > requirements.txt
 ```
 
 Note: We try to keep the number of explicit dependencies in the `Pipfile` to a minimum.
