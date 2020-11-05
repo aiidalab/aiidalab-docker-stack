@@ -89,7 +89,7 @@ RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
 # Install voila package and AiiDAlab voila template.
 RUN /usr/bin/pip3 install voila==0.2.4
-RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.0
+RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
 # Enable widget_periodictable (installed with aiidalab package).
 RUN /usr/bin/pip3 install widget-periodictable==2.1.5
@@ -98,7 +98,7 @@ RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.1.2
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.2.1
 RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
