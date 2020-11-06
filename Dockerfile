@@ -102,8 +102,10 @@ RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-o
 RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
-RUN conda install --yes -c conda-forge rdkit
-RUN conda install --yes -c openbabel openbabel
+RUN conda install --yes -c conda-forge \
+  openbabel \
+  rdkit \
+  && conda clean --all
 
 # Prepare user's folders for AiiDAlab launch.
 COPY opt/aiidalab-singleuser /opt/
