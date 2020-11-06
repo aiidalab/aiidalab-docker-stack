@@ -32,7 +32,9 @@ aiida-zeopp = "~=1.1"
 ase = "<3.20" # To be removed when https://github.com/lsmo-epfl/aiida-lsmo/issues/46 is fixed.
 arrow = "~=0.15.5"
 binaryornot = "~=0.4.4"
-cookiecutter "~=1.6.0"
+bokeh = "~=1.4" # Older versions require tornado to be higher than 5.0
+bqplot = "~=0.12.0"
+cookiecutter = "~=1.6.0"
 ipywidgets = "<8.0.0"
 lxml = "~=4.5.0"
 Markdown = "~=3.1.1"
