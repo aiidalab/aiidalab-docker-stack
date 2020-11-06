@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y  \
     file                  \
     libssl-dev            \
     libffi-dev            \
+    povray                \
     python3-pip           \
     python3-setuptools    \
     python3-wheel         \
@@ -55,9 +56,12 @@ chmod -R +r /opt/pseudos/
 #     /usr/local/bin/jupyter labextension install *.tgz && \
 #    cd ..
 
+# Change workdir.
+WORKDIR /opt/
+
 # Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
-RUN pip install 'aiidalab==v20.10.0b1'
-#RUN pip install https://github.com/aiidalab/aiidalab/archive/243dacf18fc21e1cdfe89be2c3fe92b95d3172ef.zip
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 RUN reentry scan
 
 # Install python kernel from the conda environment (comes with the aiidalab package).
@@ -72,7 +76,6 @@ RUN /usr/bin/pip3 install nglview==2.7.7
 RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
 
 # Install and enable appmode.
-WORKDIR /opt/
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN /usr/bin/pip3 install ./appmode
@@ -86,7 +89,7 @@ RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
 # Install voila package and AiiDAlab voila template.
 RUN /usr/bin/pip3 install voila==0.2.4
-RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.0
+RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
 # Enable widget_periodictable (installed with aiidalab package).
 RUN /usr/bin/pip3 install widget-periodictable==2.1.5
@@ -95,7 +98,7 @@ RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
 # Install OPTIMADE.
 WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.1.2
+RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.2.1
 RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
@@ -108,7 +111,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Get aiidalab-home app.
-RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v20.09.0
+RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v20.11.0
 RUN chmod 774 aiidalab-home
 
 # Copy scripts to start Jupyter notebook.
