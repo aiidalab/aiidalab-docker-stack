@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 #
 #
 # ARG_OPTIONAL_BOOLEAN([build],[b],[If set, build the container image prior to starting the server.],[on])
