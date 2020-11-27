@@ -35,16 +35,6 @@ RUN /usr/bin/pip3 install          \
     'jupyterlab==2.2.8'            \
     'notebook==6.1.4'
 
-# Quantum-Espresso Pseudo Potentials.
-# TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
-# and installed on AiiDAlab
-WORKDIR /opt/pseudos
-RUN base_url=http://legacy-archive.materialscloud.org/file/2018.0001/v3;  \
-wget ${base_url}/SSSP_efficiency_pseudos.aiida;                           \
-wget ${base_url}/SSSP_precision_pseudos.aiida;                            \
-chown -R root:root /opt/pseudos/;                                         \
-chmod -R +r /opt/pseudos/
-
 # Install jupyterlab theme (takes about 4 minutes and 10 seconds).
 #WORKDIR /opt/jupyterlab-theme
 #RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
