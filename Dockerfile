@@ -35,6 +35,13 @@ RUN /usr/bin/pip3 install          \
     'jupyterlab==2.2.8'            \
     'notebook==6.1.4'
 
+# Install ngrok to be able to proxy AiiDA RESTful API server.
+RUN wget --quiet -P /tmp/ \
+  https://bin.equinox.io/a/eLSxPiisq8E/ngrok-2.3.35-darwin-amd64.zip \
+  && unzip /tmp/ngrok-2.3.35-darwin-amd64.zip \
+  && mv ./ngrok /usr/local/bin/ \
+  && rm -f /tmp/ngrok-2.3.35-darwin-amd64.zip
+
 # Install jupyterlab theme (takes about 4 minutes and 10 seconds).
 #WORKDIR /opt/jupyterlab-theme
 #RUN git clone https://github.com/aiidalab/jupyterlab-theme && \
