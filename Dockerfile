@@ -100,8 +100,8 @@ RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge \
-  openbabel \
-  rdkit \
+  openbabel==3.1.1 \
+  rdkit==2020.09.1 \
   && conda clean --all
 
 # Prepare user's folders for AiiDAlab launch.
