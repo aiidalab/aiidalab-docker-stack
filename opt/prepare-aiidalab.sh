@@ -6,12 +6,6 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
-# Setup pseudopotentials.
-if [ ! -e /home/${SYSTEM_USER}/SKIP_IMPORT_PSEUDOS ]; then
-   verdi data upf listfamilies | grep 'SSSP_1.1_efficiency'|| verdi import -n /opt/pseudos/SSSP_efficiency_pseudos.aiida
-   verdi data upf listfamilies | grep 'SSSP_1.1_precision' || verdi import -n /opt/pseudos/SSSP_precision_pseudos.aiida
-fi
-
 # Setup AiiDA jupyter extension.
 # Don't forget to copy this file to .ipython/profile_default/startup/
 # aiida/tools/ipython/aiida_magic_register.py
@@ -71,13 +65,14 @@ if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
+    git reset --hard v1.0.0b14
     cd -
   fi 
   # Quantum Espresso app.
   if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
     git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
     cd /home/${SYSTEM_USER}/apps/quantum-espresso
-    git reset --hard v20.09.0
+    git reset --hard v20.11.2
     cd -
   fi
 fi

@@ -35,15 +35,12 @@ RUN /usr/bin/pip3 install          \
     'jupyterlab==2.2.8'            \
     'notebook==6.1.4'
 
-# Quantum-Espresso Pseudo Potentials.
-# TODO, remove when https://github.com/aiidateam/aiida-sssp/pull/25 is merged
-# and installed on AiiDAlab
-WORKDIR /opt/pseudos
-RUN base_url=http://legacy-archive.materialscloud.org/file/2018.0001/v3;  \
-wget ${base_url}/SSSP_efficiency_pseudos.aiida;                           \
-wget ${base_url}/SSSP_precision_pseudos.aiida;                            \
-chown -R root:root /opt/pseudos/;                                         \
-chmod -R +r /opt/pseudos/
+# Install ngrok to be able to proxy AiiDA RESTful API server.
+RUN wget --quiet -P /tmp/ \
+  https://bin.equinox.io/a/dnxFaDKQgP4/ngrok-2.3.35-linux-amd64.zip \
+  && unzip /tmp/ngrok-2.3.35-linux-amd64.zip \
+  && mv ./ngrok /usr/local/bin/ \
+  && rm -f /tmp/ngrok-2.3.35-linux-amd64.zip
 
 # Install jupyterlab theme (takes about 4 minutes and 10 seconds).
 #WORKDIR /opt/jupyterlab-theme
@@ -102,8 +99,10 @@ RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-o
 RUN pip install -e ./aiidalab-optimade
 
 # Install some useful packages that are not available on PyPi
-RUN conda install --yes -c conda-forge rdkit
-RUN conda install --yes -c openbabel openbabel
+RUN conda install --yes -c conda-forge \
+  openbabel==3.1.1 \
+  rdkit==2020.09.1 \
+  && conda clean --all
 
 # Prepare user's folders for AiiDAlab launch.
 COPY opt/aiidalab-singleuser /opt/
