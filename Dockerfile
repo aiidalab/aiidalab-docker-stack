@@ -93,11 +93,6 @@ RUN /usr/bin/pip3 install widget-periodictable==2.1.5
 RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
 RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
-# Install OPTIMADE.
-WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.2.1
-RUN pip install -e ./aiidalab-optimade
-
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
