@@ -93,6 +93,11 @@ RUN /usr/bin/pip3 install widget-periodictable==2.1.5
 RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
 RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
+# Enable ipywidgets-extended
+RUN /usr/bin/pip3 install ipywidgets-extended==1.0.5 && \
+  /usr/local/bin/jupyter nbextension install --py --user ipywidgets_extended && \
+  /usr/local/bin/jupyter nbextension enable --py --user ipywidgets_extended
+
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
