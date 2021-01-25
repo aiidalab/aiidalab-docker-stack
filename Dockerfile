@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.4.2
+FROM aiidateam/aiida-core:1.5.2
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -31,9 +31,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
-    'jupyterhub==1.1.0'            \
-    'jupyterlab==2.2.8'            \
-    'notebook==6.1.4'
+    'jupyterhub==1.3.0'            \
+    'jupyterlab==3.0.5'            \
+    'notebook==6.2.0'
 
 # Install ngrok to be able to proxy AiiDA RESTful API server.
 RUN wget --quiet -P /tmp/ \
@@ -85,7 +85,7 @@ RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplo
 RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
 # Install voila package and AiiDAlab voila template.
-RUN /usr/bin/pip3 install voila==0.2.4
+RUN /usr/bin/pip3 install voila==0.2.6
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
 # Enable widget_periodictable (installed with aiidalab package).
@@ -101,7 +101,7 @@ RUN /usr/bin/pip3 install ipywidgets-extended==1.0.5 && \
 # Install some useful packages that are not available on PyPi
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
-  rdkit==2020.09.1 \
+  rdkit==2020.09.4 \
   && conda clean --all
 
 # Prepare user's folders for AiiDAlab launch.
