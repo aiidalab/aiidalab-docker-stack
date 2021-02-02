@@ -98,10 +98,11 @@ RUN /usr/bin/pip3 install ipywidgets-extended==1.0.5 && \
   /usr/local/bin/jupyter nbextension install --py --user ipywidgets_extended && \
   /usr/local/bin/jupyter nbextension enable --py --user ipywidgets_extended
 
-# Install some useful packages that are not available on PyPi
+# Install some useful packages that are not available on PyPi.
+# The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
-  rdkit==2020.09.4 \
+  rdkit==2020.09.1 \
   && conda clean --all
 
 # Prepare user's folders for AiiDAlab launch.
