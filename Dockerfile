@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.4.2
+FROM aiidateam/aiida-core:1.5.2
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -31,9 +31,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
-    'jupyterhub==1.1.0'            \
-    'jupyterlab==2.2.8'            \
-    'notebook==6.1.4'
+    'jupyterhub==1.3.0'            \
+    'jupyterlab==3.0.5'            \
+    'notebook==6.2.0'
 
 # Install ngrok to be able to proxy AiiDA RESTful API server.
 RUN wget --quiet -P /tmp/ \
@@ -85,7 +85,7 @@ RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplo
 RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
 
 # Install voila package and AiiDAlab voila template.
-RUN /usr/bin/pip3 install voila==0.2.4
+RUN /usr/bin/pip3 install voila==0.2.6
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
 # Enable widget_periodictable (installed with aiidalab package).
@@ -93,12 +93,18 @@ RUN /usr/bin/pip3 install widget-periodictable==2.1.5
 RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
 RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
 
-# Install OPTIMADE.
-WORKDIR /opt/
-RUN git clone https://github.com/aiidalab/aiidalab-optimade.git && cd aiidalab-optimade && git reset --hard v1.2.1
-RUN pip install -e ./aiidalab-optimade
+# Enable ipywidgets-extended.
+RUN /usr/bin/pip3 install ipywidgets-extended==1.0.5 && \
+  /usr/local/bin/jupyter nbextension install --py --user ipywidgets_extended && \
+  /usr/local/bin/jupyter nbextension enable --py --user ipywidgets_extended
 
-# Install some useful packages that are not available on PyPi
+# Install and enable ipytree.
+RUN /usr/bin/pip3 install ipytree==0.1.8 && \
+  /usr/local/bin/jupyter nbextension install --py --user ipytree && \
+  /usr/local/bin/jupyter nbextension enable --py --user ipytree
+
+# Install some useful packages that are not available on PyPi.
+# The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
   rdkit==2020.09.1 \
@@ -110,7 +116,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Get aiidalab-home app.
-RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v20.11.0
+RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v21.02.0
 RUN chmod 774 aiidalab-home
 
 # Copy scripts to start Jupyter notebook.

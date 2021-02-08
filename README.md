@@ -50,6 +50,13 @@ watch -n 0.1 "ps axu| awk '{print \$8, \"   \", \$11}' | sort | head -n 10"
 ```
 Pretty much all processes should be in the `S` state. If a process stays in the `D` state for a longer time it is most likely waiting for slow IO.
 
+## Citation
+
+Users of AiiDAlab are kindly asked to cite the following publication in their own work:
+
+A. V. Yakutovich et al., Comp. Mat. Sci. 188, 110165 (2021).
+[DOI:10.1016/j.commatsci.2020.110165](https://doi.org/10.1016/j.commatsci.2020.110165)
+
 # Acknowledgements
 
 This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
