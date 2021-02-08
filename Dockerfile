@@ -29,10 +29,13 @@ RUN apt-get update && apt-get install -y \
      npm                   \
   && rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip.
+RUN /usr/bin/python3 -m pip install -U pip
+
 # Install Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
     'jupyterhub==1.3.0'            \
-    'jupyterlab==3.0.5'            \
+    'jupyterlab==3.0.6'            \
     'notebook==6.2.0'
 
 # Install ngrok to be able to proxy AiiDA RESTful API server.
