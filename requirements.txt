@@ -177,7 +177,7 @@ python-editor==1.0.4
 python-memcached==1.59
 pythreejs==2.1.1
 pytz==2019.3
-pyyaml==5.1.2
+pyyaml==5.4
 pyzmq==22.0.3; python_version >= '3.6'
 qe-tools==2.0.0rc1; python_version >= '3.5'
 reentry==1.3.2
