@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-aiidalab = "~=20.11.0b0"
+aiidalab = "~=21.04"
 aiidalab-widgets-base = "~=1.0.0b12"
 aiida-core = {extras = ['rest', 'atomic_tools'],version = "~=1.2"}
 aiida-bigdft = "~=0.2"
@@ -39,6 +39,7 @@ ipywidgets = "<8.0.0"
 lxml = "~=4.5.0"
 Markdown = "~=3.1.1"
 notebook = "~=5.7"
+jupyter_client = "==6.1.11"
 pysmiles = "~=1.0.0"
 pythreejs = "~=2.1.1"
 widget_periodictable = "~=2.0"
