@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-aiidalab = "~=21.04"
+aiidalab = "==21.04.1"
 aiidalab-widgets-base = "~=1.0.0b12"
 aiida-core = {extras = ['rest', 'atomic_tools'],version = "~=1.2"}
 aiida-bigdft = "~=0.2"
