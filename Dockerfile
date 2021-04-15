@@ -71,10 +71,6 @@ RUN python -m ipykernel install
 RUN /usr/bin/pip3 install nbserverproxy==0.8.8
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverproxy
 
-# Install and enable nglview.
-RUN /usr/bin/pip3 install nglview==2.7.7
-RUN /usr/local/bin/jupyter nbextension enable nglview --py --sys-prefix
-
 # Install and enable appmode.
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
@@ -82,29 +78,18 @@ RUN /usr/bin/pip3 install ./appmode
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 
-# Install and enable bqplot.
-RUN /usr/bin/pip3 install bqplot
-RUN /usr/local/bin/jupyter nbextension install --py --symlink --sys-prefix bqplot
-RUN /usr/local/bin/jupyter nbextension enable bqplot --py --sys-prefix
-
 # Install voila package and AiiDAlab voila template.
 RUN /usr/bin/pip3 install voila==0.2.6
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
-# Enable widget_periodictable (installed with aiidalab package).
-RUN /usr/bin/pip3 install widget-periodictable==2.1.5
-RUN /usr/local/bin/jupyter nbextension install --py --user widget_periodictable
-RUN /usr/local/bin/jupyter nbextension enable widget_periodictable --user --py
-
-# Enable ipywidgets-extended.
-RUN /usr/bin/pip3 install ipywidgets-extended==1.0.5 && \
-  /usr/local/bin/jupyter nbextension install --py --user ipywidgets_extended && \
-  /usr/local/bin/jupyter nbextension enable --py --user ipywidgets_extended
-
-# Install and enable ipytree.
-RUN /usr/bin/pip3 install ipytree==0.1.8 && \
-  /usr/local/bin/jupyter nbextension install --py --user ipytree && \
-  /usr/local/bin/jupyter nbextension enable --py --user ipytree
+# Install widgets for enabling them in Jupyter.
+RUN /usr/bin/pip3 install \
+    bqplot==0.12.25 \
+    ipytree==0.1.8 \
+    ipywidgets-extended==1.0.5  \
+    nglview==2.7.7 \
+    widget-periodictable==2.1.5 \
+    && /usr/bin/pip3 cache purge
 
 # Install some useful packages that are not available on PyPi.
 # The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
