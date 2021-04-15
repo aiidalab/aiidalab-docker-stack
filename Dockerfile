@@ -83,11 +83,13 @@ RUN /usr/bin/pip3 install voila==0.2.6
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
 # Install widgets for enabling them in Jupyter.
-RUN /usr/bin/pip3 install bqplot==0.12.25 \
+RUN /usr/bin/pip3 install \
+    bqplot==0.12.25 \
     ipytree==0.1.8 \
     ipywidgets-extended==1.0.5  \
     nglview==2.7.7 \
-    widget-periodictable==2.1.5
+    widget-periodictable==2.1.5 \
+    && /usr/bin/pip3 cache purge
 
 # Install some useful packages that are not available on PyPi.
 # The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
