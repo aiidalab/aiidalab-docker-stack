@@ -20,7 +20,6 @@ RUN apt-get update && apt-get install -y  \
     python3-pip           \
     python3-setuptools    \
     python3-wheel         \
-    quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
 # Install what is needed for Jupyter Lab.
@@ -95,6 +94,7 @@ RUN /usr/bin/pip3 install \
 # The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
+  qe==6.7.0 \
   rdkit==2020.09.1 \
   && conda clean --all
 
