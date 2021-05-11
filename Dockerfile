@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.1
+FROM aiidateam/aiida-core:1.6.3
 
 LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
 
@@ -34,9 +34,9 @@ RUN /usr/bin/python3 -m pip install -U pip
 
 # Install Jupyter-related things in the root environment.
 RUN /usr/bin/pip3 install          \
-    'jupyterhub==1.3.0'            \
-    'jupyterlab==3.0.6'            \
-    'notebook==6.2.0'
+    'jupyterhub==1.4.0'            \
+    'jupyterlab==3.0.14'            \
+    'notebook==6.3.0'
 
 # Install ngrok to be able to proxy AiiDA RESTful API server.
 RUN wget --quiet -P /tmp/ \
@@ -61,6 +61,7 @@ WORKDIR /opt/
 
 # Install Python packages needed for AiiDAlab and populate reentry cache for root (https://pypi.python.org/pypi/reentry/).
 COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN reentry scan
 
@@ -79,7 +80,7 @@ RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 
 # Install voila package and AiiDAlab voila template.
-RUN /usr/bin/pip3 install voila==0.2.6
+RUN /usr/bin/pip3 install voila==0.2.10
 RUN /usr/bin/pip3 install voila-aiidalab-template==0.2.1
 
 # Install widgets for enabling them in Jupyter.
