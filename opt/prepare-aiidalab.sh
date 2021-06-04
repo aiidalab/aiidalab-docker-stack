@@ -65,7 +65,7 @@ if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
-    git reset --hard v1.0.0b14
+    git reset --hard v1.0.0b18
     cd -
   fi 
   # Quantum Espresso app.
