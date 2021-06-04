@@ -1,4 +1,4 @@
-aiidalab==21.05.0
+aiidalab==21.06.0
 aiidalab-widgets-base~=1.0.0b18
 aiida-core[atomic_tools,docs,rest]~=1.6
 aiida-bigdft~=0.2
@@ -15,7 +15,6 @@ aiida-optimize~=0.4
 aiida-qeq~=1.0.0a1
 aiida-quantumespresso~=3.4
 aiida-raspa~=1.2
-aiida-siesta~=1.1
 aiida-tbmodels~=0.3
 aiida-vasp~=2.1
 aiida-wannier90~=2.0
