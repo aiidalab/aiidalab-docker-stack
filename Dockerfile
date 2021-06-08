@@ -1,6 +1,6 @@
 FROM aiidateam/aiida-core:1.6.3
 
-LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
+LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
 # Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
@@ -12,7 +12,6 @@ USER root
 # Install OS dependencies.
 RUN apt-get update && apt-get install -y  \
     ca-certificates       \
-    cp2k                  \
     file                  \
     libssl-dev            \
     libffi-dev            \
@@ -20,7 +19,6 @@ RUN apt-get update && apt-get install -y  \
     python3-pip           \
     python3-setuptools    \
     python3-wheel         \
-    quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
 # Install what is needed for Jupyter Lab.
