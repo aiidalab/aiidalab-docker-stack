@@ -64,8 +64,16 @@ if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
   if [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
-    git reset --hard v1.0.0b18
+    git checkout ${AWB_APP_VERSION}
     cd -
-  fi 
+  fi
+  
+ # Quantum Espresso app.
+  if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
+    git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
+    cd /home/${SYSTEM_USER}/apps/quantum-espresso
+    git checkout ${QE_APP_VERSION}
+    pip install .
+    cd -
+  fi
 fi
