@@ -6,8 +6,6 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
-# Update reentry.
-reentry scan
 
 # Setup AiiDA jupyter extension.
 # Don't forget to copy this file to .ipython/profile_default/startup/
@@ -62,7 +60,7 @@ elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home
 fi
 
 # Install/upgrade apps.
-if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
+if [[ ${INITIAL_SETUP} == true ]]; then
   # Base widgets app.
   if [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
@@ -80,3 +78,7 @@ if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
     cd -
   fi
 fi
+
+
+# Update reentry.
+reentry scan
