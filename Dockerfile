@@ -2,6 +2,12 @@ FROM aiidateam/aiida-core:1.6.3
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
+# Request factory reset:
+# 0 - do nothing
+# 1 - remove aiidalab apps and things installed in the .local folder
+# 2 - remove the entire content of the home folder.
+ENV AIIDALAB_FACTORY_RESET 0
+
 # Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
@@ -99,6 +105,9 @@ RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
   rdkit==2020.09.1 \
   && conda clean --all
+
+# Perform factory reset if needed.
+COPY my_init.d/factory_reset.sh /etc/my_init.d/09_factory_reset.sh
 
 # Prepare user's folders for AiiDAlab launch.
 COPY opt/aiidalab-singleuser /opt/
