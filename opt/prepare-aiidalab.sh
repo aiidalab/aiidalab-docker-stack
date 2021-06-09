@@ -6,6 +6,9 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
+# Update reentry.
+reentry scan
+
 # Setup AiiDA jupyter extension.
 # Don't forget to copy this file to .ipython/profile_default/startup/
 # aiida/tools/ipython/aiida_magic_register.py
