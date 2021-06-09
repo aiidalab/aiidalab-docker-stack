@@ -62,18 +62,18 @@ fi
 # Install/upgrade apps.
 if [[ ${INITIAL_SETUP} == true ]]; then
   # Base widgets app.
-  if [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
+if [ ! -z ${AWB_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-    git checkout ${AWB_APP_VERSION}
+    git checkout "${AWB_APP_VERSION}"
     cd -
   fi
   
  # Quantum Espresso app.
-  if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
+  if [ ! -z ${QE_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
     git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
     cd /home/${SYSTEM_USER}/apps/quantum-espresso
-    git checkout ${QE_APP_VERSION}
+    git checkout "${QE_APP_VERSION}"
     pip install .
     cd -
   fi
