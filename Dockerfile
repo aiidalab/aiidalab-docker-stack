@@ -13,6 +13,11 @@ ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
 ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 
+# Decide whether to install QE and aiidalab-widgets-base apps.
+# If empty string ("") is specified the app won't be installed.
+# Otherwise, the app will be installed and the git branch will
+# be switched to the specified version, e.g.:
+# git checkout "{QE_APP_VERSION}"
 ENV QE_APP_VERSION ""
 ENV AWB_APP_VERSION ""
 
