@@ -3,9 +3,9 @@ FROM aiidateam/aiida-core:1.6.3
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
 # Request factory reset:
-# 0 - do nothing
-# 1 - remove aiidalab apps and things installed in the .local folder
-# 2 - remove the entire content of the home folder.
+# 0 - No reset (noop).
+# 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
+# 2 - Remove all files and directories within the users home directory.
 ENV AIIDALAB_FACTORY_RESET 0
 
 # Configure environment.
