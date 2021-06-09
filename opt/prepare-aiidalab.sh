@@ -66,6 +66,7 @@ if [ ! -z ${AWB_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widg
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     git checkout "${AWB_APP_VERSION}"
+    pip install .
     cd -
   fi
   

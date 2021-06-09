@@ -6,22 +6,29 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
-# Performing the factory reset of your AiiDAlab environment:
-# 0 - do nothing
-# 1 - remove aiidalab apps and things installed in the .local folder
-# 2 - remove the entire content of the home folder.
-
-if [[ "${AIIDALAB_FACTORY_RESET}" == 0 ]]; then
-  exit 0
-fi
-
-if [[ "${AIIDALAB_FACTORY_RESET}" == 1 ]]; then
-  rm -r /home/${SYSTEM_USER}/apps
-  rm -r /home/${SYSTEM_USER}/.local
-
-elif [[ "${AIIDALAB_FACTORY_RESET}" == 2 ]]; then
-  rm -r /home/${SYSTEM_USER}/*
-
-fi
+# Performing factory reset of your AiiDAlab environment:
+# 0 - No reset (noop).
+# 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
+# 2 - Remove all files and directories within the users home directory.
 
 
+case "${AIIDALAB_FACTORY_RESET}" in
+
+  0)
+    exit 0
+    ;;
+
+  1)
+    rm -rf "/home/${SYSTEM_USER}/apps"
+    rm -rf "/home/${SYSTEM_USER}/.local"
+    ;;
+
+  2)
+    rm -rf /home/${SYSTEM_USER}/*
+    ;;
+
+  *)
+    echo "Unknown factory reset mode: ${AIIDALAB_FACTORY_RESET}"
+    exit 1
+    ;;
+esac
