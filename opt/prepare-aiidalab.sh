@@ -6,6 +6,7 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
+
 # Setup AiiDA jupyter extension.
 # Don't forget to copy this file to .ipython/profile_default/startup/
 # aiida/tools/ipython/aiida_magic_register.py
@@ -59,20 +60,26 @@ elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home
 fi
 
 # Install/upgrade apps.
-if [[ ${INITIAL_SETUP} == true ||  "${AIIDALAB_SETUP}" == "true" ]]; then
+if [[ ${INITIAL_SETUP} == true ]]; then
   # Base widgets app.
-  if [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
+if [ ! -z ${AWB_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
     git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
     cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-    git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
-    git reset --hard v1.0.0b18
+    git checkout "${AWB_APP_VERSION}"
+    pip install .
     cd -
-  fi 
-  # Quantum Espresso app.
-  if [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
+  fi
+  
+ # Quantum Espresso app.
+  if [ ! -z ${QE_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
     git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
     cd /home/${SYSTEM_USER}/apps/quantum-espresso
-    git reset --hard v20.12.0
+    git checkout "${QE_APP_VERSION}"
+    pip install .
     cd -
   fi
 fi
+
+
+# Update reentry.
+reentry scan

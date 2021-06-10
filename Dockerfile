@@ -1,18 +1,31 @@
 FROM aiidateam/aiida-core:1.6.3
 
-LABEL maintainer="Materials Cloud Team <aiidalab@materialscloud.org>"
+LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
+
+# Request factory reset:
+# 0 - No reset (noop).
+# 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
+# 2 - Remove all files and directories within the users home directory.
+ENV AIIDALAB_FACTORY_RESET 0
 
 # Configure environment.
 ENV AIIDALAB_HOME /home/${SYSTEM_USER}
 ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
 ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 
+# Decide whether to install QE and aiidalab-widgets-base apps.
+# If empty string ("") is specified the app won't be installed.
+# Otherwise, the app will be installed and the git branch will
+# be switched to the specified version, e.g.:
+# git checkout "{QE_APP_VERSION}"
+ENV QE_APP_VERSION ""
+ENV AWB_APP_VERSION ""
+
 USER root
 
 # Install OS dependencies.
 RUN apt-get update && apt-get install -y  \
     ca-certificates       \
-    cp2k                  \
     file                  \
     libssl-dev            \
     libffi-dev            \
@@ -20,7 +33,6 @@ RUN apt-get update && apt-get install -y  \
     python3-pip           \
     python3-setuptools    \
     python3-wheel         \
-    quantum-espresso      \
   && rm -rf /var/lib/apt/lists/*
 
 # Install what is needed for Jupyter Lab.
@@ -98,6 +110,9 @@ RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
   rdkit==2020.09.1 \
   && conda clean --all
+
+# Perform factory reset if needed.
+COPY my_init.d/factory_reset.sh /etc/my_init.d/09_factory_reset.sh
 
 # Prepare user's folders for AiiDAlab launch.
 COPY opt/aiidalab-singleuser /opt/
