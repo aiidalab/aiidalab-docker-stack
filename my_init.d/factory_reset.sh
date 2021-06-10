@@ -9,9 +9,9 @@ export SHELL=/bin/bash
 # 0b010 2 - Remove all files and directories within the users home directory.
 
 # If the ~/AIIDALAB_FACTORY_RESET file exists, parse it (and remove it).
-if [ -e "${HOME}/AIIDALAB_FACTORY_RESET" ]; then
-  RESET_MODE="`cat ${HOME}/AIIDALAB_FACTORY_RESET`"
-  rm -f "${HOME}/AIIDALAB_FACTORY_RESET"  # Remove file after parsing.
+if [ -e "/home/${SYSTEM_USER}/AIIDALAB_FACTORY_RESET" ]; then
+  RESET_MODE="`cat /home/${SYSTEM_USER}/AIIDALAB_FACTORY_RESET`"
+  rm -f "/home/${SYSTEM_USER}/AIIDALAB_FACTORY_RESET"  # Remove file after parsing.
 fi
 
 # If the AIIDALAB_FACTORY_RESET environment variable is set, it takes preference (default mode=0):
