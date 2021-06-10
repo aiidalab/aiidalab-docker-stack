@@ -24,7 +24,7 @@ case "${AIIDALAB_FACTORY_RESET}" in
     ;;
 
   2)
-    find home/${SYSTEM_USER}/ -mindepth 1 -delete
+    find /home/${SYSTEM_USER}/ -mindepth 1 -delete
     ;;
 
   *)
