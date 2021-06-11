@@ -37,7 +37,6 @@ fi
 if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   # Create apps folder and make it importable from python.
   mkdir -p /home/${SYSTEM_USER}/apps
-  touch /home/${SYSTEM_USER}/apps/__init__.py
   INITIAL_SETUP=1
 fi
 
