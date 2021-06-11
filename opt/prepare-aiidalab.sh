@@ -38,7 +38,7 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   # Create apps folder and make it importable from python.
   mkdir -p /home/${SYSTEM_USER}/apps
   touch /home/${SYSTEM_USER}/apps/__init__.py
-  INITIAL_SETUP=true
+  INITIAL_SETUP=1
 fi
 
 # Install the home app.
@@ -59,27 +59,34 @@ elif [[ -d /home/${SYSTEM_USER}/apps/home && ! -L /home/${SYSTEM_USER}/apps/home
     && ln -s /opt/aiidalab-home /home/${SYSTEM_USER}/apps/home || echo "WARNING: Unable to install home app."
 fi
 
-# Install/upgrade apps.
-if [[ ${INITIAL_SETUP} == true ]]; then
-  # Base widgets app.
-if [ ! -z ${AWB_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/aiidalab-widgets-base ]; then
-    git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-    cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-    git checkout "${AWB_APP_VERSION}"
-    pip install .
-    cd -
-  fi
-  
- # Quantum Espresso app.
-  if [ ! -z ${QE_APP_VERSION} ] && [ ! -e /home/${SYSTEM_USER}/apps/quantum-espresso ]; then
-    git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
-    cd /home/${SYSTEM_USER}/apps/quantum-espresso
-    git checkout "${QE_APP_VERSION}"
-    pip install .
-    cd -
-  fi
-fi
 
+# Install default apps (see the Dockerfile for an explanation of the
+# AIIDALAB_DEFAULT_APPS_VARIABLE).
+
+if [[ ${INITIAL_SETUP} == 1 ]]; then
+
+  # Iterate over lines in AIIDALAB_DEFAULT_APPS variable.
+  while IFS= read -r app; do
+
+    # Install app if variable non-empty.
+    if [ ! -z "${app}" ]; then
+      # Expand the app entry:
+      IFS="@" read -ra tokens <<< "${app}"
+      APP_NAME="${tokens[0]}"
+      APP_PATH="/home/${SYSTEM_USER}/apps/${APP_NAME}"
+      APP_URL="${tokens[1]}"
+      APP_VERSION="${tokens[2]:-${AIIDALAB_DEFAULT_GIT_BRANCH}}"
+
+      # Perform app installation.
+      echo "Install app '${APP_NAME}' from ${APP_URL} with version '${APP_VERSION}'."
+      git clone "${APP_URL}" "${APP_PATH}"
+      cd "${APP_PATH}"
+      git checkout "${APP_VERSION}"
+      pip install .
+      cd -
+    fi
+  done <<< "${AIIDALAB_DEFAULT_APPS:-}"
+fi
 
 # Update reentry.
 reentry scan
