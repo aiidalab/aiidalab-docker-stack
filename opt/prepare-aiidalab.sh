@@ -61,15 +61,11 @@ fi
 
 
 # Install default apps (see the Dockerfile for an explanation of the
-# AIIDALAB_DEFAULT_APPS_VARIABLE).
-
+# AIIDALAB_DEFAULT_APPS variable).
 if [[ ${INITIAL_SETUP} == 1 ]]; then
 
   # Iterate over lines in AIIDALAB_DEFAULT_APPS variable.
-  while IFS= read -r app; do
-
-    # Install app if variable non-empty.
-    if [ ! -z "${app}" ]; then
+  for app in ${AIIDALAB_DEFAULT_APPS:-}; do
       # Expand the app entry:
       IFS="@" read -ra tokens <<< "${app}"
       APP_NAME="${tokens[0]}"
@@ -84,8 +80,7 @@ if [[ ${INITIAL_SETUP} == 1 ]]; then
       git checkout "${APP_VERSION}"
       pip install .
       cd -
-    fi
-  done <<< "${AIIDALAB_DEFAULT_APPS:-}"
+  done
 fi
 
 # Update reentry.
