@@ -19,7 +19,7 @@ if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
       --VoilaConfiguration.template=aiidalab                         \
       --VoilaConfiguration.enable_nbextensions=True                  \
       --NotebookApp.iopub_data_rate_limit=1000000000                 \
-      --NotebookApp.default_url="/apps/apps/home/start.ipynb"
+      --NotebookApp.default_url="/lab/"
 else
 
   # Otherwise launch notebook server directly.
@@ -30,5 +30,5 @@ else
       --notebook-dir="/home/${SYSTEM_USER}"                          \
       --VoilaConfiguration.template=aiidalab                         \
       --VoilaConfiguration.enable_nbextensions=True                  \
-      --NotebookApp.default_url="/apps/apps/home/start.ipynb"
+      --NotebookApp.default_url="/lab/"
 fi
