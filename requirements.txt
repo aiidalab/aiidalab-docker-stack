@@ -1,4 +1,4 @@
-aiidalab==21.07.1
+aiidalab==21.07.2
 binaryornot~=0.4
 bokeh~=2.0
 bqplot~=0.12
