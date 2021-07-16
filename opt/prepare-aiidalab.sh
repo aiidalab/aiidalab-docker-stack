@@ -90,3 +90,6 @@ reentry scan
 if [ -e /home/${SYSTEM_USER}/.trash ]; then
   find /home/${SYSTEM_USER}/.trash/ -mindepth 1 -delete
 fi
+
+# Remove old apps_meta.sqlite requests cache files.
+find -L /home/${SYSTEM_USER} -maxdepth 3 -name apps_meta.sqlite -delete
