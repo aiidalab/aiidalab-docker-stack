@@ -85,3 +85,8 @@ fi
 
 # Update reentry.
 reentry scan
+
+# Clear user trash directory.
+if [ -e /home/${SYSTEM_USER}/.trash ]; then
+  find /home/${SYSTEM_USER}/.trash/ -mindepth 1 -delete
+fi
