@@ -1,5 +1,5 @@
-aiidalab==21.07.2
-aiidalab-widgets-base~=1.0.0b19
+aiidalab==21.07.3
+aiidalab-widgets-base~=1.0.0rc1
 aiida-core[atomic_tools,docs,rest]~=1.6
 aiida-bigdft~=0.2
 aiida-codtools~=2.0
@@ -25,6 +25,7 @@ bokeh~=2.0
 bqplot~=0.12
 cookiecutter~=1.6
 markdown~=3.1
+mofchecker~=0.8
 pysmiles~=1.0
 pythreejs~=2.1
 widget-periodictable~=2.0
