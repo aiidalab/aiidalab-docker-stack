@@ -1,5 +1,5 @@
-aiidalab==21.06.0
-aiidalab-widgets-base~=1.0.0b18
+aiidalab==21.07.2
+aiidalab-widgets-base~=1.0.0b19
 aiida-core[atomic_tools,docs,rest]~=1.6
 aiida-bigdft~=0.2
 aiida-codtools~=2.0
