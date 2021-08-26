@@ -95,4 +95,4 @@ fi
 find -L /home/${SYSTEM_USER} -maxdepth 3 -name apps_meta.sqlite -delete
 
 # Remove old temporary notebook files.
-find -L /home/${SYSTEM_USER}/apps -maxdepth 2 -type f -name .*.ipynb
+find -L /home/${SYSTEM_USER}/apps -maxdepth 2 -type f -name .*.ipynb -delete
