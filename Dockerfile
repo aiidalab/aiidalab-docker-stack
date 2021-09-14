@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.3
+FROM aiidateam/aiida-core:1.6.5
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
@@ -36,9 +36,6 @@ RUN apt-get update && apt-get install -y  \
     libssl-dev            \  # needed for AiiDA (?)
     libffi-dev            \  # needed for AiiDA (?)
     povray                \  # needed for structure editor widget
-    python3-pip           \  # needed for system python
-    python3-setuptools    \  # needed for system python
-    python3-wheel         \  # needed for system python
   && rm -rf /var/lib/apt/lists/*
 
 # Dependencies needed for Jupyter Lab.
@@ -54,10 +51,8 @@ RUN wget --quiet -P /tmp/ \
   && mv ./ngrok /usr/local/bin/ \
   && rm -f /tmp/ngrok-2.3.35-linux-amd64.zip
 
-# Upgrade pip in system Python environment.
-RUN /usr/bin/python3 -m pip install -U pip
-
 # Jupyter dependencies installed into system python environment.
+RUN /usr/bin/python3 -m pip install -U pip
 COPY requirements-server.txt .
 RUN /usr/bin/pip3 install -r /opt/requirements-server.txt \ 
     && /usr/bin/pip3 cache purge
