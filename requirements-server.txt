@@ -9,7 +9,7 @@ ipywidgets-extended==1.0.5
 nglview==2.7.7
 widget-periodictable==2.1.5
 # Used for exposing AiiDA REST API to the outside world
-jupyter-server-proxy==0.8.8
+jupyter-server-proxy==3.1.0
 # Install voila package and AiiDAlab voila template.
 voila==0.2.10
 voila-aiidalab-template==0.2.1
