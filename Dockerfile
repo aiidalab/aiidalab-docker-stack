@@ -30,12 +30,15 @@ USER root
 WORKDIR /opt/
 
 # Install OS dependencies.
+# libssl-dev needed for ?
+# libffi-dev needed for ?
+# povray needed for structure editor widget
 RUN apt-get update && apt-get install -y  \
     ca-certificates       \
     file                  \
-    libssl-dev            \  # needed for AiiDA (?)
-    libffi-dev            \  # needed for AiiDA (?)
-    povray                \  # needed for structure editor widget
+    libssl-dev            \
+    libffi-dev            \
+    povray                \
   && rm -rf /var/lib/apt/lists/*
 
 # Dependencies needed for Jupyter Lab.
