@@ -40,8 +40,6 @@ RUN apt-get update && apt-get install -y  \
     libffi-dev            \
     povray                \
     python3-pip           \
-    python3-setuptools    \
-    python3-wheel         \
   && rm -rf /var/lib/apt/lists/*
 
 # Dependencies needed for Jupyter Lab.
@@ -57,11 +55,14 @@ RUN wget --quiet -P /tmp/ \
   && mv ./ngrok /usr/local/bin/ \
   && rm -f /tmp/ngrok-2.3.35-linux-amd64.zip
 
+# Get recent version of pip (needed for `pip cache` command).
+# New pip executable is installed into /usr/local/bin
+RUN /usr/bin/pip install --upgrade pip
+
 # Jupyter dependencies installed into system python environment.
-RUN /usr/bin/python3 -m pip install -U pip
 COPY requirements-server.txt .
-RUN /usr/bin/pip3 install -r /opt/requirements-server.txt \ 
-    && /usr/bin/pip3 cache purge
+RUN /usr/local/bin/pip install -r /opt/requirements-server.txt \ 
+    && /usr/local/bin/pip cache purge
 
 # Enable server extensions
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverproxy
@@ -69,7 +70,7 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix nbserverprox
 # Install and enable appmode.
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
-RUN /usr/bin/pip3 install ./appmode
+RUN /usr/local/bin/pip install ./appmode
 RUN /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
 RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 
