@@ -153,12 +153,13 @@ if [ "${_arg_build}" == "on" ]; then
 fi
 
 echo "Launching the container..."
-CONTAINER_ID=`docker run -d -p "${_arg_port}:8888" -e JUPYTER_TOKEN="${_arg_token}" -v "${_arg_home_dir}:/home/aiida" "${_arg_image}"`
+CONTAINER_NAME=aiidalab
+CONTAINER_ID=`docker run -d -p "${_arg_port}:8888" -e JUPYTER_TOKEN="${_arg_token}" -v "${_arg_home_dir}:/home/aiida" --name ${CONTAINER_NAME} "${_arg_image}"`
 
-echo "Waiting for container to start..."
+echo "Waiting for container '${CONTAINER_NAME}' to start..."
 docker exec --tty ${CONTAINER_ID} wait-for-services
 
-echo "Container started successfully."
+echo "Container '${CONTAINER_NAME}' started successfully."
 echo "Open this link in the browser to enter AiiDAlab:"
 echo "http://localhost:${_arg_port}/?token=${_arg_token}"
 # ] <-- needed because of Argbash

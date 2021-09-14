@@ -30,9 +30,8 @@ USER root
 WORKDIR /opt/
 
 # Install OS dependencies.
-# libssl-dev needed for ?
-# libffi-dev needed for ?
-# povray needed for structure editor widget
+# Not clear whether libssl-dev and libffi-dev are still needed.
+# povray needed for structure editor widget.
 RUN apt-get update && apt-get install -y  \
     ca-certificates       \
     file                  \
