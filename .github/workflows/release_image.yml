@@ -1,8 +1,6 @@
-# Execute continuous integration tests for this docker image. This is to ensure that
-# new versions of the image do not break currently expected behavior and that the
-# environment provided by this image is compatible with a selected set of apps.
+# Build and push image to DockerHub
 
-name: continuous-integration
+name: release-image
 
 on:
   push:
@@ -14,7 +12,7 @@ jobs:
   build-docker-image:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     outputs:
       tag: ${{ steps.setup.outputs.tag }}
