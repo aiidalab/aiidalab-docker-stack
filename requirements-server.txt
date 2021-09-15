@@ -1,7 +1,7 @@
 # Dependencies for notebook server and interaction with JupyterHub
 jupyterhub==1.4.0
 jupyterlab==3.0.17
-notebook==6.3.0
+notebook==6.4.1
 # Dependencies for jupyter widgets
 bqplot==0.12.25
 ipytree==0.1.8
