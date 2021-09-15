@@ -63,9 +63,6 @@ COPY requirements-server.txt .
 RUN /usr/local/bin/pip install -r /opt/requirements-server.txt \ 
     && /usr/local/bin/pip cache purge
 
-# Enable server extensions
-RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix jupyter_server_proxy
-
 # Install and enable appmode.
 RUN git clone https://github.com/oschuett/appmode.git && cd appmode && git reset --hard v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
