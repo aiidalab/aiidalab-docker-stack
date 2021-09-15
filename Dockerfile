@@ -47,7 +47,8 @@ RUN apt-get update && apt-get install -y \
      npm                   \
   && rm -rf /var/lib/apt/lists/*
 
-# Install ngrok to be able to proxy AiiDA RESTful API server. ### is this used in the home app?
+# Install ngrok to be able to proxy AiiDA RESTful API server.
+# Currently not used by the home app, but used in tutorials
 RUN wget --quiet -P /tmp/ \
   https://bin.equinox.io/a/dnxFaDKQgP4/ngrok-2.3.35-linux-amd64.zip \
   && unzip /tmp/ngrok-2.3.35-linux-amd64.zip \
@@ -58,7 +59,8 @@ RUN wget --quiet -P /tmp/ \
 # New pip executable is installed into /usr/local/bin
 RUN /usr/bin/pip install --upgrade pip
 
-# Jupyter dependencies installed into system python environment.
+# Jupyter dependencies installed into system python environment
+# which runs the jupyter notebook server.
 COPY requirements-server.txt .
 RUN /usr/local/bin/pip install -r /opt/requirements-server.txt \ 
     && /usr/local/bin/pip cache purge
@@ -81,7 +83,7 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 #     /usr/local/bin/jupyter labextension install *.tgz && \
 #    cd ..
 
-### Configure user environment
+## Configure user environment
 
 # Install some useful packages that are not available on PyPi.
 # The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
