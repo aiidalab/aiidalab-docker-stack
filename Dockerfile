@@ -24,7 +24,7 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 # Please note the space at the start of the second entry to ensure that the
 # individual entries are whitespace delimited. If no version is provided, it
 # defaults to $AIIDALAB_DEFAULT_GIT_BRANCH.
-ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0.0rc3"
+ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0.0rc4"
 
 USER root
 WORKDIR /opt/
