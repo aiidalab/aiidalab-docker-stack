@@ -24,7 +24,7 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 # Please note the space at the start of the second entry to ensure that the
 # individual entries are whitespace delimited. If no version is provided, it
 # defaults to $AIIDALAB_DEFAULT_GIT_BRANCH.
-ENV AIIDALAB_DEFAULT_APPS ""
+ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0.0rc4"
 
 USER root
 WORKDIR /opt/
@@ -111,7 +111,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Get aiidalab-home app.
-RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v21.07.1
+RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v21.09.0
 RUN chmod 774 aiidalab-home
 
 # Copy scripts to start Jupyter notebook.
