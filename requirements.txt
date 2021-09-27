@@ -1,5 +1,5 @@
-aiidalab==21.09.0
-aiidalab-widgets-base==1.0.0rc4
+aiidalab==21.10.0
+aiidalab-widgets-base==1.0.0
 binaryornot~=0.4
 bokeh~=2.0
 bqplot~=0.12
