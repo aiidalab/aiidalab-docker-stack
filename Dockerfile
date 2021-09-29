@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.5
+FROM aiidateam/aiida-core:1.6.4
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
@@ -57,7 +57,7 @@ RUN wget --quiet -P /tmp/ \
 
 # Get recent version of pip (needed for `pip cache` command).
 # New pip executable is installed into /usr/local/bin
-RUN /usr/bin/pip install --upgrade pip
+RUN /usr/bin/pip3 install --upgrade pip
 
 # Jupyter dependencies installed into system python environment
 # which runs the jupyter notebook server.
