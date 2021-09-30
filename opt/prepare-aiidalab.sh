@@ -96,3 +96,11 @@ find -L /home/${SYSTEM_USER} -maxdepth 3 -name apps_meta.sqlite -delete
 
 # Remove old temporary notebook files.
 find -L /home/${SYSTEM_USER}/apps -maxdepth 2 -type f -name .*.ipynb -delete
+
+# Uninstall aiidalab from user packages (if present).
+# Would otherwise interfere with the system package.
+USER_AIIDALAB_PACKAGE="$(/opt/conda/bin/python -c 'import site; print(site.USER_SITE)')/aiidalab"
+if [ -e ${USER_AIIDALAB_PACKAGE} ]; then
+  echo "Uninstall local installation of aiidalab package."
+  /opt/conda/bin/python -m pip uninstall --yes aiidalab
+fi
