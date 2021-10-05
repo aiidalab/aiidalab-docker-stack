@@ -1,9 +1,9 @@
 #!/bin/bash
-set -o errexit
 #
 #
 # ARG_OPTIONAL_BOOLEAN([build],[b],[If set, build the container image prior to starting the server.],[on])
 # ARG_OPTIONAL_SINGLE([image],[i],[The name of the AiiDAlab to build (if enabled) and run.],[aiidalab-docker-stack:develop])
+# ARG_OPTIONAL_SINGLE([aiidalab-user],[u],[The name of the user inside the AiiDAlab container.],[aiida])
 # ARG_OPTIONAL_SINGLE([token],[t],[The token used for authentication with AiiDAlab. (defaults to random string)])
 # ARG_POSITIONAL_SINGLE([port],[Free port on the host.])
 # ARG_POSITIONAL_SINGLE([home-dir],[Path to the directory on the host to be mounted as the AiiDAlab home directory. The directory will be created if it does not exist yet.])
@@ -27,7 +27,7 @@ die()
 
 begins_with_short_option()
 {
-	local first_option all_short_options='bith'
+	local first_option all_short_options='biuth'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -37,18 +37,20 @@ _positionals=()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_build="on"
 _arg_image="aiidalab-docker-stack:develop"
+_arg_aiidalab_user="aiida"
 _arg_token=
 
 
 print_help()
 {
 	printf '%s\n' "The general script's help msg"
-	printf 'Usage: %s [-b|--(no-)build] [-i|--image <arg>] [-t|--token <arg>] [-h|--help] <port> <home-dir>\n' "$0"
+	printf 'Usage: %s [-b|--(no-)build] [-i|--image <arg>] [-u|--aiidalab-user <arg>] [-t|--token <arg>] [-h|--help] <port> <home-dir>\n' "$0"
 	printf '\t%s\n' "<port>: Free port on the host."
 	printf '\t%s\n' "<home-dir>: Path to the directory on the host to be mounted as the AiiDAlab home directory. The directory will be created if it does not exist yet."
 	printf '\t%s\n' "-b, --build, --no-build: If set, build the container image prior to starting the server. (on by default)"
 	printf '\t%s\n' "-i, --image: The name of the AiiDAlab to build (if enabled) and run. (default: 'aiidalab-docker-stack:develop')"
-	printf '\t%s\n' "-t, --token: The token used for authentication with AiiDAlab. (defaults to random string)"
+	printf '\t%s\n' "-u, --aiidalab-user: The name of the user inside the AiiDAlab container. (default: 'aiida')"
+	printf '\t%s\n' "-t, --token: The token used for authentication with AiiDAlab. (defaults to random string) (no default)"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -82,6 +84,17 @@ parse_commandline()
 				;;
 			-i*)
 				_arg_image="${_key##-i}"
+				;;
+			-u|--aiidalab-user)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_aiidalab_user="$2"
+				shift
+				;;
+			--aiidalab-user=*)
+				_arg_aiidalab_user="${_key##--aiidalab-user=}"
+				;;
+			-u*)
+				_arg_aiidalab_user="${_key##-u}"
 				;;
 			-t|--token)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
@@ -154,7 +167,7 @@ fi
 
 echo "Launching the container..."
 CONTAINER_NAME=aiidalab
-CONTAINER_ID=`docker run -d -p "${_arg_port}:8888" -e JUPYTER_TOKEN="${_arg_token}" -v "${_arg_home_dir}:/home/aiida" --name ${CONTAINER_NAME} "${_arg_image}"`
+CONTAINER_ID=`docker run -d -p "${_arg_port}:8888" -e JUPYTER_TOKEN="${_arg_token}" -e PYTHONPATH="/home/${_arg_aiidalab_user}"  -e SYSTEM_USER="${_arg_aiidalab_user}" -e AIIDALAB_HOME="/home/${_arg_aiidalab_user}" -e AIIDALAB_APPS="/home/${_arg_aiidalab_user}/apps" -v "${_arg_home_dir}:/home/${_arg_aiidalab_user}" --name ${CONTAINER_NAME} "${_arg_image}"`
 
 echo "Waiting for container '${CONTAINER_NAME}' to start..."
 docker exec --tty ${CONTAINER_ID} wait-for-services
