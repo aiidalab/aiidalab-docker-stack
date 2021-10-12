@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  aiidalab:
+    build:
+      args:
+        - aiidalab_home_version=develop
+        - >
+          extra_requirements=
+          aiidalab@git+https://github.com/aiidalab/aiidalab@develop
+          aiidalab-widgets-base@git+https://github.com/aiidalab/aiidalab-widgets-base@develop
+          black
+          pre-commit
