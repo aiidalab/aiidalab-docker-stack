@@ -12,19 +12,15 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 
 # Specify which apps to install in addition to the home app. The
 # AIIDALAB_DEFAULT_APPS variable should be a whitespace-delimited variable
-# where each entry has the following format: <app name>@<git url>@<version>
-# The version should be a reference that can be checked out via
-# 'git checkout <version>'.
+# where each entry must follow the specifier format used by `aiidalab install`.
 #
 # Example for setting the AIIDALAB_DEFAULT_APPS variable:
 #
-#   AIIDALAB_DEFAULT_APPS="aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0"
-#   AIIDALAB_DEFAULT_APPS+=" quantum-espresso@https://github.com/aiidalab/aiidalab-qe@v1.1"
+#   AIIDALAB_DEFAULT_APPS="aiidalab-widgets-base quantum-espresso==20.12.0"
 #
-# Please note the space at the start of the second entry to ensure that the
-# individual entries are whitespace delimited. If no version is provided, it
-# defaults to $AIIDALAB_DEFAULT_GIT_BRANCH.
-ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0.0"
+# Please note that multiple entries must be whitespace delimited.
+# Please see `aiidalab install --help` for more information.
+ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.0"
 
 USER root
 WORKDIR /opt/
