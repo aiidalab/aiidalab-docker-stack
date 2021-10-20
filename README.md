@@ -14,17 +14,21 @@ To launch a local instance of AiiDAlab, first clone this repository, e.g., with
 git clone https://github.com/aiidalab/aiidalab-docker-stack.git
 cd aiidalab-docker-stack
 ```
+and then install the Python requirements needed to run the manage script:
+```
+pip install -r requirements-manage.txt
+```
 
 Before starting AiiDAlab, it is recommended to configure it for your needs.
 For example, to mount the AiiDAlab home directory on your local host at `~/aiidalab` instead of using a Docker volume, execute:
 ```console
-./manage configure --home-dir=~/aiidalab
+./manage.py configure --home-dir=~/aiidalab
 ```
 This creates a `.env` file in the local directory that stores the provided settings.
 
 You can then launch your local AiiDAlab deployment with:
 ```console
-$ ./manage up
+$ ./manage.py up
 ```
 You should see output similar to this:
 ```
@@ -35,13 +39,13 @@ http://localhost:8888/?token=be20d9872d...
 
 Note: AiiDAlab will keep running until you shutdown or restart the host computer, in which case, you will have to run the `up` command again to restart AiiDAlab.
 
-Please see `./manage --help` for a full list of available commands.
+Please see `./manage.py --help` for a full list of available commands.
 
 ## Development deployment
 
 For a local development deployment, run
 ```console
-./manage --develop up
+./manage.py --develop up
 ```
 
 This will build and start an image where the `aiidalab` package, the `aiidalab-widgets-base` library, and the `aiidalab-home` app are installed with their latest development versions instead of their latest release versions.
@@ -67,3 +71,4 @@ Grant No. 676598.
 
 ![MARVEL](miscellaneous/logos/MARVEL.png)
 ![MaX](miscellaneous/logos/MaX.png)
+requirements-manage.txt
