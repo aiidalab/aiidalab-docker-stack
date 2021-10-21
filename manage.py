@@ -7,12 +7,14 @@ Authors:
 import json
 import os
 import re
+from collections import OrderedDict
 from pathlib import Path
 from secrets import token_hex
 from subprocess import run
 from time import sleep
 
 import click
+from dotenv import dotenv_values
 
 
 def _get_service_container_id(docker_compose, service):
@@ -82,13 +84,13 @@ def show_config(ctx):
 @click.option(
     "--home-dir",
     type=click.Path(),
-    default="aiidalab-home",
+    # default="aiidalab-home",
     help="Specify a path to a directory on a host system that is to be mounted "
     "as the home directory on the AiiDAlab service. Uses docker volume if not provided.",
 )
 @click.option(
     "--port",
-    default=8888,
+    # default=8888,
     help="Port on which AiiDAlab can be accessed.",
     show_default=True,
 )
@@ -104,33 +106,38 @@ def show_config(ctx):
     "`aiidalab install`. This option can be used multiple times to specify "
     "multiple default apps.",
 )
-@click.option("-f", "--force", is_flag=True, help="Override existing configuration.")
+@click.option(
+    "--env-file",
+    type=click.Path(dir_okay=False, writable=True, path_type=Path),
+    default=".env",
+    help="The path of the env-file to use for configuration.",
+    show_default=True,
+)
 @click.pass_context
-def configure(ctx, home_dir, port, jupyter_token, app, force):
+def configure(ctx, home_dir, port, jupyter_token, app, env_file):
     """Configure the local AiiDAlab environment."""
-    # Generate random Jupyter token unless provided.
-    jupyter_token = token_hex(32) if jupyter_token is None else jupyter_token
+    # First, specify the defaults.
+    env = OrderedDict(
+        [
+            ("AIIDALAB_HOME", "aiidalab-home"),
+            ("AIIDALAB_PORT", "8888"),
+            ("AIIDALAB_DEFAULT_APPS", "aiidalab-widgets-base"),
+            ("JUPYTER_TOKEN", token_hex(32)),
+        ]
+    )
 
-    # Specify environment variables for the docker-compose command.
-    env = {
-        "AIIDALAB_HOME": str(home_dir),
-        "AIIDALAB_PORT": str(port),
-        "JUPYTER_TOKEN": str(jupyter_token),
+    # Next, update them with the currently stored values.
+    env.update(dotenv_values(env_file))
+
+    # Finally, update them with any of the values provided as arguments.
+    provided = {
+        "AIIDALAB_HOME": str(home_dir) if home_dir else None,
+        "AIIDALAB_PORT": str(port) if port else None,
+        "AIIDALAB_DEFAULT_APPS": " ".join(app),
     }
-    if app:
-        env["AIIDALAB_DEFAULT_APPS"] = " ".join(app)
-    else:
-        env["AIIDALAB_DEFAULT_APPS"] = "aiidalab-widgets-base"
+    env.update({key: value for key, value in provided.items() if value})
 
-    env_file = Path.cwd().joinpath(".env")
-    if env_file.exists() and not (
-        force
-        or click.confirm(
-            f"File '{env_file}' already exists. Do you want to override it?"
-        )
-    ):
-        raise click.ClickException(f"File '{env_file}' already exists, exiting.")
-
+    # Write environment to the env_file.
     env_file.write_text(
         "\n".join(f"{key}={value}" for key, value in env.items()) + "\n"
     )
