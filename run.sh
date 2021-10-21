@@ -167,7 +167,7 @@ fi
 
 echo "Launching the container..."
 CONTAINER_NAME=aiidalab
-CONTAINER_ID=`docker run -d -p "${_arg_port}:8888" -e JUPYTER_TOKEN="${_arg_token}" -e PYTHONPATH="/home/${_arg_aiidalab_user}"  -e SYSTEM_USER="${_arg_aiidalab_user}" -e AIIDALAB_HOME="/home/${_arg_aiidalab_user}" -e AIIDALAB_APPS="/home/${_arg_aiidalab_user}/apps" -v "${_arg_home_dir}:/home/${_arg_aiidalab_user}" --name ${CONTAINER_NAME} "${_arg_image}"`
+CONTAINER_ID=`docker run -d -p "${_arg_port}:8888" -e JUPYTER_TOKEN="${_arg_token}" -e SYSTEM_USER="${_arg_aiidalab_user}" -e AIIDALAB_HOME="/home/${_arg_aiidalab_user}" -e AIIDALAB_APPS="/home/${_arg_aiidalab_user}/apps" -v "${_arg_home_dir}:/home/${_arg_aiidalab_user}" --name ${CONTAINER_NAME} "${_arg_image}"`
 
 echo "Waiting for container '${CONTAINER_NAME}' to start..."
 docker exec --tty ${CONTAINER_ID} wait-for-services
