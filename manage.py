@@ -148,13 +148,8 @@ def configure(ctx, home_dir, port, jupyter_token, app, env_file):
 @click.option(
     "--restart", is_flag=True, help="Restart AiiDAlab in case that it is already up."
 )
-@click.option(
-    "--reset",
-    type=click.Choice(["apps", "full"], case_sensitive=False),
-    help="Reset the environment upon server (re)start. Warning! This option can lead to irreversible data loss!",
-)
 @click.pass_context
-def up(ctx, restart, reset):
+def up(ctx, restart):
     """Start AiiDAlab on this host."""
 
     # Check for an '.env' file. The file can be automatically created via the
