@@ -8,9 +8,10 @@ services:
     ports:
       - ${AIIDALAB_PORT:-8888}:8888
     environment:
-      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}
       AIIDALAB_DEFAULT_APPS: ${AIIDALAB_DEFAULT_APPS:-aiidalab-widgets-base}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}
+      SYSTEM_USER: ${SYSTEM_USER:-aiida}
     volumes:
-      - "${AIIDALAB_HOME:-aiidalab-home}:/home/aiida"
+      - "${AIIDALAB_HOME_VOLUME:-aiidalab-home}:/home/aiida"
 volumes:
   aiidalab-home:

@@ -91,15 +91,15 @@ def show_config(ctx):
 @click.option(
     "--home-dir",
     type=click.Path(),
-    # default="aiidalab-home",
     help="Specify a path to a directory on a host system that is to be mounted "
     "as the home directory on the AiiDAlab service. Uses docker volume if not provided.",
 )
 @click.option(
     "--port",
-    # default=8888,
     help="Port on which AiiDAlab can be accessed.",
-    show_default=True,
+)
+@click.option(
+    "--username", help="Specify the username to be used within the container."
 )
 @click.option(
     "--jupyter-token",
@@ -121,26 +121,27 @@ def show_config(ctx):
     show_default=True,
 )
 @click.pass_context
-def configure(ctx, home_dir, port, jupyter_token, app, env_file):
+def configure(ctx, home_dir, port, username, jupyter_token, app, env_file):
     """Configure the local AiiDAlab environment."""
     # First, specify the defaults.
-    env = OrderedDict(
-        [
-            ("AIIDALAB_HOME", "aiidalab-home"),
-            ("AIIDALAB_PORT", "8888"),
-            ("AIIDALAB_DEFAULT_APPS", "aiidalab-widgets-base"),
-            ("JUPYTER_TOKEN", token_hex(32)),
-        ]
-    )
+    env = {
+        "AIIDALAB_HOME_VOLUME": "aiidalab-home",
+        "AIIDALAB_PORT": "8888",
+        "AIIDALAB_DEFAULT_APPS": "aiidalab-widgets-base",
+        "JUPYTER_TOKEN": token_hex(32),
+        "SYSTEM_USER": "aiida",
+    }
 
     # Next, update them with the currently stored values.
     env.update(dotenv_values(env_file))
 
     # Finally, update them with any of the values provided as arguments.
     provided = {
-        "AIIDALAB_HOME": str(home_dir) if home_dir else None,
+        "AIIDALAB_HOME_VOLUME": str(home_dir) if home_dir else None,
         "AIIDALAB_PORT": str(port) if port else None,
         "AIIDALAB_DEFAULT_APPS": " ".join(app),
+        "JUPYTER_TOKEN": str(jupyter_token) if jupyter_token else None,
+        "SYSTEM_USER": username if username else None,
     }
     env.update({key: value for key, value in provided.items() if value})
 
