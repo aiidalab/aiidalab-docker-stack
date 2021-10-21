@@ -71,4 +71,3 @@ Grant No. 676598.
 
 ![MARVEL](miscellaneous/logos/MARVEL.png)
 ![MaX](miscellaneous/logos/MaX.png)
-requirements-manage.txt
