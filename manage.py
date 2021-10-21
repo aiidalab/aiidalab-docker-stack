@@ -52,8 +52,13 @@ def _service_is_up(docker_compose, service):
     count=True,
     help="Provide this option to increase the output verbosity of the launcher.",
 )
+@click.option(
+    "--yes",
+    is_flag=True,
+    help="Automatically respond with yes to any prompts.",
+)
 @click.pass_context
-def cli(ctx, develop, verbose):
+def cli(ctx, develop, verbose, yes):
 
     # Specify the compose-files that will be merged to generate the final config.
     compose_file_args = ["-f", "docker-compose.yml"]
@@ -71,6 +76,7 @@ def cli(ctx, develop, verbose):
     ctx.obj = dict()
     ctx.obj["compose_cmd"] = _compose_cmd
     ctx.obj["verbose"] = verbose
+    ctx.obj["yes"] = yes
 
 
 @cli.command()
@@ -163,9 +169,8 @@ def up(ctx, restart):
         )
     )
     env_file = Path.cwd().joinpath(".env")
-    if not env_file.exists() and not click.confirm(msg_warn_up_without_env_file):
-        click.echo("Exiting.")
-        return
+    if not env_file.exists() and not ctx.obj["yes"]:
+        click.confirm(msg_warn_up_without_env_file, abort=True)
 
     # Get the `docker-compose` proxy command from the global context.
     _docker_compose = ctx.obj["compose_cmd"]
@@ -205,12 +210,12 @@ def down(ctx, volumes):
     This is a thin wrapper around `docker-compose down`.
     """
     _docker_compose = ctx.obj["compose_cmd"]
-    if volumes and not click.confirm(
-        "Are you sure you want to remove all volumes? "
-        "This can lead to irreversible data loss!"
-    ):
-        click.echo("Exiting.")
-        return
+    if volumes and not ctx.obj["yes"]:
+        click.confirm(
+            "Are you sure you want to remove all volumes? "
+            "This can lead to irreversible data loss!",
+            abort=True,
+        )
 
     _docker_compose(["down"] + (["--volumes"] if volumes else []))
     click.echo("AiiDAlab stopped.")
