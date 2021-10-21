@@ -11,6 +11,7 @@ from collections import OrderedDict
 from pathlib import Path
 from secrets import token_hex
 from subprocess import run
+from textwrap import wrap
 from time import sleep
 
 import click
@@ -154,14 +155,17 @@ def up(ctx, restart):
 
     # Check for an '.env' file. The file can be automatically created via the
     # `configure` command.
-    env_file = Path.cwd().joinpath(".env")
-    if not env_file.exists():
-        click.secho(
-            f"Did not find a {env_file.relative_to(Path.cwd())} file. "
-            "It is recommended to run the `configure` command prior to start "
-            "for reproducible environments.",
-            fg="yellow",
+    msg_warn_up_without_env_file = "\n".join(
+        wrap(
+            "Warning: Did not find an '.env' file in the current working directory. It "
+            "is recommended to run the 'configure' command prior to first start. "
+            "Continue anyways?"
         )
+    )
+    env_file = Path.cwd().joinpath(".env")
+    if not env_file.exists() and not click.confirm(msg_warn_up_without_env_file):
+        click.echo("Exiting.")
+        return
 
     # Get the `docker-compose` proxy command from the global context.
     _docker_compose = ctx.obj["compose_cmd"]
