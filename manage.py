@@ -141,7 +141,7 @@ def configure(ctx, home_dir, port, username, jupyter_token, app, env_file):
         "AIIDALAB_PORT": str(port) if port else None,
         "AIIDALAB_DEFAULT_APPS": " ".join(app),
         "JUPYTER_TOKEN": str(jupyter_token) if jupyter_token else None,
-        "SYSTEM_USER": username if username else None,
+        "SYSTEM_USER": username or None,
     }
     env.update({key: value for key, value in provided.items() if value})
 
