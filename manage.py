@@ -10,7 +10,7 @@ import re
 from collections import OrderedDict
 from pathlib import Path
 from secrets import token_hex
-from subprocess import run
+from subprocess import SubprocessError, run
 from textwrap import wrap
 from time import sleep
 
@@ -188,12 +188,12 @@ def up(ctx, restart):
         ["up", "--detach", "--build"] + (["--force-recreate"] if restart else [])
     )
 
-    # We display the entry point to the user by invoking the `show_entrypoint()`
-    # function, which the user can also invoke directly via the `info`
+    # We display the entry point to the user by invoking the `status()`
+    # function, which the user can also invoke directly via the `status`
     # sub-command.  We sleep briefly, as trying to determine the entry point
     # immediately after "upping" the service is prone to fail.
     sleep(0.5)
-    ctx.invoke(show_entrypoint)
+    ctx.invoke(status)
 
 
 @cli.command()
@@ -222,20 +222,18 @@ def down(ctx, volumes):
     click.echo("AiiDAlab stopped.")
 
 
-@cli.command("info")
+@cli.command("status")
 @click.pass_context
-def show_entrypoint(ctx):
-    """Show entrypoint for a currently running AiiDAlab service."""
+def status(ctx):
+    """Show status of the AiiDAlab instance.
+
+    Shows the entrypoint for running instances.
+    """
     _docker_compose = ctx.obj["compose_cmd"]
 
-    if not _service_is_up(_docker_compose, "aiidalab"):
-        raise click.ClickException(
-            "AiiDAlab not running, use the 'up' command to start it."
-        )
-
-    _docker_compose(["exec", "aiidalab", "wait-for-services"])
-    aiidalab_container_id = _get_service_container_id(_docker_compose, "aiidalab")
     try:
+        _docker_compose(["exec", "aiidalab", "wait-for-services"])
+        aiidalab_container_id = _get_service_container_id(_docker_compose, "aiidalab")
         config = json.loads(
             run(
                 ["docker", "inspect", aiidalab_container_id],
@@ -254,13 +252,21 @@ def show_entrypoint(ctx):
                 break
         else:
             raise RuntimeError("Failed to determine jupyter token.")
+    except SubprocessError as error:
+        click.echo(
+            "Unable to communicate with the AiiDAlab container. Is it running? "
+            "Use `up` to start it."
+        )
     except (KeyError, IndexError) as error:
         raise click.ClickException(
             f"Failed to determine entry point due to error: '{error}'"
         )
-
-    click.secho(f"Open this link in the browser to enter AiiDAlab:", fg="green")
-    click.secho(f"http://localhost:{exposed_port}/?token={jupyter_token}", fg="green")
+    else:
+        click.secho(
+            f"Open this link in the browser to enter AiiDAlab:\n"
+            f"http://localhost:{exposed_port}/?token={jupyter_token}",
+            fg="green",
+        )
 
 
 if __name__ == "__main__":
