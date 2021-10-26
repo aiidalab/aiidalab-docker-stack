@@ -240,13 +240,10 @@ def status(ctx):
                 check=True,
                 capture_output=True,
             ).stdout
-        )[0]["Config"]
-        port_match = re.match(r"(\d+)\/tcp", list(config["ExposedPorts"])[0])
-        if not port_match:
-            raise RuntimeError("Failed to determine exposed port.")
-        exposed_port = int(port_match.groups()[0])
-        env = config["Env"]
-        for env in config["Env"]:
+        )[0]
+
+        host_port = config["HostConfig"]["PortBindings"]["8888/tcp"][0]["HostPort"]
+        for env in config["Config"]["Env"]:
             if "JUPYTER_TOKEN" in env:
                 jupyter_token = env.split("=")[1]
                 break
@@ -264,7 +261,7 @@ def status(ctx):
     else:
         click.secho(
             f"Open this link in the browser to enter AiiDAlab:\n"
-            f"http://localhost:{exposed_port}/?token={jupyter_token}",
+            f"http://localhost:{host_port}/?token={jupyter_token}",
             fg="green",
         )
 
