@@ -48,6 +48,13 @@ def _service_is_up(docker_compose, service):
 )
 @click.option("-p", "--project-name", help="Specify an alternative project name.")
 @click.option(
+    "--env-file",
+    type=click.Path(dir_okay=False, writable=True, path_type=Path),
+    default=".env",
+    help="The path of the env-file to use for configuration.",
+    show_default=True,
+)
+@click.option(
     "-v",
     "--verbose",
     count=True,
@@ -59,7 +66,7 @@ def _service_is_up(docker_compose, service):
     help="Automatically respond with yes to any prompts.",
 )
 @click.pass_context
-def cli(ctx, develop, project_name, verbose, yes):
+def cli(ctx, develop, project_name, env_file, verbose, yes):
 
     # Specify the compose-files that will be merged to generate the final config.
     compose_file_args = ["-f", "docker-compose.yml"]
@@ -68,6 +75,7 @@ def cli(ctx, develop, project_name, verbose, yes):
 
     # This command is to be used by all sub-commands.
     def _compose_cmd(args, **kwargs):
+        args.insert(0, f"--env-file={env_file}")
         if project_name:
             args.insert(0, f"--project-name={project_name}")
         kwargs.setdefault("capture_output", not verbose)
@@ -78,6 +86,7 @@ def cli(ctx, develop, project_name, verbose, yes):
 
     ctx.obj = dict()
     ctx.obj["compose_cmd"] = _compose_cmd
+    ctx.obj["env_file"] = env_file
     ctx.obj["verbose"] = verbose
     ctx.obj["yes"] = yes
 
@@ -116,16 +125,11 @@ def show_config(ctx):
     "`aiidalab install`. This option can be used multiple times to specify "
     "multiple default apps.",
 )
-@click.option(
-    "--env-file",
-    type=click.Path(dir_okay=False, writable=True, path_type=Path),
-    default=".env",
-    help="The path of the env-file to use for configuration.",
-    show_default=True,
-)
 @click.pass_context
-def configure(ctx, home_dir, port, username, jupyter_token, app, env_file):
+def configure(ctx, home_dir, port, username, jupyter_token, app):
     """Configure the local AiiDAlab environment."""
+    env_file = ctx.obj["env_file"]
+
     # First, specify the defaults.
     env = {
         "AIIDALAB_HOME_VOLUME": "aiidalab-home",
