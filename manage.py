@@ -46,6 +46,7 @@ def _service_is_up(docker_compose, service):
     is_flag=True,
     help="Use this option to build AiiDAlab with development versions.",
 )
+@click.option("-p", "--project-name", help="Specify an alternative project name.")
 @click.option(
     "-v",
     "--verbose",
@@ -58,7 +59,7 @@ def _service_is_up(docker_compose, service):
     help="Automatically respond with yes to any prompts.",
 )
 @click.pass_context
-def cli(ctx, develop, verbose, yes):
+def cli(ctx, develop, project_name, verbose, yes):
 
     # Specify the compose-files that will be merged to generate the final config.
     compose_file_args = ["-f", "docker-compose.yml"]
@@ -67,6 +68,8 @@ def cli(ctx, develop, verbose, yes):
 
     # This command is to be used by all sub-commands.
     def _compose_cmd(args, **kwargs):
+        if project_name:
+            args.insert(0, f"--project-name={project_name}")
         kwargs.setdefault("capture_output", not verbose)
         kwargs.setdefault("check", True)
         kwargs.setdefault("env", {})
