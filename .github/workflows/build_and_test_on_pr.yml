@@ -67,4 +67,4 @@ jobs:
       -
         name: Show container log (before the restart).
         if: always()
-        run: docker logs ${{ stepst.test_run.outputs.docker_id_1 }}
+        run: docker logs ${{ steps.test_run.outputs.docker_id_1 }}
