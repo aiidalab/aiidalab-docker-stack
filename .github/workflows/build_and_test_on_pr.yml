@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir tmp
           export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest`
-          echo "::set-output name=docker_id_before::${DOCKDERID}"
+          echo "::set-output name=docker_id_before::${DOCKERID}"
           docker exec --tty --user root $DOCKERID wait-for-services
           docker exec --tty --user aiida $DOCKERID wait-for-services
           docker exec --tty --user aiida $DOCKERID /bin/bash -l -c '/usr/lib/postgresql/10/bin/pg_ctl -D /home/$SYSTEM_USER/.postgresql status' # Check that postgres is up.
@@ -61,7 +61,7 @@ jobs:
           sudo cp tmp/.ssh/id_rsa . # Copy id_rsa file from the mounted folder.
           docker stop $DOCKERID # Stop the container.
           export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest` # Start a new container using the same mounted folder.
-          echo "::set-output name=docker_id_after::${DOCKDERID}"
+          echo "::set-output name=docker_id_after::${DOCKERID}"
           docker exec --tty $DOCKERID wait-for-services
           sudo diff id_rsa tmp/.ssh/id_rsa # Check that the id_rsa file wasn't modified.
       -
