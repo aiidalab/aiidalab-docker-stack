@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  aiidalab:
+    build:
+      context: .
+      args:
+        - aiidalab_home_version=v21.10.0
+    ports:
+      - ${AIIDALAB_PORT:-8888}:8888
+    environment:
+      AIIDALAB_DEFAULT_APPS: ${AIIDALAB_DEFAULT_APPS:-aiidalab-widgets-base}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}
+      SYSTEM_USER: ${SYSTEM_USER:-aiida}
+    volumes:
+      - "${AIIDALAB_HOME_VOLUME:-aiidalab-home}:/home/aiida"
+volumes:
+  aiidalab-home:

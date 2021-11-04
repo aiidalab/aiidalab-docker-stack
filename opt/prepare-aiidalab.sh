@@ -37,7 +37,6 @@ fi
 if [ ! -e /home/${SYSTEM_USER}/apps ]; then
   # Create apps folder and make it importable from python.
   mkdir -p /home/${SYSTEM_USER}/apps
-  touch /home/${SYSTEM_USER}/apps/__init__.py
   INITIAL_SETUP=1
 fi
 
@@ -66,20 +65,7 @@ if [[ ${INITIAL_SETUP} == 1 ]]; then
 
   # Iterate over lines in AIIDALAB_DEFAULT_APPS variable.
   for app in ${AIIDALAB_DEFAULT_APPS:-}; do
-      # Expand the app entry:
-      IFS="@" read -ra tokens <<< "${app}"
-      APP_NAME="${tokens[0]}"
-      APP_PATH="/home/${SYSTEM_USER}/apps/${APP_NAME}"
-      APP_URL="${tokens[1]}"
-      APP_VERSION="${tokens[2]:-${AIIDALAB_DEFAULT_GIT_BRANCH}}"
-
-      # Perform app installation.
-      echo "Install app '${APP_NAME}' from ${APP_URL} with version '${APP_VERSION}'."
-      git clone "${APP_URL}" "${APP_PATH}"
-      cd "${APP_PATH}"
-      git checkout "${APP_VERSION}"
-      pip install .
-      cd -
+      aiidalab install --yes "${app}"
   done
 fi
 
@@ -96,3 +82,11 @@ find -L /home/${SYSTEM_USER} -maxdepth 3 -name apps_meta.sqlite -delete
 
 # Remove old temporary notebook files.
 find -L /home/${SYSTEM_USER}/apps -maxdepth 2 -type f -name .*.ipynb -delete
+
+# Uninstall aiidalab from user packages (if present).
+# Would otherwise interfere with the system package.
+USER_AIIDALAB_PACKAGE="$(/opt/conda/bin/python -c 'import site; print(site.USER_SITE)')/aiidalab"
+if [ -e ${USER_AIIDALAB_PACKAGE} ]; then
+  echo "Uninstall local installation of aiidalab package."
+  /opt/conda/bin/python -m pip uninstall --yes aiidalab
+fi

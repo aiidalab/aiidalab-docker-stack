@@ -12,19 +12,15 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 
 # Specify which apps to install in addition to the home app. The
 # AIIDALAB_DEFAULT_APPS variable should be a whitespace-delimited variable
-# where each entry has the following format: <app name>@<git url>@<version>
-# The version should be a reference that can be checked out via
-# 'git checkout <version>'.
+# where each entry must follow the specifier format used by `aiidalab install`.
 #
 # Example for setting the AIIDALAB_DEFAULT_APPS variable:
 #
-#   AIIDALAB_DEFAULT_APPS="aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0"
-#   AIIDALAB_DEFAULT_APPS+=" quantum-espresso@https://github.com/aiidalab/aiidalab-qe@v1.1"
+#   AIIDALAB_DEFAULT_APPS="aiidalab-widgets-base quantum-espresso==20.12.0"
 #
-# Please note the space at the start of the second entry to ensure that the
-# individual entries are whitespace delimited. If no version is provided, it
-# defaults to $AIIDALAB_DEFAULT_GIT_BRANCH.
-ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base@https://github.com/aiidalab/aiidalab-widgets-base@v1.0.0"
+# Please note that multiple entries must be whitespace delimited.
+# Please see `aiidalab install --help` for more information.
+ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.0"
 
 USER root
 WORKDIR /opt/
@@ -94,8 +90,9 @@ RUN conda install --yes -c conda-forge \
 
 # Install AiiDAlab Python packages into user conda environment and populate reentry cache.
 COPY requirements.txt .
+ARG extra_requirements
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt $extra_requirements
 RUN reentry scan
 
 # Install python kernel from the conda environment (comes with the aiidalab package).
@@ -110,8 +107,9 @@ COPY opt/aiidalab-singleuser /opt/
 COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
-# Get aiidalab-home app.
-RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git reset --hard v21.10.0
+# Install the aiidalab-home app.
+ARG aiidalab_home_version=v21.10.0
+RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git checkout $aiidalab_home_version
 RUN chmod 774 aiidalab-home
 
 # Copy scripts to start Jupyter notebook.
