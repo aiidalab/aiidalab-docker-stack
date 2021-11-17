@@ -19,11 +19,14 @@ from dotenv import dotenv_values
 
 
 def _get_service_container_id(docker_compose, service):
-    return (
-        docker_compose(["ps", "-q", service], capture_output=True)
-        .stdout.decode()
-        .strip()
-    )
+    try:
+        return (
+            docker_compose(["ps", "-q", service], capture_output=True)
+            .stdout.decode()
+            .strip()
+        )
+    except SubprocessError:
+        return None
 
 
 def _service_is_up(docker_compose, service):
@@ -241,6 +244,9 @@ def status(ctx):
     try:
         _docker_compose(["exec", "aiidalab", "wait-for-services"])
         aiidalab_container_id = _get_service_container_id(_docker_compose, "aiidalab")
+        if aiidalab_container_id is None:
+            raise RuntimeError("The container is not running. Use `up` to start it.")
+
         config = json.loads(
             run(
                 ["docker", "inspect", aiidalab_container_id],
@@ -256,12 +262,13 @@ def status(ctx):
                 break
         else:
             raise RuntimeError("Failed to determine jupyter token.")
+
     except SubprocessError as error:
         click.echo(
             "Unable to communicate with the AiiDAlab container. Is it running? "
             "Use `up` to start it."
         )
-    except (KeyError, IndexError) as error:
+    except (KeyError, IndexError, RuntimeError) as error:
         raise click.ClickException(
             f"Failed to determine entry point due to error: '{error}'"
         )
