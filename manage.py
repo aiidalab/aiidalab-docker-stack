@@ -49,7 +49,7 @@ def _service_is_up(docker_compose, service):
 @click.option("-p", "--project-name", help="Specify an alternative project name.")
 @click.option(
     "--env-file",
-    type=click.Path(dir_okay=False, writable=True, path_type=Path),
+    type=click.Path(exists=True, dir_okay=False, writable=True, path_type=Path),
     default=".env",
     help="The path of the env-file to use for configuration.",
     show_default=True,
