@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.4
+FROM aiidateam/aiida-core:1.6.5-bionic
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
@@ -85,7 +85,7 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 # The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
-  rdkit==2020.09.1 \
+  rdkit==2021.09.2 \
   && conda clean --all
 
 # Install AiiDAlab Python packages into user conda environment and populate reentry cache.

@@ -1,5 +1,5 @@
-aiidalab==21.11.0
-aiidalab-widgets-base==1.1.0
+aiidalab==21.11.1
+aiidalab-widgets-base==1.1.1
 binaryornot~=0.4
 bokeh~=2.0
 bqplot~=0.12
@@ -7,4 +7,4 @@ cookiecutter~=1.6
 markdown~=3.1
 pysmiles~=1.0
 pythreejs~=2.1
-widget-periodictable~=2.0
+widget-periodictable~=3.0
