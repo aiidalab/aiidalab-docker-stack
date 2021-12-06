@@ -82,7 +82,6 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 ## Configure user environment
 
 # Install some useful packages that are not available on PyPi.
-# The 2020.09.2 version of rdkit introduced an implicit dependency on tornado>=6.
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
   rdkit==2021.09.2 \
