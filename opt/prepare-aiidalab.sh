@@ -74,14 +74,14 @@ reentry scan
 
 # Clear user trash directory.
 if [ -e /home/${SYSTEM_USER}/.trash ]; then
-  find /home/${SYSTEM_USER}/.trash/ -mindepth 1 -delete
+  find /home/${SYSTEM_USER}/.trash/ -mindepth 1 -writable -delete
 fi
 
 # Remove old apps_meta.sqlite requests cache files.
-find -L /home/${SYSTEM_USER} -maxdepth 3 -name apps_meta.sqlite -delete
+find -L /home/${SYSTEM_USER} -maxdepth 3 -name apps_meta.sqlite -writable -delete
 
 # Remove old temporary notebook files.
-find -L /home/${SYSTEM_USER}/apps -maxdepth 2 -type f -name .*.ipynb -delete
+find -L /home/${SYSTEM_USER}/apps -maxdepth 2 -type f -name .*.ipynb -writable -delete
 
 # Uninstall aiidalab from user packages (if present).
 # Would otherwise interfere with the system package.
