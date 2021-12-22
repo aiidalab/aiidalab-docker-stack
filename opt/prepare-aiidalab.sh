@@ -74,7 +74,7 @@ reentry scan
 
 # Clear user trash directory.
 if [ -e /home/${SYSTEM_USER}/.trash ]; then
-  find /home/${SYSTEM_USER}/.trash/ -mindepth 1 -writable -delete
+  rm -rf /home/${SYSTEM_USER}/.trash/*
 fi
 
 # Remove old apps_meta.sqlite requests cache files.
