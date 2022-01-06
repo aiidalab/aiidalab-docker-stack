@@ -6,10 +6,9 @@ Docker images are available from Dockerhub via `docker pull aiidalab/aiidalab-do
 
 The available tags and their meaning:
 
-- `master` tag corresponds to the image build on top of the `master` branch.
-- `develop` tag  corresponds to the image build on top of the `develop` branch.
-- Version number (e.g. `21.12.0`) corresponds to the tagged commit on GitHub.
-- `latest` tag corresponds to the latest released tag.
+- `latest` –  the latest tagged release
+- `<version>` – a specific tagged release, example: `21.12.0`
+- `master`/`develop` – the latest commit on the corresponding branches with the same name
 
 See [aiidalab/aiidalab-docker-stack](https://hub.docker.com/r/aiidalab/aiidalab-docker-stack/tags) for the full list of available tags.
 
