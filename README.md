@@ -1,16 +1,12 @@
 # Docker Stack for AiiDAlab
 
-This repo contains the Docker file used in the [AiiDAlab](https://www.materialscloud.org/aiidalab).
+This repository contains the Dockerfile for the official AiiDAlab docker images.
 
-Docker images are available from Dockerhub via `docker pull aiidalab/aiidalab-docker-stack:latest`.
+Docker images are automatically built and pushed to Docker Hub at https://hub.docker.com/r/aiidalab/aiidalab-docker-stack with the following tags:
 
-The available tags and their meaning:
-
-- `latest` –  the latest tagged release
-- `<version>` – a specific tagged release, example: `21.12.0`
-- `master`/`develop` – the latest commit on the corresponding branches with the same name
-
-See [aiidalab/aiidalab-docker-stack](https://hub.docker.com/r/aiidalab/aiidalab-docker-stack/tags) for the full list of available tags.
+- `latest` –  the latest tagged release.
+- `<version>` – a specific tagged release, example: `21.12.0`.
+- `master`/`develop` – the latest commit on the corresponding branches with the same name.
 
 ## Docker 
 
