@@ -8,8 +8,6 @@ Docker images are automatically built and pushed to Docker Hub at https://hub.do
 - `<version>` – a specific tagged release, example: `21.12.0`.
 - `master`/`develop` – the latest commit on the corresponding branches with the same name.
 
-## Docker 
-
 # Documentation
 
 ## Local deployment
