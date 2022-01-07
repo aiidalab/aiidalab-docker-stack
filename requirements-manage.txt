@@ -1,3 +1,0 @@
-click==8.0.3
-docker-compose==1.29.2
-python-dotenv==0.19.1
