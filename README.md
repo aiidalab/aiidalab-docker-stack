@@ -1,58 +1,37 @@
 # Docker Stack for AiiDAlab
 
-This repo contains the Docker file used in the [AiiDAlab](https://www.materialscloud.org/aiidalab).
+This repository contains the Dockerfile for the official AiiDAlab docker images.
 
-Docker images are available from Dockerhub via `docker pull aiidalab/aiidalab-docker-stack:latest`.
-See [aiidalab/aiidalab-docker-stack](https://hub.docker.com/repository/docker/aiidalab/aiidalab-docker-stack) for a list of available tags.
+Docker images are automatically built and pushed to Docker Hub at https://hub.docker.com/r/aiidalab/aiidalab-docker-stack with the following tags:
 
-# Documentation
+- `latest` –  the latest tagged release.
+- `<version>` – a specific tagged release, example: `21.12.0`.
+- `master`/`develop` – the latest commit on the corresponding branches with the same name.
 
-## Local deployment
+## Get started
 
-To launch a local instance of AiiDAlab, first clone this repository, e.g., with
+### Local deployment
+
+To run AiiDAlab on your own workstation or laptop you can either
+- run the image directly with: `docker run aiidalab-docker-stack -p 8888:8888`, or
+- _(recommended)_ use the `aiidalab-launch` tool which is a thin docker wrapper.
+
+The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
+To use it, simply install it via pip
 ```console
-git clone https://github.com/aiidalab/aiidalab-docker-stack.git
-cd aiidalab-docker-stack
+pip install aiidalab-launch
 ```
-and then install the Python requirements needed to run the manage script:
-```
-pip install -r requirements-manage.txt
-```
-
-Before starting AiiDAlab, it is recommended to configure it for your needs.
-For example, to mount the AiiDAlab home directory on your local host at `~/aiidalab` instead of using a Docker volume, execute:
+and then start AiiDAlab with
 ```console
-./manage.py configure --home-dir=~/aiidalab
+aiidalab-launch start
 ```
-This creates a `.env` file in the local directory that stores the provided settings.
+Note: AiiDAlab will keep running until you explicitly stop it or shutdown/restart your computer.
+In that case, you will have to run the `aiidalab-launch start` command again to restart AiiDAlab.
 
-You can then launch your local AiiDAlab deployment with:
-```console
-$ ./manage.py up
-```
-You should see output similar to this:
-```
-Starting AiiDAlab (this can take multiple minutes) ...
-Open this link in the browser to enter AiiDAlab:
-http://localhost:8888/?token=be20d9872d...
-```
+Please see `aiidalab-launch --help` for a full list of available commands and options.
 
-Note: AiiDAlab will keep running until you shutdown or restart the host computer, in which case, you will have to run the `up` command again to restart AiiDAlab.
+### Cloud and other deployments
 
-Please see `./manage.py --help` for a full list of available commands.
-
-## Development deployment
-
-For a local development deployment, run
-```console
-./manage.py --develop up
-```
-
-This will build and start an image where the `aiidalab` package, the `aiidalab-widgets-base` library, and the `aiidalab-home` app are installed with their latest development versions instead of their latest release versions.
-
-## Other deployments
-
-The `manage.py` script uses docker-compose to manage the local AiiDAlab deployment.
 Please see the [AiiDAlab documentation](https://aiidalab.readthedocs.io/) for information on how to use and deploy AiiDAlab docker images in alternative ways.
 
 ## Citation
@@ -62,7 +41,7 @@ Users of AiiDAlab are kindly asked to cite the following publication in their ow
 A. V. Yakutovich et al., Comp. Mat. Sci. 188, 110165 (2021).
 [DOI:10.1016/j.commatsci.2020.110165](https://doi.org/10.1016/j.commatsci.2020.110165)
 
-# Acknowledgements
+## Acknowledgements
 
 This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
 funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX

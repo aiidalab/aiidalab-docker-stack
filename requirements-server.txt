@@ -2,6 +2,8 @@
 jupyterhub==1.5.0
 jupyterlab==3.0.17
 notebook==6.4.1
+# Detect notebooks written in MyST Markdown
+jupytext==1.13.4
 # Dependencies for jupyter widgets
 bqplot==0.12.25
 ipytree==0.1.8

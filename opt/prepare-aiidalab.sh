@@ -6,6 +6,10 @@ set -x
 # Environment.
 export SHELL=/bin/bash
 
+# Fix https://github.com/aiidalab/aiidalab-docker-stack/issues/225
+if [ -L /home/${SYSTEM_USER}/${SYSTEM_USER} ]; then
+  rm /home/${SYSTEM_USER}/${SYSTEM_USER}
+fi
 
 # Setup AiiDA jupyter extension.
 # Don't forget to copy this file to .ipython/profile_default/startup/
@@ -74,7 +78,7 @@ reentry scan
 
 # Clear user trash directory.
 if [ -e /home/${SYSTEM_USER}/.trash ]; then
-  find /home/${SYSTEM_USER}/.trash/ -mindepth 1 -writable -delete
+  rm -rf /home/${SYSTEM_USER}/.trash/*
 fi
 
 # Remove old apps_meta.sqlite requests cache files.
