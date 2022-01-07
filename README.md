@@ -8,9 +8,9 @@ Docker images are automatically built and pushed to Docker Hub at https://hub.do
 - `<version>` – a specific tagged release, example: `21.12.0`.
 - `master`/`develop` – the latest commit on the corresponding branches with the same name.
 
-# Get started
+## Get started
 
-## Local deployment
+### Local deployment
 
 To run AiiDAlab on your own workstation or laptop you can either
 - run the image directly with: `docker run aiidalab-docker-stack -p 8888:8888`, or
@@ -30,7 +30,7 @@ In that case, you will have to run the `aiidalab-launch start` command again to 
 
 Please see `aiidalab-launch --help` for a full list of available commands and options.
 
-## Cloud and other deployments
+### Cloud and other deployments
 
 Please see the [AiiDAlab documentation](https://aiidalab.readthedocs.io/) for information on how to use and deploy AiiDAlab docker images in alternative ways.
 
@@ -41,7 +41,7 @@ Users of AiiDAlab are kindly asked to cite the following publication in their ow
 A. V. Yakutovich et al., Comp. Mat. Sci. 188, 110165 (2021).
 [DOI:10.1016/j.commatsci.2020.110165](https://doi.org/10.1016/j.commatsci.2020.110165)
 
-# Acknowledgements
+## Acknowledgements
 
 This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
 funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX
