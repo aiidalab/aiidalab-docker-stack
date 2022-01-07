@@ -107,7 +107,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Install the aiidalab-home app.
-ARG aiidalab_home_version=v21.10.0
+ARG aiidalab_home_version=v22.01.0
 RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git checkout $aiidalab_home_version
 RUN chmod 774 aiidalab-home
 
