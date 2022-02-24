@@ -1,4 +1,5 @@
-FROM aiidateam/aiida-core:1.6.5-bionic
+# develop from feb 24th 2022
+FROM aiidateam/aiida-core@sha256:3b17bdcbb9f320aa4fe9afe8ff2248bfc07181e2ae9ac44790cf4c116a495f0b
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
@@ -87,12 +88,11 @@ RUN conda install --yes -c conda-forge \
   rdkit==2021.09.2 \
   && conda clean --all
 
-# Install AiiDAlab Python packages into user conda environment and populate reentry cache.
+# Install AiiDAlab Python packages into user conda environment
 COPY requirements.txt .
 ARG extra_requirements
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt $extra_requirements
-RUN reentry scan
 
 # Install python kernel from the conda environment (comes with the aiidalab package).
 RUN python -m ipykernel install

@@ -1,5 +1,8 @@
-aiidalab==21.11.1
-aiidalab-widgets-base==1.1.1
+#aiidalab==21.11.1
+git+https://github.com/ltalirz/aiidalab@41c362318b01aff27162fe4a9610962a01ed2a5e#egg=aiidalab
+#aiidalab-widgets-base==1.1.1
+git+https://github.com/aiidalab/aiidalab-widgets-base@e44c9434e97775c9d997bdd94134c6214e20a935#egg=aiidalab-widgets-base
+aiida-core>=2.0.0a1
 binaryornot~=0.4
 bokeh~=2.0
 bqplot~=0.12
