@@ -1,0 +1,207 @@
+---
+- name: Pull latest AiiDA core image.
+  hosts: localhost
+  tasks:
+    - name: Pull AiiDA core image.
+      docker_container:
+        name: aiida-ansible-base
+        image: aiidateam/aiida-core:1.6.5-bionic
+        state: started
+        command: tail -f /dev/null
+        exposed_ports:
+          - 8888
+        env:
+          AIIDALAB_FACTORY_RESET: ""
+          AIIDALAB_HOME: /home/aiida/
+          AIIDALAB_APPS: /home/aiida/apps/
+          AIIDALAB_DEFAULT_GIT_BRANCH: master
+          # Specify which apps to install in addition to the home app. The
+          # AIIDALAB_DEFAULT_APPS variable should be a whitespace-delimited variable
+          # where each entry must follow the specifier format used by `aiidalab install`.
+          #
+          # Example for setting the AIIDALAB_DEFAULT_APPS variable:
+          #
+          #   AIIDALAB_DEFAULT_APPS="aiidalab-widgets-base quantum-espresso==20.12.0"
+          #
+          # Please note that multiple entries must be whitespace delimited.
+          # Please see `aiidalab install --help` for more information.
+          AIIDALAB_DEFAULT_APPS: "aiidalab-widgets-base~=1.0"
+
+    - name: Add AiiDA core container to ansible hosts
+      tags: start-image
+      add_host:
+        name: aiida-ansible-base
+        ansible_connection: docker
+        ansible_ssh_user: root
+
+- name: Configure the image for AiiDAlab.
+  hosts: aiida-ansible-base
+  gather_facts: false
+  tasks:
+    - name: Install nodejs and npm (needed for Jupyter Lab).
+      raw: apt update && apt upgrade -y && apt install nodejs npm -y
+
+    # TODO: install ngrok
+
+    - name: Install the OS dependencies.
+      apt:
+        name:
+          - ca-certificates
+          - file
+          - libssl-dev
+          - libffi-dev
+          - povray
+          - python3-pip
+
+    - name: Force upgrade pip.
+      pip: 
+        name: pip
+        executable: /usr/bin/pip3
+        extra_args: --upgrade
+
+    - name: Install Jupyter dependencies into the system python environment.
+      pip:
+        executable: /usr/local/bin/pip
+        name:
+          # Dependencies for notebook server and interaction with JupyterHub
+          - jupyterhub==1.5.0
+          - jupyterlab==3.0.17
+          - notebook==6.4.1
+          # Detect notebooks written in MyST Markdown
+          - jupytext==1.13.4
+          # Dependencies for jupyter widgets
+          - bqplot==0.12.25
+          - ipytree==0.1.8
+          - ipywidgets-extended==1.0.5
+          - nglview==2.7.7
+          - widget-periodictable==2.1.5
+          # Used for exposing AiiDA REST API to the outside world
+          - jupyter-server-proxy==3.2.1
+          # Install voila package and AiiDAlab voila template.
+          - voila==0.2.10
+          - voila-aiidalab-template==0.2.1
+    
+    - name: Install AiiDAlab Python packages into user's conda environment
+      pip:
+        name:
+          - aiidalab==21.11.1
+          - aiidalab-widgets-base==1.1.1
+          - binaryornot~=0.4
+          - bokeh~=2.0
+          - bqplot~=0.12
+          - cookiecutter~=1.6
+          - markdown~=3.1
+          - pysmiles~=1.0
+          - pythreejs~=2.1
+    
+    # - name: Install some useful package from conda
+    #   command: "{{ item }}"
+    #   with_items:
+    #     - conda install --yes -c conda-forge openbabel==3.1.1 rdkit==2021.09.2
+
+    - name: Download appmode.
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+        chdir: /opt/
+      tags: appmode
+      with_items:
+        - git clone https://github.com/oschuett/appmode.git 
+
+    - name: Copy the custom gears image for the appmode.
+      tags: appmode
+      copy:
+        src: gears.svg
+        dest: /opt/appmode/appmode/static/gears.svg
+
+    - name: Install and enable appmode.
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+        chdir: /opt/appmode
+      tags: appmode
+      with_items:
+         - git reset --hard v0.8.0
+         - /usr/local/bin/pip install .
+         - /usr/local/bin/jupyter nbextension     enable --py --sys-prefix appmode
+         - /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
+  
+    - name: Make sure destination dir exists
+      file:
+        path: /etc/service/jupyter-notebook
+        state: directory
+        owner: root
+        group: root
+        mode: '0644'
+
+    
+    - name: Copy scripts.
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      with_items:
+        # Perform factory reset if needed.
+        - { src: my_init.d/factory_reset.sh, dest: /etc/my_init.d/09_factory_reset.sh, mode: 755 }
+        # Prepare user's folders for AiiDAlab launch.
+        - { src: opt/aiidalab-singleuser, dest: /opt/, mode: 755 }
+        - { src: opt/prepare-aiidalab.sh, dest: /opt/, mode: 755 }
+        - { src: my_init.d/prepare-aiidalab.sh, dest: /etc/my_init.d/80_prepare-aiidalab.sh, mode: 755 }
+        # Copy scripts to start Jupyter notebook.
+        - { src: opt/start-notebook.sh, dest: /opt/, mode: 755 }
+        - { src: service/jupyter-notebook, dest: /etc/service/jupyter-notebook/run, mode: 755 }
+        # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
+        - { src: my_my_init, dest: /sbin/my_my_init, mode: 755 }
+    
+    - name: Install python kernel from the conda environment (comes with the aiidalab package).
+      command: python -m ipykernel install
+    
+    - name: Download aidalab-home app.
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+        chdir: /opt/
+      tags: aiidalab-home
+      with_items:
+        - git clone https://github.com/aiidalab/aiidalab-home
+        - chmod 774 aiidalab-home
+    
+    - name: Install and enable aiidalab-home.
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+        chdir: /opt/aiidalab-home
+      tags: appaiidalab-home
+      with_items:
+        - git checkout v22.01.0
+
+      # TODO: clean up docker container.
+
+- name: Snapshot base image to create newly configured 
+  hosts: localhost
+  tasks:
+    - name: Commit Docker image
+      command: docker commit "aiida-ansible-base" "aiidalab-docker-stack"
+
+- name: Clean Up Docker Containers
+  hosts: localhost
+  tasks:
+    - name: Remove Running AiiDA core image
+      docker_container:
+        name: aiida-ansible-base
+        state: absent
+        force_kill: yes
+
+- name: Build the image and tag it.
+  hosts: localhost
+  tasks:
+    - name: Build the docker image and tag it
+      tags: final-build
+      docker_image:
+        name: aiidalab/aiidalab-docker-stack
+        tag: latest
+        force_source: true
+        source: build
+        build:
+          path: ./
+          args:
+            NB_USER: aiida
+            NB_UID: 1234
+            NB_GID: 1234
+
