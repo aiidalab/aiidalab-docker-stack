@@ -148,6 +148,8 @@
         # Copy scripts to start Jupyter notebook.
         - { src: opt/start-notebook.sh, dest: /opt/, mode: 755 }
         - { src: service/jupyter-notebook, dest: /etc/service/jupyter-notebook/run, mode: 755 }
+        # CMD file
+        - { src: my_my_init, dest: /sbin/my_my_init, mode: 755 }
         # Remove when the following issue is fixed: https://github.com/jupyterhub/dockerspawner/issues/319.
         - { src: my_my_init, dest: /sbin/my_my_init, mode: 755 }
     
@@ -177,7 +179,7 @@
   hosts: localhost
   tasks:
     - name: Commit Docker image
-      command: docker commit "aiida-ansible-base" "aiidalab-docker-stack"
+      command: docker commit --change="CMD /sbin/my_my_init" "aiida-ansible-base" "aiidalab/aiidalab-docker-stack:latest" 
 
 - name: Clean Up Docker Containers
   hosts: localhost
@@ -187,21 +189,3 @@
         name: aiida-ansible-base
         state: absent
         force_kill: yes
-
-- name: Build the image and tag it.
-  hosts: localhost
-  tasks:
-    - name: Build the docker image and tag it
-      tags: final-build
-      docker_image:
-        name: aiidalab/aiidalab-docker-stack
-        tag: latest
-        force_source: true
-        source: build
-        build:
-          path: ./
-          args:
-            NB_USER: aiida
-            NB_UID: 1234
-            NB_GID: 1234
-
