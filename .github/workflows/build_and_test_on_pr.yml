@@ -1,5 +1,6 @@
+---
 # Test the Docker image on every pull request.
-# 
+#
 # The steps are:
 # 1. Build docker image using cached data.
 # 2. Start the docker container with local folder mounted to it.
@@ -9,66 +10,57 @@
 
 name: build-and-test-image-from-pull-request
 
-on:
-  [pull_request]
+on: [pull_request]
 
 jobs:
 
-  build-and-test:
+    build-and-test:
 
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
 
-    steps:
-      -
-        uses: actions/checkout@v2
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-      -
-        name: Build image locally
-        uses: docker/build-push-action@v2
-        with:
-          load: true
-          push: false
-          tags: aiidalab-docker-stack:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-      -
-        name: Start and test the container
-        id: test_run
-        run: |
-          mkdir tmp
-          export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest`
-          echo "::set-output name=docker_id_first_run::${DOCKERID}"
-          docker exec --tty --user root $DOCKERID wait-for-services
-          docker exec --tty --user aiida $DOCKERID wait-for-services
-          docker exec --tty --user aiida $DOCKERID /bin/bash -l -c '/usr/lib/postgresql/10/bin/pg_ctl -D /home/$SYSTEM_USER/.postgresql status' # Check that postgres is up.
-          docker exec --tty --user root $DOCKERID /bin/bash -l -c 'service rabbitmq-server status' # Check that rabbitmq is up.
-          docker exec --tty --user aiida $DOCKERID /bin/bash -l -c 'conda create -y -n test_env python=3.8' # Check that one can create a new conda environment.
-          docker exec --tty --user aiida $DOCKERID /bin/bash -l -c 'conda activate test_env' # Check that new environment works.
-          sudo cp tmp/.ssh/id_rsa . # Copy id_rsa file from the mounted folder.
-          docker stop $DOCKERID # Stop the container.
-          export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest` # Start a new container using the same mounted folder.
-          echo "::set-output name=docker_id_second_run::${DOCKERID}"
-          docker exec --tty $DOCKERID wait-for-services
-          sudo diff id_rsa tmp/.ssh/id_rsa # Check that the id_rsa file wasn't modified.
-      -
-        name: Show the container log (first run).
-        if: always()
-        run: docker logs "${{ steps.test_run.outputs.docker_id_first_run }}"
-      -
-        name: Show the container log (second run).
-        if: always()
-        run: docker logs "${{ steps.test_run.outputs.docker_id_second_run }}"
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v1
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v1
+            - name: Cache Docker layers
+              uses: actions/cache@v2
+              with:
+                  path: /tmp/.buildx-cache
+                  key: ${{ runner.os }}-buildx-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-buildx-
+            - name: Build image locally
+              uses: docker/build-push-action@v2
+              with:
+                  load: true
+                  push: false
+                  tags: aiidalab-docker-stack:latest
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache
+            - name: Start and test the container
+              id: test_run
+              run: |
+                  mkdir tmp
+                  export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest`
+                  echo "::set-output name=docker_id_first_run::${DOCKERID}"
+                  docker exec --tty --user root $DOCKERID wait-for-services
+                  docker exec --tty --user aiida $DOCKERID wait-for-services
+                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c '/usr/lib/postgresql/10/bin/pg_ctl -D /home/$SYSTEM_USER/.postgresql status' # Check that postgres is up.
+                  docker exec --tty --user root $DOCKERID /bin/bash -l -c 'service rabbitmq-server status' # Check that rabbitmq is up.
+                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c 'conda create -y -n test_env python=3.8' # Check that one can create a new conda environment.
+                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c 'conda activate test_env' # Check that new environment works.
+                  sudo cp tmp/.ssh/id_rsa . # Copy id_rsa file from the mounted folder.
+                  docker stop $DOCKERID # Stop the container.
+                  export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest` # Start a new container using the same mounted folder.
+                  echo "::set-output name=docker_id_second_run::${DOCKERID}"
+                  docker exec --tty $DOCKERID wait-for-services
+                  sudo diff id_rsa tmp/.ssh/id_rsa # Check that the id_rsa file wasn't modified.
+            - name: Show the container log (first run).
+              if: always()
+              run: docker logs "${{ steps.test_run.outputs.docker_id_first_run }}"
+            - name: Show the container log (second run).
+              if: always()
+              run: docker logs "${{ steps.test_run.outputs.docker_id_second_run }}"
