@@ -32,5 +32,3 @@ else
       --VoilaConfiguration.enable_nbextensions=True                  \
       --NotebookApp.default_url="/apps/apps/home/start.ipynb"
 fi
-
-
