@@ -1,7 +1,7 @@
 # Dependencies for notebook server and interaction with JupyterHub
 jupyterhub==1.5.0
 jupyterlab==3.0.17
-notebook==6.4.10
+notebook==6.4.12
 # Detect notebooks written in MyST Markdown
 jupytext==1.13.4
 # Dependencies for jupyter widgets
