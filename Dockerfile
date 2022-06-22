@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.5-bionic
+FROM aiidateam/aiida-core:1.6.8
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
@@ -58,7 +58,7 @@ RUN /usr/bin/pip3 install --upgrade pip
 # Jupyter dependencies installed into system python environment
 # which runs the jupyter notebook server.
 COPY requirements-server.txt .
-RUN /usr/local/bin/pip install -r /opt/requirements-server.txt \ 
+RUN /usr/local/bin/pip install -r /opt/requirements-server.txt \
     && /usr/local/bin/pip cache purge
 
 # Install and enable appmode.
@@ -75,7 +75,7 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 #     npm install && \
 #     npm run build && \
 #     npm run build:webpack && \
-#     npm pack ./ && \ 
+#     npm pack ./ && \
 #     /usr/local/bin/jupyter labextension install *.tgz && \
 #    cd ..
 
