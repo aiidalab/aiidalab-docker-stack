@@ -94,6 +94,9 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt $extra_requirements
 RUN reentry scan
 
+# Configure pip to use requirements file as constraints file.
+RUN conda env config vars set PIP_CONSTRAINT=/opt/requirements.txt
+
 # Install python kernel from the conda environment (comes with the aiidalab package).
 RUN python -m ipykernel install
 
