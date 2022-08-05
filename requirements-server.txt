@@ -9,7 +9,7 @@ bqplot==0.12.25
 ipytree==0.1.8
 ipywidgets-extended==1.0.5
 nglview==2.7.7
-widget-periodictable==2.1.5
+widget-periodictable~=3.0
 # Used for exposing AiiDA REST API to the outside world
 jupyter-server-proxy==3.2.1
 # Install voila package and AiiDAlab voila template.
