@@ -21,3 +21,8 @@ repos:
       rev: 0.17.0
       hooks:
           - id: check-github-workflows
+
+    - repo: https://github.com/psf/black
+      rev: 22.6.0
+      hooks:
+          - id: black
