@@ -8,4 +8,4 @@ markdown~=3.1
 pip~=22.0,<22.1
 pysmiles~=1.0
 pythreejs~=2.1
-widget-periodictable~=2.1
+widget-periodictable~=3.1
