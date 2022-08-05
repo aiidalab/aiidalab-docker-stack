@@ -40,32 +40,11 @@ jobs:
                   tags: aiidalab-docker-stack:latest
                   cache-from: type=local,src=/tmp/.buildx-cache
                   cache-to: type=local,dest=/tmp/.buildx-cache
-            - name: Start and test the container
-              id: test_run
+            - uses: actions/setup-python@v4
+              with:
+                  python-version: '3.10'
+                  cache: pip # caching pip dependencies
+            - run: pip install -r tests/requirements.txt
+            - name: Run tests
               run: |
-                  mkdir tmp
-                  export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest`
-                  echo "::set-output name=docker_id_first_run::${DOCKERID}"
-                  docker exec --tty --user root $DOCKERID wait-for-services
-                  docker exec --tty --user aiida $DOCKERID wait-for-services
-<<<<<<< HEAD
-                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c '/opt/conda/envs/pgsql/bin/pg_ctl -D /home/$SYSTEM_USER/.postgresql status' # Check that postgres is up.
-                  docker exec --tty --user root $DOCKERID /bin/bash -l -c '/opt/conda/envs/rmq/bin/rabbitmqctl status' # Check that rabbitmq is up.
-=======
-                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c '/usr/lib/postgresql/10/bin/pg_ctl -D /home/$NB_USER/.postgresql status' # Check that postgres is up.
-                  docker exec --tty --user root $DOCKERID /bin/bash -l -c 'service rabbitmq-server status' # Check that rabbitmq is up.
->>>>>>> ee7ece1 (Major revision to base the image on the jupyter docker stack.)
-                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c 'conda create -y -n test_env python=3.8' # Check that one can create a new conda environment.
-                  docker exec --tty --user aiida $DOCKERID /bin/bash -l -c 'conda activate test_env' # Check that new environment works.
-                  sudo cp tmp/.ssh/id_rsa . # Copy id_rsa file from the mounted folder.
-                  docker stop $DOCKERID # Stop the container.
-                  export DOCKERID=`docker run -v $PWD/tmp:/home/aiida -d aiidalab-docker-stack:latest` # Start a new container using the same mounted folder.
-                  echo "::set-output name=docker_id_second_run::${DOCKERID}"
-                  docker exec --tty $DOCKERID wait-for-services
-                  sudo diff id_rsa tmp/.ssh/id_rsa # Check that the id_rsa file wasn't modified.
-            - name: Show the container log (first run).
-              if: always()
-              run: docker logs "${{ steps.test_run.outputs.docker_id_first_run }}"
-            - name: Show the container log (second run).
-              if: always()
-              run: docker logs "${{ steps.test_run.outputs.docker_id_second_run }}"
+                  pytest -v
