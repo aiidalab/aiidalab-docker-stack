@@ -16,6 +16,7 @@ if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
       --ip=0.0.0.0                                                   \
       --port=8888                                                    \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
+      --ContentsManager.allow_hidden=True                            \
       --VoilaConfiguration.template=aiidalab                         \
       --VoilaConfiguration.enable_nbextensions=True                  \
       --NotebookApp.iopub_data_rate_limit=1000000000                 \
@@ -27,6 +28,7 @@ else
       --ip=0.0.0.0                                                   \
       --port=8888                                                    \
       --no-browser                                                   \
+      --ContentsManager.allow_hidden=True                            \
       --notebook-dir="/home/${SYSTEM_USER}"                          \
       --VoilaConfiguration.template=aiidalab                         \
       --VoilaConfiguration.enable_nbextensions=True                  \
