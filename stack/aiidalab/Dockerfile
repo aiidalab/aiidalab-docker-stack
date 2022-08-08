@@ -1,23 +1,10 @@
-FROM jupyter/minimal-notebook:python-3.9.12
+# TODO: use proper base tag
+FROM aiidalab/aiida:latest
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
 USER root
 WORKDIR /opt/
-
-# Install the shared requirements.
-COPY requirements.txt .
-RUN mamba install --yes \
-     --file requirements.txt && \
-     mamba clean -all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
-
-# Pin shared requirements in the base environemnt.
-RUN cat requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
-
-# Configure pip to use requirements file as constraints file.
-ENV PIP_CONSTRAINT=/opt/requirements.txt
 
 # TODO: should be converted to a conda package
 # ARG aiidalab_version=aiida-2.0
@@ -47,29 +34,11 @@ RUN pip install ./appmode --no-cache-dir && \
      jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
-# Enable verdi autocompletion.
-RUN echo 'eval "$(_VERDI_COMPLETE=source verdi)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     chmod +x "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     fix-permissions "${CONDA_DIR}"
-
-# Configure AiiDA profile.
-COPY config-quick-setup.yaml .
-COPY before-notebook.d/prepare-aiida.sh /usr/local/bin/before-notebook.d/
-
 # Perform factory reset if needed.
 COPY before-notebook.d/factory_reset.sh /usr/local/bin/before-notebook.d/
 
 # Prepare user's folders for AiiDAlab launch.
 COPY before-notebook.d/prepare-aiidalab.sh /usr/local/bin/before-notebook.d/
-
-# Configure AiiDA.
-ENV SETUP_DEFAULT_AIIDA_PROFILE true
-ENV AIIDA_PROFILE_NAME default
-ENV AIIDA_USER_EMAIL aiida@localhost
-ENV AIIDA_USER_FIRST_NAME Giuseppe
-ENV AIIDA_USER_LAST_NAME Verdi
-ENV AIIDA_USER_INSTITUTION Khedivial
-
 
 # Configure AiiDAlab environment.
 ENV AIIDALAB_HOME /home/${NB_USER}
@@ -96,11 +65,6 @@ USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
 
-# Make sure that the known_hosts file is present inside the .ssh folder.
-RUN mkdir -p --mode=0700 /home/${NB_USER}/.ssh && \
-     touch /home/${NB_USER}/.ssh/known_hosts
-
-# Create apps folder.
 RUN  mkdir -p /home/${NB_USER}/apps
 
 ENV NOTEBOOK_ARGS \
