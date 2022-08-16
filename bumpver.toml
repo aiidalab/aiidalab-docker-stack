@@ -1,0 +1,21 @@
+[bumpver]
+current_version = "2022.1001"
+version_pattern = "YYYY.BUILD[-TAG]"
+commit_message = "Bump version {old_version} -> {new_version}."
+commit = true
+tag = false
+push = false
+
+[bumpver.file_patterns]
+"build.yml" = [
+    "version: '{version}'"
+]
+"bumpver.toml" = [
+    'current_version = "{version}"',
+]
+"docker-compose.yml" = [
+    "aiidalab/aiidalab:{version}"
+]
+"stack/aiidalab/Dockerfile" = [
+    'ARG VERSION={version}'
+]

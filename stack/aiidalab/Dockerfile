@@ -1,5 +1,5 @@
-# TODO: use proper base tag
-ARG BASE_IMAGE=aiidalab/aiida:latest
+ARG VERSION=2022.1001
+ARG BASE_IMAGE=aiidalab/aiida:${VERSION}
 FROM ${BASE_IMAGE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
