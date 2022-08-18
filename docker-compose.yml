@@ -20,7 +20,7 @@ services:
             - aiida-rmq-data:/var/lib/rabbitmq/
 
     aiidalab:
-        image: ${AIIDALAB_IMAGE:-aiidalab/aiidalab:2022.1001}
+        image: ${AIIDALAB_IMAGE:-aiidalab/lab:2022.1001}
         environment:
             RMQHOST: messaging
             TZ: Europe/Zurich

@@ -1,5 +1,5 @@
 ARG VERSION=2022.1001
-ARG BASE_IMAGE=aiidalab/aiida:${VERSION}
+ARG BASE_IMAGE=aiidalab/base:${VERSION}
 FROM ${BASE_IMAGE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"

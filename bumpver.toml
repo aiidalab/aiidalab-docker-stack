@@ -14,8 +14,8 @@ push = false
     'current_version = "{version}"',
 ]
 "docker-compose.yml" = [
-    "aiidalab/aiidalab:{version}"
+    "aiidalab/lab:{version}"
 ]
-"stack/aiidalab/Dockerfile" = [
+"stack/lab/Dockerfile" = [
     'ARG VERSION={version}'
 ]
