@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.9
+FROM aiidateam/aiida-core:2.0.3
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
