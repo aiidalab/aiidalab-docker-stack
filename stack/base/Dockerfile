@@ -1,12 +1,12 @@
-ARG PYTHON_VERSION=3.9.12
+ARG PYTHON_VERSION=3.9.4
 FROM jupyter/minimal-notebook:python-${PYTHON_VERSION}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
-ARG AIIDA_VERSION=2.0.1
-
 USER root
 WORKDIR /opt/
+
+ARG AIIDA_VERSION=2.0.0
 
 # Install the shared requirements.
 COPY requirements.txt .
