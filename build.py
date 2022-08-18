@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 from pathlib import Path
 
 import click
@@ -41,7 +42,12 @@ def cli():
 )
 def tags(github_actions):
     if github_actions:
-        click.echo(r"%0A".join(f"type=raw,event=tag,value={tag}" for tag in get_tags()))
+        enable = str(os.environ.get("GITHUB_REF_TYPE", None) == "tag").lower()
+        click.echo(
+            r"%0A".join(
+                f"type=raw,enable={enable},event=tag,value={tag}" for tag in get_tags()
+            )
+        )
     else:
         click.echo("\n".join(get_tags()))
 
