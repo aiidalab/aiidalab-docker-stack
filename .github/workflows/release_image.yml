@@ -17,7 +17,7 @@ jobs:
     build-docker-image:
 
         runs-on: ubuntu-latest
-        timeout-minutes: 45
+        timeout-minutes: 15
 
         steps:
             - uses: actions/checkout@v2
@@ -50,7 +50,7 @@ jobs:
               uses: docker/build-push-action@v3
               with:
                   context: stack/base
-                  # push: true  # TODO: uncomment this
+                  push: true
                   tags: ${{ steps.meta_base.outputs.tags }}
                   platforms: linux/amd64, linux/arm64
                   build-args: |
@@ -67,7 +67,7 @@ jobs:
               uses: docker/build-push-action@v3
               with:
                   context: stack/lab
-                  # push: true  # TODO: uncomment this
+                  push: true
                   tags: ${{ steps.meta_lab.outputs.tags }}
                   platforms: linux/amd64, linux/arm64
                   build-args: |
