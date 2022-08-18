@@ -17,7 +17,7 @@ RUN pip install --quiet --no-cache-dir \
      fix-permissions "/home/${NB_USER}"
 
 # Install the aiidalab-home app.
-ARG aiidalab_home_version=develop
+ARG aiidalab_home_version=v22.08.0
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout "${aiidalab_home_version}" && \
