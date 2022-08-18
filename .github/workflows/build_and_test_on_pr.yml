@@ -8,7 +8,7 @@
 # 4. Copy id_rsa file from the docker container to local folder.
 # 5. Restart the container and check that the id_rsa file didn't change.
 
-name: build-and-test-image-from-pull-request
+name: build-and-test
 
 on: [pull_request]
 
@@ -17,34 +17,52 @@ jobs:
     build-and-test:
 
         runs-on: ubuntu-latest
-        timeout-minutes: 45
+        timeout-minutes: 15
+
+        services:
+            registry:
+                image: registry:2
+                ports:
+                    - 5000:5000
 
         steps:
             - uses: actions/checkout@v2
             - name: Set up QEMU
-              uses: docker/setup-qemu-action@v1
+              uses: docker/setup-qemu-action@v2
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v1
-            - name: Cache Docker layers
-              uses: actions/cache@v2
+              uses: docker/setup-buildx-action@v2
               with:
-                  path: /tmp/.buildx-cache
-                  key: ${{ runner.os }}-buildx-${{ github.sha }}
-                  restore-keys: |
-                      ${{ runner.os }}-buildx-
-            - name: Build image locally
-              uses: docker/build-push-action@v2
+                  driver-opts: network=host
+            - name: Obtain Docker build args
+              id: meta_extra
+              run: |
+                  echo "::set-output name=build_args::$(./build.py docker-build-args --github-actions)"
+            - name: Build base (AiiDA) image
+              id: build_base_image
+              uses: docker/build-push-action@v3
               with:
-                  load: true
-                  push: false
-                  tags: aiidalab-docker-stack:latest
-                  cache-from: type=local,src=/tmp/.buildx-cache
-                  cache-to: type=local,dest=/tmp/.buildx-cache
+                  context: stack/base
+                  tags: localhost:5000/aiidalab/base:latest
+                  build-args: |
+                      ${{ steps.meta_extra.outputs.build_args }}
+                  push: true
+            - name: Build lab image
+              id: build_lab_image
+              uses: docker/build-push-action@v3
+              with:
+                  context: stack/lab
+                  tags: localhost:5000/aiidalab/lab:latest
+                  push: true
+                  build-args: |
+                      ${{ steps.meta_extra.outputs.build_args }}
+                      BASE_IMAGE=localhost:5000/aiidalab/base@${{ steps.build_base_image.outputs.digest }}
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.10'
                   cache: pip # caching pip dependencies
             - run: pip install -r tests/requirements.txt
             - name: Run tests
+              env:
+                  AIIDALAB_IMAGE: 'localhost:5000/aiidalab/lab@${{ steps.build_lab_image.outputs.digest }}'
               run: |
                   pytest -v

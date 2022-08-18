@@ -20,7 +20,7 @@ services:
             - aiida-rmq-data:/var/lib/rabbitmq/
 
     aiidalab:
-        build: ..
+        image: ${AIIDALAB_IMAGE:-aiidalab/lab:2022.1001}
         environment:
             RMQHOST: messaging
             TZ: Europe/Zurich
@@ -34,7 +34,6 @@ services:
             - messaging
         ports:
             - 8888
-
 
 volumes:
     aiida-postgres-db:
