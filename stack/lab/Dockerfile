@@ -7,12 +7,10 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
-# TODO: should be converted to a conda package
-# ARG aiidalab_version=aiida-2.0
-RUN pip install --quiet --no-cache-dir \
-     # TODO: switch to release version
-     "aiidalab@git+https://github.com/aiidalab/aiidalab@main" && \
-     # "aiidalab==${aiidalab_version}" && \
+ARG AIIDALAB_VERSION=22.08.0
+RUN mamba install --yes \
+     aiidalab=${AIIDALAB_VERSION} \
+     && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
