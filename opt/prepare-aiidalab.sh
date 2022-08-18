@@ -73,9 +73,6 @@ if [[ ${INITIAL_SETUP} == 1 ]]; then
   done
 fi
 
-# Update reentry.
-reentry scan
-
 # Clear user trash directory.
 if [ -e /home/${SYSTEM_USER}/.trash ]; then
   rm -rf /home/${SYSTEM_USER}/.trash/*

@@ -87,12 +87,11 @@ RUN conda install --yes -c conda-forge \
   rdkit==2021.09.2 \
   && conda clean --all
 
-# Install AiiDAlab Python packages into user conda environment and populate reentry cache.
+# Install AiiDAlab Python packages into user conda environment.
 COPY requirements.txt .
 ARG extra_requirements
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt $extra_requirements
-RUN reentry scan
 
 # Configure pip to use requirements file as constraints file.
 RUN conda env config vars set PIP_CONSTRAINT=/opt/requirements.txt
