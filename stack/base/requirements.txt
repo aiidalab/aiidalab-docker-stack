@@ -1,2 +1,2 @@
-aiida-core>=2.0.0
+aiida-core>=2.0.0,<3
 pip==22.0.4
