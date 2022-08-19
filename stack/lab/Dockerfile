@@ -70,6 +70,9 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
-ENV NOTEBOOK_ARGS \
-     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     "--ContentsManager.allow_hidden=True"
+# Switch to NOTEBOOK_ARGS approach (see below)
+# for newer jupyter docker stack versions.
+RUN echo 'c.NotebookApp.default_url="/apps/apps/home/start.ipynb"' >> /etc/jupyter/jupyter_notebook_config.py
+# ENV NOTEBOOK_ARGS \
+     # "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
+     # "--ContentsManager.allow_hidden=True"
