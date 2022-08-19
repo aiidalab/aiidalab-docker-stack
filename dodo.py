@@ -36,7 +36,7 @@ def task_build():
 def task_tests():
     """Run tests with pytest."""
 
-    return {"actions": ["pytest"]}
+    return {"actions": ["pytest -v"], "verbosity": 2}
 
 
 def task_up():
