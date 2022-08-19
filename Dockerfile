@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-core:1.6.9
+FROM aiidateam/aiida-core:2.0.3
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
@@ -87,12 +87,11 @@ RUN conda install --yes -c conda-forge \
   rdkit==2021.09.2 \
   && conda clean --all
 
-# Install AiiDAlab Python packages into user conda environment and populate reentry cache.
+# Install AiiDAlab Python packages into user conda environment.
 COPY requirements.txt .
 ARG extra_requirements
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt $extra_requirements
-RUN reentry scan
 
 # Configure pip to use requirements file as constraints file.
 RUN conda env config vars set PIP_CONSTRAINT=/opt/requirements.txt
@@ -110,7 +109,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Install the aiidalab-home app.
-ARG aiidalab_home_version=v22.01.0
+ARG aiidalab_home_version=v22.08.0
 RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git checkout $aiidalab_home_version
 RUN chmod 774 aiidalab-home
 
