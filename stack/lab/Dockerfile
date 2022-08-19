@@ -19,10 +19,10 @@ RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
 # Install the aiidalab-home app.
-ARG aiidalab_home_version=v22.08.0
+ARG AIIDALAB_HOME_VERSION=v22.08.0
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
-     git checkout "${aiidalab_home_version}" && \
+     git checkout "${AIIDALAB_HOME_VERSION}" && \
      pip install --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
