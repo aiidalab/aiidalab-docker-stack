@@ -14,6 +14,10 @@ RUN mamba install --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
+# Pin aiidalab version.
+RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
+RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
+
 # Install the aiidalab-home app.
 ARG aiidalab_home_version=v22.08.0
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
