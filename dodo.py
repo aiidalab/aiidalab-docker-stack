@@ -41,5 +41,22 @@ def task_tests():
 
 def task_up():
     """Start AiiDAlab server for testing."""
+    return {
+        "actions": ["AIIDALAB_PORT=%(port)i docker-compose up --detach"],
+        "params": [
+            {
+                "name": "port",
+                "short": "p",
+                "long": "port",
+                "type": int,
+                "default": 8888,
+                "help": "Specify the AiiDAlab host port.",
+            },
+        ],
+        "verbosity": 2,
+    }
 
-    return {"actions": ["docker-compose up --detach"], "verbosity": 2}
+
+def task_down():
+    """Stop AiiDAlab server."""
+    return {"actions": ["docker-compose down"], "verbosity": 2}

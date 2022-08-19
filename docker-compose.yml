@@ -33,7 +33,7 @@ services:
             - database
             - messaging
         ports:
-            - 8888
+            - "0.0.0.0:${AIIDALAB_PORT:-}:8888"
 
 volumes:
     aiida-postgres-db:
