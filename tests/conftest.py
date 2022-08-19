@@ -1,5 +1,8 @@
+from pathlib import Path
+
 import pytest
 import requests
+from yaml import SafeLoader, load
 
 from requests.exceptions import ConnectionError
 
@@ -44,3 +47,13 @@ def aiidalab_exec(docker_compose):
 @pytest.fixture
 def nb_user(aiidalab_exec):
     return aiidalab_exec("bash -c 'echo \"${NB_USER}\"'").decode().strip()
+
+
+@pytest.fixture(scope="session")
+def _build_config():
+    return load(Path("build.yml").read_text(), Loader=SafeLoader)
+
+
+@pytest.fixture(scope="session")
+def aiida_version(_build_config):
+    return _build_config["versions"]["aiida"]
