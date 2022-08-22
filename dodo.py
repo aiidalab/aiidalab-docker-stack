@@ -12,6 +12,10 @@ def task_build():
     organization = get_organization()
     version = get_version()  # The version of the stack.
 
+    deps = ["build.yml", "build.py"] + [
+        p for p in Path("stack").glob("**/*") if p.is_file()
+    ]
+
     for context in contexts:
         image = f"{organization}/{context.name}"
 
@@ -20,10 +24,6 @@ def task_build():
         build_action.extend(f"--build-arg {arg}" for arg in get_docker_build_args())
         build_action.append(str(context))
         build_action = " ".join(build_action)
-
-        deps = ["build.yml", "build.py"] + [
-            p for p in context.glob("**/*") if p.is_file()
-        ]
 
         yield {
             "name": f"{image}:{version}",
