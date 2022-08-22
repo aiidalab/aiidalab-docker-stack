@@ -32,7 +32,7 @@ RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
 
 # Configure AiiDA profile.
 COPY config-quick-setup.yaml .
-COPY before-notebook.d/prepare-aiida.sh /usr/local/bin/before-notebook.d/
+COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 # Configure AiiDA.
 ENV SETUP_DEFAULT_AIIDA_PROFILE true
@@ -42,10 +42,16 @@ ENV AIIDA_USER_FIRST_NAME Giuseppe
 ENV AIIDA_USER_LAST_NAME Verdi
 ENV AIIDA_USER_INSTITUTION Khedivial
 
+# Install the load-singlesshagent.sh script as described here:
+# https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
+# The startup of this script is configured in the before-notebook.d/setup-ssh.sh file.
+RUN wget --quiet --directory-prefix=/opt/bin/ \
+     "https://aiida.readthedocs.io/projects/aiida-core/en/v${AIIDA_VERSION}/_downloads/4265ec5a42c3a3dba586dd460c0db95e/load-singlesshagent.sh" \
+     && echo $'\n# Load singlesshagent on shell startup.\n\
+if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
+   . /opt/bin/load-singlesshagent.sh\n\
+fi\n' >> "/home/${NB_USER}/.bashrc"
+
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
-
-# Make sure that the known_hosts file is present inside the .ssh folder.
-RUN mkdir -p --mode=0700 /home/${NB_USER}/.ssh && \
-     touch /home/${NB_USER}/.ssh/known_hosts

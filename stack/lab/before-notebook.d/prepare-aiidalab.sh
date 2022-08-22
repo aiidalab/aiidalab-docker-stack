@@ -11,12 +11,6 @@ if [ -L /home/${NB_USER}/${NB_USER} ]; then
   rm /home/${NB_USER}/${NB_USER}
 fi
 
-if [[ ! -f  /home/${NB_USER}/.ssh/id_rsa ]]; then
-  # Generate ssh key that works with `paramiko`
-  # See: https://aiida.readthedocs.io/projects/aiida-core/en/latest/get_started/computers.html#remote-computer-requirements
-  ssh-keygen -f /home/${NB_USER}/.ssh/id_rsa -t rsa -b 4096 -m PEM -N ''
-fi
-
 # Install the home app.
 if [ ! -e /home/${NB_USER}/apps/home ]; then
     echo "Install home app."
