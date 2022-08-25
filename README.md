@@ -1,20 +1,32 @@
 # Docker Stack for AiiDAlab
 
-This repository contains the Dockerfile for the official AiiDAlab docker images.
+This repository contains the Dockerfiles for the official AiiDAlab docker images.
 
-Docker images are automatically built and pushed to Docker Hub at https://hub.docker.com/r/aiidalab/aiidalab-docker-stack with the following tags:
+Docker images are automatically built and pushed to Docker Hub at https://hub.docker.com/r/aiidalab/ with the following tags:
 
 - `latest` –  the latest tagged release.
 - `<version>` – a specific tagged release, example: `21.12.0`.
 - `master`/`develop` – the latest commit on the corresponding branches with the same name.
 
-## Get started
+## Build images locally
 
-### Local deployment
+To build the images locally, setup a build end testing environment with [conda](https://docs.conda.io/en/latest/miniconda.html) (or [mamba](https://mamba.readthedocs.io/en/latest/installation.html)):
 
-To run AiiDAlab on your own workstation or laptop you can either
-- run the image directly with: `docker run aiidalab-docker-stack -p 8888:8888`, or
-- _(recommended)_ use the `aiidalab-launch` tool which is a thin docker wrapper.
+```console
+conda env create -f environment.yml
+```
+
+Then activate the environment with
+```console
+conda activate aiidalab-docker-stack
+```
+
+To build the images, run `doit build`. =
+You can then run automated tests with `doit tests`.
+
+For local testing, you can start the images with `doit up`, however please refer to the next section for a production-ready local deployment of AiiDAlab with aiidalab-launch.
+
+## Run AiiDAlab in production
 
 The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
 To use it, simply install it via pip
