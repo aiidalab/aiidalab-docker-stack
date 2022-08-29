@@ -34,7 +34,7 @@ function "tags" {
 }
 
 group "default" {
-  targets = ["base", "base-with-services", "lab"]
+  targets = ["base", "base-with-services", "lab", "full-stack"]
 }
 
 target "base-meta" {
@@ -45,6 +45,10 @@ target "base-with-services-meta" {
 }
 target "lab-meta" {
   tags = tags("lab")
+}
+
+target "full-stack-meta" {
+  tags = tags("full-stack")
 }
 
 target "base" {
@@ -78,4 +82,13 @@ target "lab" {
     "AIIDALAB_VERSION"      = "22.08.0"
     "AIIDALAB_HOME_VERSION" = "v22.08.0"
   }
+}
+target "full-stack" {
+  inherits = ["full-stack-meta"]
+  context = "stack/full-stack"
+  contexts = {
+    base-with-services = "target:base-with-services"
+    lab        = "target:lab"
+  }
+  platforms = "${PLATFORMS}"
 }
