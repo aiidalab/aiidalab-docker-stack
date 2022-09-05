@@ -16,9 +16,14 @@ def is_responsive(url):
         return False
 
 
+@pytest.fixture(scope="session", params=["lab", "full-stack"])
+def variant(request):
+    return request.param
+
+
 @pytest.fixture(scope="session")
-def docker_compose_file():
-    return f"docker-compose.yml"
+def docker_compose_file(pytestconfig, variant):
+    return f"docker-compose.{variant}.yml"
 
 
 @pytest.fixture(scope="session")

@@ -33,7 +33,7 @@ function "tags" {
 }
 
 group "default" {
-  targets = ["base", "lab"]
+  targets = ["base", "full-stack", "lab"]
 }
 
 target "base" {
@@ -41,6 +41,16 @@ target "base" {
   tags    = tags("base")
   args = {
     "BASE"          = "${JUPYTER_BASE_IMAGE}"
+    "AIIDA_VERSION" = "${AIIDA_VERSION}"
+  }
+}
+target "full-stack" {
+  context = "stack/full-stack"
+  contexts = {
+    base = "target:base"
+  }
+  tags = tags("full-stack")
+  args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
   }
 }

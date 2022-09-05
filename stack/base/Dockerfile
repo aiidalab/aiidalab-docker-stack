@@ -44,7 +44,7 @@ ENV AIIDA_USER_INSTITUTION Khedivial
 
 # Install the load-singlesshagent.sh script as described here:
 # https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
-# The startup of this script is configured in the before-notebook.d/setup-ssh.sh file.
+# The startup of this script is configured in the before-notebook.d/10_setup-ssh.sh file.
 RUN wget --quiet --directory-prefix=/opt/bin/ \
      "https://aiida.readthedocs.io/projects/aiida-core/en/v${AIIDA_VERSION}/_downloads/4265ec5a42c3a3dba586dd460c0db95e/load-singlesshagent.sh" \
      && echo $'\n# Load singlesshagent on shell startup.\n\
