@@ -7,15 +7,15 @@ tag = false
 push = false
 
 [bumpver.file_patterns]
-"build.yml" = [
-    "version: '{version}'"
-]
 "bumpver.toml" = [
     'current_version = "{version}"',
+]
+"docker-bake.hcl" = [
+    'default = "{version}"'
 ]
 "docker-compose.yml" = [
     "aiidalab/lab:{version}"
 ]
-"stack/lab/Dockerfile" = [
-    'ARG VERSION={version}'
+".github/workflows/build_and_test.yml" = [
+    "lab:{version}",
 ]
