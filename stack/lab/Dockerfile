@@ -6,6 +6,14 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
+# Install additional system packages
+RUN apt-get update --yes && \
+     apt-get install --yes --no-install-recommends \
+     curl \
+     && apt-get clean \
+     && rm -rf /var/lib/apt/lists/*
+
+# Install aiidalab package
 ARG AIIDALAB_VERSION=22.08.0
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
