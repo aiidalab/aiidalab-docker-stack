@@ -36,11 +36,8 @@ RUN pip install ./appmode --no-cache-dir && \
      jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
-# Perform factory reset if needed.
-COPY before-notebook.d/factory_reset.sh /usr/local/bin/before-notebook.d/
-
-# Prepare user's folders for AiiDAlab launch.
-COPY before-notebook.d/prepare-aiidalab.sh /usr/local/bin/before-notebook.d/
+# Copy start-up scripts for AiiDAlab.
+COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 # Configure AiiDAlab environment.
 ENV AIIDALAB_HOME /home/${NB_USER}

@@ -1,0 +1,48 @@
+---
+version: '3.4'
+
+services:
+
+    database:
+        image: postgres:12.3
+        environment:
+            POSTGRES_USER: pguser
+            POSTGRES_PASSWORD: password
+        volumes:
+            - aiida-postgres-db:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    messaging:
+        image: rabbitmq:3.8.3-management
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        volumes:
+            - aiida-rmq-data:/var/lib/rabbitmq/
+
+    aiidalab:
+        image: ${LAB_IMAGE:-aiidalab/lab:2022.1001}
+        environment:
+            RMQHOST: messaging
+            TZ: Europe/Zurich
+            DOCKER_STACKS_JUPYTER_CMD: notebook
+            SETUP_DEFAULT_AIIDA_PROFILE: 'true'
+            AIIDALAB_DEFAULT_APPS: ''
+        volumes:
+            - aiidalab-home-folder:/home/jovyan
+        depends_on:
+            database:
+                condition: service_healthy
+            messaging:
+                condition: service_started
+        ports:
+            - "0.0.0.0:${AIIDALAB_PORT:-}:8888"
+
+volumes:
+    aiida-postgres-db:
+    aiida-rmq-data:
+    aiidalab-home-folder:

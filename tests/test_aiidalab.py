@@ -13,7 +13,9 @@ def test_pip_check(aiidalab_exec):
     aiidalab_exec("pip check")
 
 
-def test_aiidalab_available(aiidalab_exec, nb_user):
+def test_aiidalab_available(aiidalab_exec, nb_user, variant):
+    if "lab" not in variant:
+        pytest.skip()
     output = aiidalab_exec("aiidalab --version", user=nb_user).decode().strip().lower()
     assert "aiidalab" in output
 
@@ -48,8 +50,14 @@ def test_prevent_installation_of_incompatible_aiida_version(
 @pytest.mark.parametrize("package_manager", ["mamba", "pip"])
 @pytest.mark.parametrize("incompatible_version", ["22.7.1"])
 def test_prevent_installation_of_incompatible_aiidalab_version(
-    aiidalab_exec, nb_user, package_manager, incompatible_version
+    aiidalab_exec,
+    nb_user,
+    package_manager,
+    incompatible_version,
+    variant,
 ):
+    if "lab" not in variant:
+        pytest.skip()
     with pytest.raises(Exception):
         aiidalab_exec(
             f"{package_manager} install aiidalab={incompatible_version}", user=nb_user

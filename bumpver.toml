@@ -13,9 +13,13 @@ push = false
 "docker-bake.hcl" = [
     'default = "{version}"'
 ]
-"docker-compose.yml" = [
+"docker-compose.full-stack.yml" = [
+    "aiidalab/full-stack:{version}"
+]
+"docker-compose.lab.yml" = [
     "aiidalab/lab:{version}"
 ]
 ".github/workflows/build_and_test.yml" = [
     "lab:{version}",
+    "full-stack:{version}"
 ]
