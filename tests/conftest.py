@@ -17,6 +17,11 @@ def is_responsive(url):
 
 
 @pytest.fixture(scope="session")
+def docker_compose_file():
+    return f"docker-compose.yml"
+
+
+@pytest.fixture(scope="session")
 def notebook_service(docker_ip, docker_services):
     """Ensure that HTTP service is up and responsive."""
     port = docker_services.port_for("aiidalab", 8888)
