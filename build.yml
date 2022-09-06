@@ -1,6 +1,0 @@
----
-organization: aiidalab
-version: '2022.1001'
-versions:
-    python: '3.9.4'
-    aiida: '2.0.0'

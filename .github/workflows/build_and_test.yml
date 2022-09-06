@@ -35,29 +35,11 @@ jobs:
               uses: docker/setup-buildx-action@v2
               with:
                   driver-opts: network=host
-            - name: Obtain Docker build args
-              id: meta_extra
-              run: |
-                  echo "::set-output name=build_args::$(./build.py docker-build-args --github-actions)"
-            - name: Build base (AiiDA) image
-              id: build_base_image
-              uses: docker/build-push-action@v3
+            - name: Build images with buildx bake
+              uses: docker/bake-action@v2.2.0
               with:
-                  context: stack/base
-                  tags: localhost:5000/aiidalab/base:latest
-                  build-args: |
-                      ${{ steps.meta_extra.outputs.build_args }}
+                  files: "docker-bake.hcl,.github/workflows/env.hcl"
                   push: true
-            - name: Build lab image
-              id: build_lab_image
-              uses: docker/build-push-action@v3
-              with:
-                  context: stack/lab
-                  tags: localhost:5000/aiidalab/lab:latest
-                  push: true
-                  build-args: |
-                      ${{ steps.meta_extra.outputs.build_args }}
-                      BASE_IMAGE=localhost:5000/aiidalab/base@${{ steps.build_base_image.outputs.digest }}
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.10'
@@ -65,6 +47,6 @@ jobs:
             - run: pip install -r tests/requirements.txt
             - name: Run tests
               env:
-                  AIIDALAB_IMAGE: 'localhost:5000/aiidalab/lab@${{ steps.build_lab_image.outputs.digest }}'
+                  LAB_IMAGE: localhost:5000/aiidalab/lab:2022.1001
               run: |
                   pytest -v
