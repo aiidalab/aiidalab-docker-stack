@@ -86,6 +86,10 @@ This will update the README.md file, make a commit, tag it, and then push both t
 
 To create a _special_ release, simply tag it with a tag name of your choice with the exception that it cannot start with the character `v`.
 
+### Deploy AiiDAlab on Kubernetes
+
+Please see [here](k8s/README.md) for instructions on how to deploy AiiDAlab on Kubernetes.
+
 ## Deploy AiiDAlab with AiiDAlab Launch
 
 The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.

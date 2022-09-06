@@ -1,0 +1,7 @@
+---
+singleuser:
+    image:
+        name: "aiidalab/full-stack"
+        tag: "latest"
+        pullPolicy: Never # To use locally built images
+    cmd: start-singleuser.sh
