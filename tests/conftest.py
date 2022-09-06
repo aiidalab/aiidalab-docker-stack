@@ -1,8 +1,8 @@
 from pathlib import Path
 
+import hcl2
 import pytest
 import requests
-from yaml import SafeLoader, load
 
 from requests.exceptions import ConnectionError
 
@@ -56,9 +56,12 @@ def nb_user(aiidalab_exec):
 
 @pytest.fixture(scope="session")
 def _build_config():
-    return load(Path("build.yml").read_text(), Loader=SafeLoader)
+    config = dict()
+    for item in hcl2.loads(Path("docker-bake.hcl").read_text())["variable"]:
+        config.update(item)
+    return config
 
 
 @pytest.fixture(scope="session")
 def aiida_version(_build_config):
-    return _build_config["versions"]["aiida"]
+    return _build_config["AIIDA_VERSION"]["default"]

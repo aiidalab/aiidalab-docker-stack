@@ -1,5 +1,5 @@
-ARG PYTHON_VERSION=3.9.4
-FROM jupyter/minimal-notebook:python-${PYTHON_VERSION}
+ARG BASE=jupyter/minimal-notebook:python-3.9.4
+FROM ${BASE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 

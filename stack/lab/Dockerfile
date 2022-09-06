@@ -1,6 +1,5 @@
-ARG VERSION=2022.1001
-ARG BASE_IMAGE=aiidalab/base:${VERSION}
-FROM ${BASE_IMAGE}
+# syntax=docker/dockerfile:1
+FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
