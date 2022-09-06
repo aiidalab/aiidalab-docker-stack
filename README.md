@@ -21,7 +21,7 @@ Then activate the environment with
 conda activate aiidalab-docker-stack
 ```
 
-To build the images, run `doit build`. =
+To build the images, run `doit build` (tested with *docker buildx* version v0.8.2).
 You can then run automated tests with `doit tests`.
 
 For local testing, you can start the images with `doit up`, however please refer to the next section for a production-ready local deployment of AiiDAlab with aiidalab-launch.
