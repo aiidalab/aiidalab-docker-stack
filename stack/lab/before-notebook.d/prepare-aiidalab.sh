@@ -11,6 +11,9 @@ if [ -L /home/${NB_USER}/${NB_USER} ]; then
   rm /home/${NB_USER}/${NB_USER}
 fi
 
+# Check whether this is likely the first time we run this script.
+[[ -z $(ls -A "/home/${NB_USER}/apps/") ]] && INITIAL_SETUP=1 || INITIAL_SETUP=0
+
 # Install the home app.
 if [ ! -e /home/${NB_USER}/apps/home ]; then
     echo "Install home app."
