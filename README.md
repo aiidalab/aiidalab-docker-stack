@@ -27,7 +27,7 @@ To build the images, run `doit build` (tested with *docker buildx* version v0.8.
 
 To run tests, first build the images as described in the previous section.
 Then install the test dependencies with `pip install -r tests/requirements.txt`.
-Finall, run the automated tests with `doit tests`.
+Finally, run the automated tests with `doit tests`.
 
 For manual testing, you can start the images with `doit up`, however please refer to the next section for a production-ready local deployment of AiiDAlab with aiidalab-launch.
 
