@@ -17,11 +17,16 @@ fi
 # Install the home app.
 if [ ! -e /home/${NB_USER}/apps/home ]; then
     echo "Install home app."
+
+    # Ensure that the ~/apps directory exists.
+    mkdir -p /home/${NB_USER}/apps
+
     # The home app is installed in system space and linked to from user space.
     # That ensures that users are not inadvertently running the wrong version of
     # the home app for a given system environment, but still makes it possible to
     # manually install a specific version of the home app in between upgrades, e.g.,
     # for development work, by simply replacing the link with a clone of the repository.
+
     ln -s /opt/aiidalab-home /home/${NB_USER}/apps/home
 elif [[ -d /home/${NB_USER}/apps/home && ! -L /home/${NB_USER}/apps/home ]]; then
   # Backup an existing repository of the home app and replace with link to /opt/aiidalab-home.
