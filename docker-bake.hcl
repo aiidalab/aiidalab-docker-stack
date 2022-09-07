@@ -23,6 +23,10 @@ variable "REGISTRY" {
   default = "docker.io/"
 }
 
+variable "PLATFORMS" {
+  default = ["linux/amd64", "linux/arm64"]
+}
+
 function "tags" {
   params = [image]
   result = [
@@ -38,6 +42,7 @@ group "default" {
 
 target "base" {
   context = "stack/base"
+  platforms = "${PLATFORMS}"
   tags    = tags("base")
   args = {
     "BASE"          = "${JUPYTER_BASE_IMAGE}"
@@ -49,6 +54,7 @@ target "full-stack" {
   contexts = {
     base = "target:base"
   }
+  platforms = "${PLATFORMS}"
   tags = tags("full-stack")
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
@@ -59,6 +65,7 @@ target "lab" {
   contexts = {
     base = "target:base"
   }
+  platforms = "${PLATFORMS}"
   tags = tags("lab")
   args = {
     "AIIDALAB_VERSION"      = "22.08.0"
