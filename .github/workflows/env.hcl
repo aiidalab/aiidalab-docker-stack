@@ -1,2 +1,2 @@
 # env.hcl
-REGISTRY = "localhost:5000/"
+REGISTRY = "ghcr.io/"
