@@ -31,6 +31,12 @@ Finally, run the automated tests with `doit tests`.
 
 For manual testing, you can start the images with `doit up`, however please refer to the next section for a production-ready local deployment of AiiDAlab with aiidalab-launch.
 
+### Test on different architectures
+
+Images are built for multiple architectures (amd64 and aarch64) during continuous integration and pushed to the GitHub Container Registry (ghcr.io).
+To run automated tests or manual test against those images, simply specify the registry with the aformentioned `up` and `tests` commands (e.g. `doit up --registry=ghcr.io/).
+Note: You may have to [log into the registry first](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
+
 ## Run AiiDAlab in production
 
 The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
