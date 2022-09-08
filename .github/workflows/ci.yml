@@ -17,20 +17,18 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 15
 
-        services:
-            registry:
-                image: registry:2
-                ports:
-                    - 5000:5000
-
         steps:
             - uses: actions/checkout@v2
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v2
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v2
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
               with:
-                  driver-opts: network=host
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
             - name: Build images with buildx bake
               uses: docker/bake-action@v2.2.0
               with:
@@ -43,7 +41,6 @@ jobs:
             - run: pip install -r tests/requirements.txt
             - name: Run tests
               env:
-                  LAB_IMAGE: localhost:5000/aiidalab/lab:2022.1001
-                  FULL_STACK_IMAGE: localhost:5000/aiidalab/full-stack:2022.1001
+                  REGISTRY: ghcr.io/
               run: |
                   pytest -v

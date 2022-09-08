@@ -19,7 +19,3 @@ push = false
 "docker-compose.lab.yml" = [
     "aiidalab/lab:{version}"
 ]
-".github/workflows/ci.yml" = [
-    "lab:{version}",
-    "full-stack:{version}"
-]
