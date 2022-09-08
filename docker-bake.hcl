@@ -37,7 +37,7 @@ function "tags" {
 }
 
 group "default" {
-  targets = ["base", "full-stack", "lab"]
+  targets = ["base", "base-with-services", "lab"]
 }
 
 target "base" {
@@ -49,13 +49,13 @@ target "base" {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
   }
 }
-target "full-stack" {
-  context = "stack/full-stack"
+target "base-with-services" {
+  context = "stack/base-with-services"
   contexts = {
     base = "target:base"
   }
   platforms = "${PLATFORMS}"
-  tags = tags("full-stack")
+  tags = tags("base-with-services")
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
   }

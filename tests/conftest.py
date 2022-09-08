@@ -16,7 +16,7 @@ def is_responsive(url):
         return False
 
 
-@pytest.fixture(scope="session", params=["lab", "full-stack"])
+@pytest.fixture(scope="session", params=["lab", "base-with-services"])
 def variant(request):
     return request.param
 
