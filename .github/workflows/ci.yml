@@ -7,8 +7,10 @@
 name: continuous-integration
 
 on:
-    - push
-    - pull_request
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master, stack]  # remove stack before merge
 
 jobs:
 
