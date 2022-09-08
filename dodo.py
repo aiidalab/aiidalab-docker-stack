@@ -16,7 +16,7 @@ def task_build():
     """Build all docker images."""
 
     return {
-        "actions": ["docker buildx bake"],
+        "actions": ["docker buildx bake -f docker-bake.hcl -f build.json"],
         "params": [_REGISTRY_PARAM],
         "verbosity": 2,
     }

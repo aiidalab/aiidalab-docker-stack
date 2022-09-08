@@ -8,9 +8,15 @@ name: continuous-integration
 
 on:
     push:
-        branches: [master]
+        branches:
+            - master
+            - docker-metadata-action # TODO remote docker-metadata-action
+        tags:
+            - "*"
     pull_request:
-        branches: [master, stack]  # remove stack before merge
+        branches:
+            - master
+            - stack # remove stack before merge
 
 jobs:
 
@@ -31,11 +37,44 @@ jobs:
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Login to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+            - name: Read additional metadata
+              id: build_vars
+              run: |
+                  echo ::set-output name=vars::$(cat build.json | \
+                    jq '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v4
+              with:
+                  bake-target: __template__-meta
+                  images: |
+                      name=ghcr.io/aiidalab/__template__,enable=true
+                      name=docker.io/aiidalab/__template__,enable=${{ github.ref_type == 'tag' || github.ref_name == 'master' }}
+                  tags: |
+                      type=ref,event=pr
+                      type=ref,event=tag
+                      type=edge
+                      type=raw,value=aiida-${{ fromJSON(steps.build_vars.outputs.vars).AIIDA_VERSION }},enable={{is_default_branch}}
+                      type=raw,value=python-${{ fromJSON(steps.build_vars.outputs.vars).PYTHON_VERSION }},enable={{is_default_branch}}
+            - name: Generate docker-bake meta file.
+              env:
+                  BAKE_TEMPLATE_META: ${{ steps.meta.outputs.bake-file }}
+              run: |
+                  cat ${BAKE_TEMPLATE_META} | jq -c \
+                    | .github/workflows/merge-bake-template-target.sh \
+                    | tee docker-bake-template-meta.json
             - name: Build images with buildx bake
               uses: docker/bake-action@v2.2.0
               with:
-                  files: "docker-bake.hcl,.github/workflows/env.hcl"
-                  push: true
+                  files: |
+                      docker-bake.hcl
+                      build.json
+                      docker-bake-template-meta.json
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.10'

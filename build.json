@@ -1,0 +1,13 @@
+{
+  "variable": {
+    "VERSION": {
+      "default": "2022.1001"
+    },
+    "PYTHON_VERSION": {
+      "default": "3.9.4"
+    },
+    "AIIDA_VERSION": {
+      "default": "2.0.0"
+    }
+  }
+}
