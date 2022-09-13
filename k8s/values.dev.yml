@@ -5,3 +5,7 @@ singleuser:
         tag: "latest"
         pullPolicy: Never # To use locally built images
     cmd: start-singleuser.sh
+hub:
+    extraConfig:
+        myConfig: |
+            c.KubeSpawner.http_timeout = 60
