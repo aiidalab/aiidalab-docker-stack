@@ -53,7 +53,7 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --label "${computer_name}"                                      \
         --description "this computer"                                   \
         --hostname "${computer_name}"                                   \
-        --transport local                                          \
+        --transport core.local                                          \
         --scheduler direct                                         \
         --work-dir /home/aiida/aiida_run/                               \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"                \
