@@ -10,7 +10,7 @@ _DOCKER_ARCHITECTURE = _DOCKER_CLIENT.info()["Architecture"]
 
 DOIT_CONFIG = {"default_tasks": ["build"]}
 
-VERSION = Version.from_git().serialize(dirty=True).replace("+", "_")
+VERSION = Version.from_git().serialize().replace("+", "_")
 PLATFORM = {"aarch64": "linux/arm64"}.get(_DOCKER_ARCHITECTURE, _DOCKER_ARCHITECTURE)
 
 
