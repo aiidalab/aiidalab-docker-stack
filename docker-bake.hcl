@@ -1,14 +1,11 @@
 # docker-bake.hcl
 variable "VERSION" {
-  default = "2022.1001"
 }
 
 variable "PYTHON_VERSION" {
-  default = "3.9.4"
 }
 
 variable "AIIDA_VERSION" {
-  default = "2.0.0"
 }
 
 variable "JUPYTER_BASE_IMAGE" {
@@ -40,33 +37,43 @@ group "default" {
   targets = ["base", "base-with-services", "lab"]
 }
 
+target "base-meta" {
+  tags = tags("base")
+}
+target "base-with-services-meta" {
+  tags = tags("base-with-services")
+}
+target "lab-meta" {
+  tags = tags("lab")
+}
+
 target "base" {
+  inherits = ["base-meta"]
   context = "stack/base"
   platforms = "${PLATFORMS}"
-  tags    = tags("base")
   args = {
     "BASE"          = "${JUPYTER_BASE_IMAGE}"
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
   }
 }
 target "base-with-services" {
+  inherits = ["base-with-services-meta"]
   context = "stack/base-with-services"
   contexts = {
     base = "target:base"
   }
   platforms = "${PLATFORMS}"
-  tags = tags("base-with-services")
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
   }
 }
 target "lab" {
+  inherits = ["lab-meta"]
   context = "stack/lab"
   contexts = {
     base = "target:base"
   }
   platforms = "${PLATFORMS}"
-  tags = tags("lab")
   args = {
     "AIIDALAB_VERSION"      = "22.08.0"
     "AIIDALAB_HOME_VERSION" = "v22.08.0"

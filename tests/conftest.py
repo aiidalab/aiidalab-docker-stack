@@ -1,6 +1,6 @@
+import json
 from pathlib import Path
 
-import hcl2
 import pytest
 import requests
 
@@ -61,10 +61,7 @@ def nb_user(aiidalab_exec):
 
 @pytest.fixture(scope="session")
 def _build_config():
-    config = dict()
-    for item in hcl2.loads(Path("docker-bake.hcl").read_text())["variable"]:
-        config.update(item)
-    return config
+    return json.loads(Path("build.json").read_text())["variable"]
 
 
 @pytest.fixture(scope="session")

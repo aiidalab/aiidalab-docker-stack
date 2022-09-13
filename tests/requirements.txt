@@ -1,5 +1,4 @@
 docker-compose==1.29.2
 pytest-docker==1.0.0
 pytest==7.1.2
-python-hcl2==3.0.5
 requests==2.28.1
