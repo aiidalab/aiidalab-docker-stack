@@ -33,8 +33,12 @@ For manual testing, you can start the images with `doit up`, however please refe
 
 ### Test on different architectures
 
-Images are built for multiple architectures (amd64 and aarch64) during continuous integration and pushed to the GitHub Container Registry (ghcr.io).
-To run automated tests or manual test against those images, simply specify the registry with the aformentioned `up` and `tests` commands (e.g. `doit up --registry=ghcr.io/).
+The build system will attempt to detect the local architecture and automatically build images for it (tested with amd64 and arm64).
+All commands `build`, `tests`, and `up` will use the locally detected platform and use a version tag based on the state of the local git repository.
+However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit up --platform=linux/amd64 --version=my-version`.
+
+Further, images are built for linux/amd64 and linux/arm64 during continuous integration for all pull-requests into the default branch and pushed to the GitHub Container Registry (ghcr.io).
+You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit up --registry=ghcr.io/ --version=pr-123`.
 Note: You may have to [log into the registry first](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
 
 ## Run AiiDAlab in production
