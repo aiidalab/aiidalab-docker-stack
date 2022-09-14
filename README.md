@@ -71,6 +71,16 @@ Images are built for `linux/amd64` and `linux/arm64` during continuous integrati
 You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit up --registry=ghcr.io/ --version=pr-123`.
 Note: You may have to [log into the registry first](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
 
+### Creating a release
+
+To create a regular release, that means a release following the standard versionig scheme (2022.1001 and so on), use `bumpver`.
+For this, set up your development environment and then execute
+
+```console
+bumpver update
+```
+This will update the README.md file, make a commit, tag it, and then push it to the repository to kick-off the build and release flow.
+
 ## Deploy AiiDAlab with AiiDAlab Launch
 
 The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
