@@ -98,12 +98,12 @@ jobs:
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
-            - uses: actions/setup-python@v4
+            - name: Setup Python test environment
+              uses: mamba-org/provision-with-micromamba@v13
               with:
-                  python-version: '3.10'
-                  cache: pip # caching pip dependencies
-            - run: pip install -r tests/requirements.txt
+                  cache-env: true
             - name: Run tests
+              shell: bash -l {0}  # required to activate the conda environment
               env: ${{ fromJSON(needs.build.outputs.images) }}
               run: |
                   pytest -v

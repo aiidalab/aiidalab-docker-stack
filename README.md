@@ -59,8 +59,7 @@ However, you can also specify a custom platform or version with the `--platform`
 ### Run automated tests
 
 To run tests, first build the images as described in the previous section.
-Then install the test dependencies with `pip install -r tests/requirements.txt`.
-Finally, run the automated tests with `doit tests`.
+Then run the automated tests with `doit tests`.
 
 Tip: The [continuous integration](#continuous-integration) workflow will build, release (at `ghcr.io/aiidalab/*:pr-###`), and test images for all pull requests into the default branch.
 
