@@ -7,7 +7,7 @@ mkdir -p "${RABBITMQ_DATA_DIR}"
 fix-permissions "${RABBITMQ_DATA_DIR}"
 
 # Fix issue where the erlang cookie permissions are corrupted.
-chmod 400 "/home/${NB_USER}/.erlang.cookie || echo "erlang cookie not created yet."
+chmod 400 "/home/${NB_USER}/.erlang.cookie" || echo "erlang cookie not created yet."
 
 # Set base directory for RabbitMQ to persist its data. This needs to be set to a folder in the system user's home
 # directory as that is the only folder that is persisted outside of the container.
