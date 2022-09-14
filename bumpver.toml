@@ -1,15 +1,12 @@
 [bumpver]
-current_version = "2022.1001"
-version_pattern = "YYYY.BUILD[-TAG]"
+current_version = "v2022.1001"
+version_pattern = "vYYYY.BUILD[-TAG]"
 commit_message = "Bump version {old_version} -> {new_version}."
 commit = true
 tag = true
-push = false
+push = true
 
 [bumpver.file_patterns]
 "bumpver.toml" = [
     'current_version = "{version}"'
-]
-"build.json" = [
-    '"default": "{version}"'
 ]

@@ -11,11 +11,11 @@ Image variants:
 
 Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
 
-- `latest` – the latest tagged release
-- `$version` – the version of the a specific release (ex. `2022.1001`)
 - `edge` – the latest commit on the default branch
-- `aiida-$AIIDA_VERSION` – the _latest_ tagged commit with that AiiDA version (ex. `aiida-2.0.0`)
-- `python-$PYTHON_VERSION` – the _latest_ tagged commit with that Python version (ex. `python-3.9.2`)
+- `latest` – the latest _regular_ release
+- `aiida-$AIIDA_VERSION` – the _latest_ regular release with that AiiDA version (ex. `aiida-2.0.0`)
+- `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.2`)
+- `$version` – the version of a specific release (ex. `2022.1001`)
 
 In addition, `edge`, `latest`, and `$version` are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
 Pull requests into the default branch are further released on ghcr.io wit the `pr-###` tag to simplify testing of development versions.
