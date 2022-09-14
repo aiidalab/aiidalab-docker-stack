@@ -16,7 +16,6 @@ on:
         branches:
             - master
             - stack # remove stack before merge
-            - feature/full-stack-image  # remove before merge
 
 jobs:
 
@@ -110,14 +109,12 @@ jobs:
                   pytest -v
 
     release:
-        # TODO after debugging: Remove ' || true'
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'master')
-            || true
         needs:
             - build
-            # - test # TODO: enable after debugging
+            - test
 
         runs-on: ubuntu-latest
         timeout-minutes: 10
@@ -141,19 +138,13 @@ jobs:
               id: meta
               uses: docker/metadata-action@v4
               env: ${{ fromJSON(needs.build.outputs.build_vars) }}
-              # TODO after debugging:
-              # 1. Fix registry
-              # 2. Remove suffix
-              # 3. Remove '|| true' from the raw tags.
               with:
-                  images: ghcr.io/aiidalab/${{ matrix.target }}
-                  flavor: |
-                      suffix=-release
+                  images: docker.io/aiidalab/${{ matrix.target }}
                   tags: |
                       type=edge
                       type=ref,event=tag
-                      type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref_type == 'tag' || true }}
-                      type=raw,value=python-${{ env.PYTHON_VERSION }},enable=${{ github.ref_type == 'tag' || true}}
+                      type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref_type == 'tag' }}
+                      type=raw,value=python-${{ env.PYTHON_VERSION }},enable=${{ github.ref_type == 'tag' }}
             - name: Determine src image tag
               id: images
               run: |
