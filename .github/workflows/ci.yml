@@ -9,12 +9,12 @@ name: continuous-integration
 on:
     push:
         branches:
-            - master
+            - main
         tags:
             - "*"
     pull_request:
         branches:
-            - master
+            - main
 
 jobs:
 
@@ -110,7 +110,7 @@ jobs:
     release:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
-            && (github.ref_type == 'tag' || github.ref_name == 'master')
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs:
             - build
             - test
