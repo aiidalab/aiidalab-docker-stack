@@ -73,13 +73,14 @@ Note: You may have to [log into the registry first](https://docs.github.com/en/p
 
 ### Creating a release
 
-To create a regular release, that means a release following the standard versioning scheme (2022.1001 and so on), use `bumpver`.
-For this, set up your development environment and then execute
-
+We distinguish between _regular_ releases and _special_ releases, where the former follow the standard versioning scheme (`v2022.1001`) and the latter would be specific to a certain use case, e.g., a workshop with dedicated requirements.
+To create a regular release, set up a development environment, and then use `bumpver`:
 ```console
 bumpver update
 ```
-This will update the README.md file, make a commit, tag it, and then push it to the repository to kick off the build and release flow.
+This will update the README.md file, make a commit, tag it, and then push both to the repository to kick off the build and release flow.
+
+To create a _special_ release, simply tag it with a tag name of your choice with the exception that it cannot start with the character `v`.
 
 ## Deploy AiiDAlab with AiiDAlab Launch
 
