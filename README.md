@@ -18,7 +18,7 @@ Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
 - `$version` – the version of a specific release (ex. `2022.1001`)
 
 In addition, `edge`, `latest`, and `$version` are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
-Pull requests into the default branch are further released on ghcr.io wit the `pr-###` tag to simplify testing of development versions.
+Pull requests into the default branch are further released on ghcr.io with the `pr-###` tag to simplify the testing of development versions.
 
 ## Quickstart
 
@@ -73,13 +73,13 @@ Note: You may have to [log into the registry first](https://docs.github.com/en/p
 
 ### Creating a release
 
-To create a regular release, that means a release following the standard versionig scheme (2022.1001 and so on), use `bumpver`.
+To create a regular release, that means a release following the standard versioning scheme (2022.1001 and so on), use `bumpver`.
 For this, set up your development environment and then execute
 
 ```console
 bumpver update
 ```
-This will update the README.md file, make a commit, tag it, and then push it to the repository to kick-off the build and release flow.
+This will update the README.md file, make a commit, tag it, and then push it to the repository to kick off the build and release flow.
 
 ## Deploy AiiDAlab with AiiDAlab Launch
 
