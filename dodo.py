@@ -35,6 +35,20 @@ _VERSION_PARAM = {
 }
 
 
+def task_show_version():
+    """Print the version for this repository."""
+
+    def show_version(version):
+        print(version)
+
+    return {
+        "basename": "show-version",
+        "actions": [show_version],
+        "params": [_VERSION_PARAM],
+        "verbosity": 2,
+    }
+
+
 def task_build():
     """Build all docker images."""
 
