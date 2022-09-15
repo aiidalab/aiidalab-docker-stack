@@ -31,6 +31,10 @@ However, we recommend to use [AiiDAlab Launch](#deploy-aiidalab-with-aiidalab-la
 
 _Note: On recent versions of Mac OS-X you will have to select a different port, since port 8888 is already in use by one of the system services._
 
+## Known limitations
+
+- Resetting the username and thus home directory location from the default (`jovyan`) via the `NB_USER` environment variable is currently not supported (#297).
+
 ## Development
 
 ### Development environment
