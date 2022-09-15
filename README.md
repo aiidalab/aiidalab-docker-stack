@@ -11,14 +11,14 @@ Image variants:
 
 Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
 
-- `latest` – the latest tagged release
-- `$version` – the version of the a specific release (ex. `2022.1001`)
 - `edge` – the latest commit on the default branch
-- `aiida-$AIIDA_VERSION` – the _latest_ tagged commit with that AiiDA version (ex. `aiida-2.0.0`)
-- `python-$PYTHON_VERSION` – the _latest_ tagged commit with that Python version (ex. `python-3.9.2`)
+- `latest` – the latest _regular_ release
+- `aiida-$AIIDA_VERSION` – the _latest_ regular release with that AiiDA version (ex. `aiida-2.0.0`)
+- `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.2`)
+- `$version` – the version of a specific release (ex. `2022.1001`)
 
 In addition, `edge`, `latest`, and `$version` are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
-Pull requests into the default branch are further released on ghcr.io wit the `pr-###` tag to simplify testing of development versions.
+Pull requests into the default branch are further released on ghcr.io with the `pr-###` tag to simplify the testing of development versions.
 
 ## Quickstart
 
@@ -70,6 +70,17 @@ For manual testing, you can start the images with `doit up`, however we recommen
 Images are built for `linux/amd64` and `linux/arm64` during continuous integration for all pull requests into the default branch and pushed to the GitHub Container Registry (ghcr.io) with tags `ghcr.io/aiidalab/*:pr-###`.
 You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit up --registry=ghcr.io/ --version=pr-123`.
 Note: You may have to [log into the registry first](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
+
+### Creating a release
+
+We distinguish between _regular_ releases and _special_ releases, where the former follow the standard versioning scheme (`v2022.1001`) and the latter would be specific to a certain use case, e.g., a workshop with dedicated requirements.
+To create a regular release, set up a development environment, and then use `bumpver`:
+```console
+bumpver update
+```
+This will update the README.md file, make a commit, tag it, and then push both to the repository to kick off the build and release flow.
+
+To create a _special_ release, simply tag it with a tag name of your choice with the exception that it cannot start with the character `v`.
 
 ## Deploy AiiDAlab with AiiDAlab Launch
 
