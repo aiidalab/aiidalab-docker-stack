@@ -156,3 +156,11 @@ jobs:
               with:
                   src: ${{ steps.images.outputs.src }}
                   dst: ${{ steps.meta.outputs.tags }}
+
+            - name: Docker Hub Description
+              uses: peter-evans/dockerhub-description@v3
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+                  repository: aiidalab/${{ matrix.target }}
+                  short-description: ${{ github.event.repository.description }}
