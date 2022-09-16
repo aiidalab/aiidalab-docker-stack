@@ -54,11 +54,11 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --description "this computer"                                   \
         --hostname "${computer_name}"                                   \
         --transport core.local                                          \
-        --scheduler direct                                         \
+        --scheduler core.direct                                         \
         --work-dir /home/aiida/aiida_run/                               \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"                \
         --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
-    verdi computer configure local "${computer_name}" \
+    verdi computer configure core.local "${computer_name}" \
         --non-interactive                                               \
         --safe-interval 0.0
 fi
