@@ -11,6 +11,7 @@ COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook
 
 RUN fix-permissions "${CONDA_DIR}"
 RUN fix-permissions "/home/${NB_USER}/.aiida"
+RUN echo "HELLO!"
 
 USER ${NB_USER}
 
