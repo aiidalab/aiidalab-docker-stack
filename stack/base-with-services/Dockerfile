@@ -25,3 +25,7 @@ WORKDIR "/home/${NB_USER}"
 
 # Initialize the database
 RUN mamba run -n aiida-core-services initdb -D aiida_db -U aiida
+
+RUN mamba install aiida-quantumespresso==4.0.0
+
+RUN echo 'c.NotebookApp.default_url="/lab"' >> /etc/jupyter/jupyter_notebook_config.py
