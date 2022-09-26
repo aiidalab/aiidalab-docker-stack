@@ -6,6 +6,13 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
+# Install vim and less
+RUN apt-get update --yes \
+     && apt-get install --yes --no-install-recommends less \
+     && apt-get install --yes --no-install-recommends vim \
+     && apt-get clean \
+     && rm -rf /var/lib/apt/lists/*
+
 ARG AIIDA_VERSION=2.0.4
 
 # Install the shared requirements.
