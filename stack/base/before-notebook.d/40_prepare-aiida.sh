@@ -56,9 +56,10 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --transport core.local                                          \
         --scheduler core.direct                                         \
         --work-dir /home/${NB_USER}/aiida_run/                          \
-        --mpirun-command "mpirun -np {tot_num_mpiprocs}"                \
-        --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
-    verdi computer configure core.local "${computer_name}" \
+        --mpirun-command ""                                             \
+        --mpiprocs-per-machine 1                                        \
+        --prepend-text "export OMP_NUM_THREADS=1" &&                    \
+    verdi computer configure core.local "${computer_name}"              \
         --non-interactive                                               \
         --safe-interval 0.0
 fi
