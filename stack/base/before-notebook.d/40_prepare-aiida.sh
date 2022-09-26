@@ -79,6 +79,9 @@ verdi daemon start || echo "AiiDA daemon is not running."
 
 echo "hello world"
 
-verdi code list
-
-aiida-pseudo install sssp
+verdi code show pw@localhost || verdi code setup \
+    --label pw \
+    --computer localhost \
+    --remote-abs-path /opt/conda/bin/pw.x \
+    --input-plugin quantumespresso.pw \
+    --non-interactive
