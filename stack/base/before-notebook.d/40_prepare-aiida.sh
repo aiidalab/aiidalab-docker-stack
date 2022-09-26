@@ -76,3 +76,5 @@ verdi storage migrate --force
 
 # Daemon will start only if the database exists and is migrated to the latest version.
 verdi daemon start || echo "AiiDA daemon is not running."
+
+echo "hello world"
