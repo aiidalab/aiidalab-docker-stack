@@ -6,7 +6,7 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
-ARG AIIDA_VERSION=2.0.0
+ARG AIIDA_VERSION=2.0.4
 
 RUN mamba create -n aiida-core-services --yes \
      aiida-core.services=${AIIDA_VERSION} \
@@ -26,7 +26,7 @@ WORKDIR "/home/${NB_USER}"
 # Initialize the database
 RUN mamba run -n aiida-core-services initdb -D aiida_db -U aiida
 
-RUN mamba install aiida-quantumespresso==4.0.0
+RUN mamba install aiida-quantumespresso==4.0.1
 RUN mamba install qe
 
 RUN echo 'c.NotebookApp.default_url="/lab"' >> /etc/jupyter/jupyter_notebook_config.py
