@@ -78,3 +78,5 @@ verdi storage migrate --force
 verdi daemon start || echo "AiiDA daemon is not running."
 
 echo "hello world"
+
+verdi code list
