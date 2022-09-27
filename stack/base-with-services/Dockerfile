@@ -6,7 +6,7 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
-ARG AIIDA_VERSION=2.0.4
+ARG AIIDA_VERSION=2.0.0
 
 RUN mamba create -n aiida-core-services --yes \
      aiida-core.services=${AIIDA_VERSION} \
@@ -27,7 +27,7 @@ WORKDIR "/home/${NB_USER}"
 RUN mamba run -n aiida-core-services initdb -D aiida_db -U aiida
 
 # Install Quantum ESPRESSO and its AiiDA plugin
-RUN mamba install qe
+RUN mamba install qe==7.0
 RUN mamba install aiida-quantumespresso==4.0.1
 
 # Set the default URL to the lab one
