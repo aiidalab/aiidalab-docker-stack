@@ -6,7 +6,7 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
-ARG AIIDA_VERSION=2.0.0
+ARG AIIDA_VERSION
 
 RUN mamba create -n aiida-core-services --yes \
      aiida-core.services=${AIIDA_VERSION} \
