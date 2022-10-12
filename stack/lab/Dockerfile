@@ -15,9 +15,7 @@ RUN apt-get update --yes && \
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION=22.08.0
-RUN mamba install --yes \
-     aiidalab=${AIIDALAB_VERSION} \
-     && mamba clean --all -f -y && \
+RUN pip install --no-cache-dir aiidalab==${AIIDALAB_VERSION} && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 

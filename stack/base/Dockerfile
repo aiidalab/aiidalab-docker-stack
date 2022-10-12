@@ -1,4 +1,4 @@
-ARG BASE=jupyter/minimal-notebook:python-3.9.4
+ARG BASE=jupyter/minimal-notebook:python-3.10.6
 FROM ${BASE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
@@ -10,13 +10,10 @@ ARG AIIDA_VERSION
 
 # Install the shared requirements.
 COPY requirements.txt .
-RUN mamba install --yes \
-     aiida-core=${AIIDA_VERSION} \
-     --file requirements.txt \
-     && mamba clean --all -f -y && \
+RUN pip install --no-cache-dir aiida-core==${AIIDA_VERSION} \
+     -r requirements.txt && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
-
 
 # Pin shared requirements in the base environemnt.
 RUN cat requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
