@@ -1,4 +1,4 @@
-ARG BASE=jupyter/minimal-notebook:python-3.9.4
+ARG BASE=jupyter/minimal-notebook:python-3.9.13
 FROM ${BASE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
