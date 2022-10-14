@@ -47,4 +47,3 @@ RUN /usr/local/bin/_entrypoint.sh ssh-keygen -f /home/${MAMBA_USER}/.ssh/id_rsa 
 WORKDIR /home/${MAMBA_USER}
 
 ENTRYPOINT [ "/usr/local/bin/_init.sh" ]
-
