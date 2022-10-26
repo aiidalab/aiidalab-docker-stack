@@ -71,7 +71,7 @@ For manual testing, you can start the images with `doit up`, however we recommen
 
 ### Continuous integration
 
-Images are built for `linux/amd64` and `linux/arm64` during continuous integration for all pull requests into the default branch and pushed to the GitHub Container Registry (ghcr.io) with tags `ghcr.io/aiidalab/*:pr-###`.
+Images are built for `linux/amd64` during continuous integration for all pull requests into the default branch and pushed to the GitHub Container Registry (ghcr.io) with tags `ghcr.io/aiidalab/*:pr-###`.
 You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit up --registry=ghcr.io/ --version=pr-123`.
 Note: You may have to [log into the registry first](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
 
