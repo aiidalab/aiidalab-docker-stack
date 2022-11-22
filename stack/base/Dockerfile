@@ -52,6 +52,10 @@ if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
    . /opt/bin/load-singlesshagent.sh\n\
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
+# Workaround for missing Jupyter config path,
+# needed for locally installed notebook extensions (e.g. nglview)
+ENV JUPYTER_CONFIG_PATH=/home/jovyan/.local/etc/jupyter
+
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
