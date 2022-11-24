@@ -68,6 +68,7 @@ def _build_config():
 def aiida_version(_build_config):
     return _build_config["AIIDA_VERSION"]["default"]
 
+
 @pytest.fixture(scope="session")
 def aiidalab_version(_build_config):
     return _build_config["AIIDALAB_VERSION"]["default"]

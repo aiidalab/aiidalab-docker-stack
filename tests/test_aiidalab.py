@@ -26,14 +26,20 @@ def test_create_conda_environment(aiidalab_exec, nb_user):
 
 
 def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
-    info = json.loads(aiidalab_exec("mamba list --json --full-name aiida-core").decode())[0]
+    info = json.loads(
+        aiidalab_exec("mamba list --json --full-name aiida-core").decode()
+    )[0]
     assert info["name"] == "aiida-core"
     assert parse(info["version"]) == parse(aiida_version)
 
+
 def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
-    info = json.loads(aiidalab_exec("mamba list --json --full-name aiidalab").decode())[0]
+    info = json.loads(aiidalab_exec("mamba list --json --full-name aiidalab").decode())[
+        0
+    ]
     assert info["name"] == "aiidalab"
     assert parse(info["version"]) == parse(aiidalab_version)
+
 
 @pytest.mark.parametrize("package_manager", ["mamba", "pip"])
 @pytest.mark.parametrize("incompatible_version", ["1.6.3"])
