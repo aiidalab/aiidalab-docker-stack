@@ -79,8 +79,8 @@ target "lab" {
   }
   platforms = "${PLATFORMS}"
   args = {
-    "AIIDALAB_VERSION"      = "22.08.0"
-    "AIIDALAB_HOME_VERSION" = "v22.08.0"
+    "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
+    "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
   }
 }
 target "full-stack" {
