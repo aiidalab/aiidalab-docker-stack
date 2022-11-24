@@ -1,3 +1,4 @@
+ARG BASE
 FROM ${BASE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
