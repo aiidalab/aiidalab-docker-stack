@@ -29,7 +29,7 @@ RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
-     git checkout "${AIIDALAB_HOME_VERSION}" && \
+     git checkout v"${AIIDALAB_HOME_VERSION}" && \
      pip install --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
