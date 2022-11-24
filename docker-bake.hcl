@@ -8,6 +8,12 @@ variable "PYTHON_VERSION" {
 variable "AIIDA_VERSION" {
 }
 
+variable "AIIDALAB_VERSION" {
+}
+
+variable "AIIDALAB_HOME_VERSION" {
+}
+
 variable "JUPYTER_BASE_IMAGE" {
   default = "jupyter/minimal-notebook:python-${PYTHON_VERSION}"
 }
