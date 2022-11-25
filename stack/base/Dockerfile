@@ -53,7 +53,7 @@ if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
-RUN echo "export PATH\${PATH}:/home/${NB_USER}/.local/bin"
+RUN echo "export PATH=\${PATH}:/home/${NB_USER}/.local/bin" >> "/home/${NB_USER}/.bashrc"
 
 # Workaround for missing Jupyter config path,
 # needed for locally installed notebook extensions (e.g. nglview)
