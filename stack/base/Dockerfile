@@ -57,7 +57,7 @@ RUN echo "export PATH=\${PATH}:/home/${NB_USER}/.local/bin" >> "/home/${NB_USER}
 
 # Workaround for missing Jupyter config path,
 # needed for locally installed notebook extensions (e.g. nglview)
-ENV JUPYTER_CONFIG_PATH=/home/${NB_USER}/.local/etc/jupyter
+ENV JUPYTER_CONFIG_PATH=/home/${NB_USER}/.local/etc/jupyter:${JUPYTER_CONFIG_PATH}
 
 USER ${NB_USER}
 
