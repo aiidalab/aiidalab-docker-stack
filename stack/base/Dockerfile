@@ -55,10 +55,6 @@ fi\n' >> "/home/${NB_USER}/.bashrc"
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
 
-# Workaround for missing Jupyter config path,
-# needed for locally installed notebook extensions (e.g. nglview)
-ENV JUPYTER_CONFIG_PATH=/home/${NB_USER}/.local/etc/jupyter:${JUPYTER_CONFIG_PATH}
-
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"

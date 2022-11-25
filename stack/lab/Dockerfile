@@ -3,6 +3,13 @@ FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
+# The lab mode is default to run jupyter server.
+# Here the CMD pinned to `notebook` for running in legacy notebook backend
+# In the future, we have appmode compatible with nbclassic
+# we can use the server backend which is the alternative of legacy
+# notebook backend.
+ENV DOCKER_STACKS_JUPYTER_CMD=notebook
+
 USER root
 WORKDIR /opt/
 
@@ -74,9 +81,6 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
-# Switch to NOTEBOOK_ARGS approach (see below)
-# for newer jupyter docker stack versions.
-RUN echo 'c.NotebookApp.default_url="/apps/apps/home/start.ipynb"' >> /etc/jupyter/jupyter_notebook_config.py
-# ENV NOTEBOOK_ARGS \
-     # "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     # "--ContentsManager.allow_hidden=True"
+ENV NOTEBOOK_ARGS \
+     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
+     "--ContentsManager.allow_hidden=True"

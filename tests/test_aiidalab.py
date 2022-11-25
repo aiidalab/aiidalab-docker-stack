@@ -74,13 +74,3 @@ def test_path_local_pip(aiidalab_exec, nb_user):
     """test that the pip local bin path ~/.local/bin is added to PATH"""
     output = aiidalab_exec("bash -c 'echo \"${PATH}\"'", user=nb_user).decode()
     assert f"/home/{nb_user}/.local/bin" in output
-
-
-def test_jupyter_config_path(aiidalab_exec, nb_user):
-    """test that the jupyter config path needed for locally
-    installed notebook extensions (e.g. nglview)
-    """
-    output = aiidalab_exec(
-        "bash -c 'echo \"${JUPYTER_CONFIG_PATH}\"'", user=nb_user
-    ).decode()
-    assert f"/home/{nb_user}/.local/etc/jupyter" in output
