@@ -13,10 +13,13 @@ RUN apt-get update --yes && \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
-# Install aiidalab package
+ARG AIIDA_VERSION
+
+# Install aiidalab and aiida-core.atomic_tools
 ARG AIIDALAB_VERSION=22.08.0
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
+     aiida-core.atomic_tools=${AIIDA_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
