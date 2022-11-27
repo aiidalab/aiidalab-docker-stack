@@ -40,8 +40,6 @@ def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
 
 
 def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version, variant):
-    if "lab" not in variant:
-        pytest.skip()
     info = json.loads(aiidalab_exec("mamba list --json --full-name aiidalab").decode())[
         0
     ]
@@ -53,8 +51,6 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version, var
 def test_correct_aiidalab_home_version_installed(
     aiidalab_exec, aiidalab_home_version, variant
 ):
-    if "lab" not in variant:
-        pytest.skip()
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiidalab-home").decode()
     )[0]
