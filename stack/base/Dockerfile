@@ -10,9 +10,7 @@ ARG AIIDA_VERSION
 
 # Install the shared requirements.
 COPY requirements.txt .
-RUN pip install --no-cache-dir \
-     aiida-core=${AIIDA_VERSION} \
-     --file requirements.txt && \
+RUN pip install --no-cache-dir aiida-core=${AIIDA_VERSION} -r requirements.txt && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
