@@ -134,7 +134,7 @@ def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
     output = (
         aiidalab_exec(
             # f"cd /home/{nb_user}/apps/{package_name} && pip install .[tests]",
-            f"bash -c 'cd /home/{nb_user}/apps/{package_name} && pip install .[tests]",
+            f"bash -c 'cd /home/{nb_user}/apps/{package_name} && pip install .[tests]'",
             user=nb_user,
         )
         .decode()
