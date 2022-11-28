@@ -1,7 +1,7 @@
 {
   "variable": {
     "PYTHON_VERSION": {
-      "default": "3.9.13"
+      "default": "3.10.6"
     },
     "AIIDA_VERSION": {
       "default": "2.1.2"
