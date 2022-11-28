@@ -3,7 +3,6 @@ FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
-
 # By default, Jupyter Docker image launches the JupyterLab interface.
 # Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
 # In the future, we might want to switch to other options such as `nbclassic` or `retro`,
