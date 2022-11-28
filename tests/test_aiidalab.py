@@ -70,27 +70,33 @@ def test_verdi_status(aiidalab_exec, nb_user):
     assert "Daemon is running" in output
 
 
+@pytest.mark.skip(reason="Last AWB stable release doesn't support AiiDA-2.0 yet")
 def test_install_widgets_base(aiidalab_exec, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
+    package_name = "aiidalab-widgets-base"
     output = (
-        aiidalab_exec("aiidalab install --yes aiidalab-widgets-base", user=nb_user)
+        aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
         .decode()
         .strip()
     )
     assert "ERROR" not in output
     assert "dependency conflict" not in output
+    assert "Installed '{package_name}' version" in output
 
 
 def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
+    package_name = "aiidalab-widgets-base"
     output = (
         aiidalab_exec(
-            "aiidalab install --yes aiidalab-widgets-base@git+https://github.com/aiidalab/aiidalab-widgets-base.git",
+            "aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
             user=nb_user,
         )
         .decode()
         .strip()
     )
-    assert output == ""
+    assert "ERROR" not in output
+    assert "dependency conflict" not in output
+    assert "Installed '{package_name}' version" in output
