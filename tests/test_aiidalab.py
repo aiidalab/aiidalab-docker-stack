@@ -100,3 +100,9 @@ def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert "Installed '{package_name}' version" in output
+
+
+def test_path_local_pip(aiidalab_exec, nb_user):
+    """test that the pip local bin path ~/.local/bin is added to PATH"""
+    output = aiidalab_exec("bash -c 'echo \"${PATH}\"'", user=nb_user).decode()
+    assert f"/home/{nb_user}/.local/bin" in output

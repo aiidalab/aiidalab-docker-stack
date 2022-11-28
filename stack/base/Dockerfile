@@ -52,6 +52,9 @@ if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
    . /opt/bin/load-singlesshagent.sh\n\
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
+# Add ~/.local/bin to PATH where the dependencies get installed via pip
+ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
+
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
