@@ -3,6 +3,13 @@ FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
+# By default, Jupyter Docker image launches the JupyterLab interface.
+# Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
+# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
+# but the `nbclassic` is not supported because of appmode.
+# see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
+ENV DOCKER_STACKS_JUPYTER_CMD=notebook
+
 USER root
 WORKDIR /opt/
 
@@ -74,9 +81,6 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
-# Switch to NOTEBOOK_ARGS approach (see below)
-# for newer jupyter docker stack versions.
-RUN echo 'c.NotebookApp.default_url="/apps/apps/home/start.ipynb"' >> /etc/jupyter/jupyter_notebook_config.py
-# ENV NOTEBOOK_ARGS \
-     # "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     # "--ContentsManager.allow_hidden=True"
+ENV NOTEBOOK_ARGS \
+     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
+     "--ContentsManager.allow_hidden=True"
