@@ -100,11 +100,11 @@ def test_verdi_status(aiidalab_exec, nb_user):
     assert "Daemon is running" in output
 
 
+@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
 @pytest.mark.skip(reason="Last AWB stable release doesn't support AiiDA-2.0 yet")
-def test_install_widgets_base(aiidalab_exec, nb_user, variant):
+def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
-    package_name = "aiidalab-widgets-base"
     output = (
         aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
         .decode()
@@ -115,10 +115,10 @@ def test_install_widgets_base(aiidalab_exec, nb_user, variant):
     assert f"Installed '{package_name}' version" in output
 
 
-def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
+@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
+def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
-    package_name = "aiidalab-widgets-base"
     output = (
         aiidalab_exec(
             f"aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
@@ -130,30 +130,6 @@ def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{package_name}' version" in output
-
-    # Install pytest inside the container
-    output = (
-        aiidalab_exec(
-            # f"cd /home/{nb_user}/apps/{package_name} && pip install .[tests]",
-            f"bash -c 'cd /home/{nb_user}/apps/{package_name} && pip install .[tests]'",
-            user=nb_user,
-        )
-        .decode()
-        .strip()
-    )
-    assert "ERROR" not in output
-
-    # Run AWB test suite
-    output = (
-        aiidalab_exec(
-            # f"cd /home/{nb_user}/apps/{package_name} && pip install .[tests]",
-            f"bash -c 'cd /home/{nb_user}/apps/{package_name} && pytest -v'",
-            user=nb_user,
-        )
-        .decode()
-        .strip()
-    )
-    assert "ERROR" not in output
 
 
 def test_path_local_pip(aiidalab_exec, nb_user):
