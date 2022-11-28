@@ -5,6 +5,12 @@
     },
     "AIIDA_VERSION": {
       "default": "2.1.2"
+    },
+    "AIIDALAB_VERSION": {
+      "default": "22.11.0"
+    },
+    "AIIDALAB_HOME_VERSION": {
+      "default": "22.11.0"
     }
   }
 }
