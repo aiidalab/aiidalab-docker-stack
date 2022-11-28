@@ -22,7 +22,7 @@ RUN apt-get update --yes && \
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION
-RUN pip install --no-cache-dir --yes aiidalab=${AIIDALAB_VERSION} && \
+RUN pip install --no-cache-dir aiidalab=${AIIDALAB_VERSION} && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
