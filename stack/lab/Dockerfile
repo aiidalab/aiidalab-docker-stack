@@ -3,11 +3,12 @@ FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
-# The lab mode is default to run jupyter server.
-# Here the CMD pinned to `notebook` for running in legacy notebook backend
-# In the future, we have appmode compatible with nbclassic
-# we can use the server backend which is the alternative of legacy
-# notebook backend.
+
+# By default, Jupyter Docker image launches the JupyterLab interface.
+# Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
+# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
+# but the `nbclassic` is not supported because of appmode.
+# see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
 ENV DOCKER_STACKS_JUPYTER_CMD=notebook
 
 USER root
