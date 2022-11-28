@@ -98,3 +98,9 @@ def test_verdi_status(aiidalab_exec, nb_user):
     output = aiidalab_exec("verdi status", user=nb_user).decode().strip()
     assert "Connected to RabbitMQ" in output
     assert "Daemon is running" in output
+
+
+def test_path_local_pip(aiidalab_exec, nb_user):
+    """test that the pip local bin path ~/.local/bin is added to PATH"""
+    output = aiidalab_exec("bash -c 'echo \"${PATH}\"'", user=nb_user).decode()
+    assert f"/home/{nb_user}/.local/bin" in output
