@@ -68,3 +68,29 @@ def test_verdi_status(aiidalab_exec, nb_user):
     output = aiidalab_exec("verdi status", user=nb_user).decode().strip()
     assert "Connected to RabbitMQ" in output
     assert "Daemon is running" in output
+
+
+def test_install_widgets_base(aiidalab_exec, nb_user, variant):
+    if "lab" not in variant:
+        pytest.skip()
+    output = (
+        aiidalab_exec("aiidalab install --yes aiidalab-widgets-base", user=nb_user)
+        .decode()
+        .strip()
+    )
+    assert "ERROR" not in output
+    assert "dependency conflict" not in output
+
+
+def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
+    if "lab" not in variant:
+        pytest.skip()
+    output = (
+        aiidalab_exec(
+            "aiidalab install --yes aiidalab-widgets-base@git+https://github.com/aiidalab/aiidalab-widgets-base.git",
+            user=nb_user,
+        )
+        .decode()
+        .strip()
+    )
+    assert output == ""
