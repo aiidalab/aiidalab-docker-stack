@@ -5,7 +5,7 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
 # By default, Jupyter Docker image launches the JupyterLab interface.
 # Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
-# In the future, we might want to switch to other options such as `nbclassic` or `retro`, 
+# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
 # but the `nbclassic` is not supported because of appmode.
 # see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
 ENV DOCKER_STACKS_JUPYTER_CMD=notebook
