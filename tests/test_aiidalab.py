@@ -112,7 +112,7 @@ def test_install_widgets_base(aiidalab_exec, nb_user, variant):
     )
     assert "ERROR" not in output
     assert "dependency conflict" not in output
-    assert "Installed '{package_name}' version" in output
+    assert f"Installed '{package_name}' version" in output
 
 
 def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
@@ -121,7 +121,7 @@ def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
     package_name = "aiidalab-widgets-base"
     output = (
         aiidalab_exec(
-            "aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
+            f"aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
             user=nb_user,
         )
         .decode()
@@ -129,7 +129,7 @@ def test_install_widgets_base_master(aiidalab_exec, nb_user, variant):
     )
     assert "ERROR" not in output
     assert "dependency conflict" not in output
-    assert "Installed '{package_name}' version" in output
+    assert f"Installed '{package_name}' version" in output
 
 
 def test_path_local_pip(aiidalab_exec, nb_user):
