@@ -10,10 +10,9 @@ ARG AIIDA_VERSION
 
 # Install the shared requirements.
 COPY requirements.txt .
-RUN mamba install --yes \
+RUN pip install --no-cache-dir --yes \
      aiida-core=${AIIDA_VERSION} \
-     --file requirements.txt \
-     && mamba clean --all -f -y && \
+     --file requirements.txt && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
