@@ -108,6 +108,7 @@ jobs:
               run: pytest -v -m "not integration"
 
     integration-test:
+        needs: build
         runs-on: ubuntu-latest
         timeout-minutes: 10
 
