@@ -3,6 +3,13 @@ FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
+# By default, Jupyter Docker image launches the JupyterLab interface.
+# Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
+# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
+# but the `nbclassic` is not supported because of appmode.
+# see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
+ENV DOCKER_STACKS_JUPYTER_CMD=notebook
+
 USER root
 WORKDIR /opt/
 
@@ -14,7 +21,7 @@ RUN apt-get update --yes && \
      && rm -rf /var/lib/apt/lists/*
 
 # Install aiidalab package
-ARG AIIDALAB_VERSION=22.08.0
+ARG AIIDALAB_VERSION
 RUN pip install --no-cache-dir aiidalab==${AIIDALAB_VERSION} && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
@@ -24,10 +31,10 @@ RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
 # Install the aiidalab-home app.
-ARG AIIDALAB_HOME_VERSION=v22.08.0
+ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
-     git checkout "${AIIDALAB_HOME_VERSION}" && \
+     git checkout v"${AIIDALAB_HOME_VERSION}" && \
      pip install --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
@@ -72,9 +79,6 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
-# Switch to NOTEBOOK_ARGS approach (see below)
-# for newer jupyter docker stack versions.
-RUN echo 'c.NotebookApp.default_url="/apps/apps/home/start.ipynb"' >> /etc/jupyter/jupyter_notebook_config.py
-# ENV NOTEBOOK_ARGS \
-     # "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     # "--ContentsManager.allow_hidden=True"
+ENV NOTEBOOK_ARGS \
+     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
+     "--ContentsManager.allow_hidden=True"

@@ -19,11 +19,11 @@ repos:
             args: [--preserve-quotes]
 
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.17.0
+      rev: 0.18.3
       hooks:
           - id: check-github-workflows
 
     - repo: https://github.com/psf/black
-      rev: 22.6.0
+      rev: 22.8.0
       hooks:
           - id: black
