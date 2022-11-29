@@ -117,7 +117,7 @@ def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant)
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base"])
+@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
 def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
