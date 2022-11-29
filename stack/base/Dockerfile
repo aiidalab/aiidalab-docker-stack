@@ -7,7 +7,7 @@ USER root
 
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
-    # for apps which need to install pymatgen: 
+    # for apps which need to install pymatgen:
     # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
     build-essential && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
