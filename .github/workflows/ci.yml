@@ -106,7 +106,31 @@ jobs:
               shell: bash -l {0}  # required to activate the conda environment
               env: ${{ fromJSON(needs.build.outputs.images) }}
               run: |
-                  pytest -v
+                  pytest -v -m "not integration"
+
+    integration-test:
+        needs: test
+
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Setup Python test environment
+              uses: mamba-org/provision-with-micromamba@v13
+              with:
+                  cache-env: true
+            - name: Run tests
+              shell: bash -l {0}  # required to activate the conda environment
+              env: ${{ fromJSON(needs.build.outputs.images) }}
+              run: |
+                  pytest -v -m integration
 
     release:
         if: >-
