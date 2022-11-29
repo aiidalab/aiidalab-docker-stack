@@ -100,6 +100,7 @@ def test_verdi_status(aiidalab_exec, nb_user):
     assert "Daemon is running" in output
 
 
+@pytest.mark.integration
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
 @pytest.mark.skip(reason="Last AWB stable release doesn't support AiiDA-2.0 yet")
 def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant):
@@ -115,6 +116,7 @@ def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant)
     assert f"Installed '{package_name}' version" in output
 
 
+@pytest.mark.integration
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
 def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant):
     if "lab" not in variant:
