@@ -105,12 +105,9 @@ jobs:
             - name: Run tests
               shell: bash -l {0}  # required to activate the conda environment
               env: ${{ fromJSON(needs.build.outputs.images) }}
-              run: |
-                  pytest -v -m "not integration"
+              run: pytest -v -m "not integration"
 
     integration-test:
-        needs: test
-
         runs-on: ubuntu-latest
         timeout-minutes: 10
 
@@ -126,11 +123,10 @@ jobs:
               uses: mamba-org/provision-with-micromamba@v13
               with:
                   cache-env: true
-            - name: Run tests
+            - name: Run integration tests
               shell: bash -l {0}  # required to activate the conda environment
               env: ${{ fromJSON(needs.build.outputs.images) }}
-              run: |
-                  pytest -v -m integration
+              run: pytest -v -m "integration"
 
     release:
         if: >-
