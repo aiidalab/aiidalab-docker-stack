@@ -17,6 +17,7 @@ WORKDIR /opt/
 RUN apt-get update --yes && \
      apt-get install --yes --no-install-recommends \
      curl \
+     povray \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
