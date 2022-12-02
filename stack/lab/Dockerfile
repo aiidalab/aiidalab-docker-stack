@@ -16,7 +16,8 @@ WORKDIR /opt/
 # Install additional system packages
 RUN apt-get update --yes && \
      apt-get install --yes --no-install-recommends \
-     curl povray \
+     curl \
+     povray \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
