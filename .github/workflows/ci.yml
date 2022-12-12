@@ -186,3 +186,9 @@ jobs:
                   password: ${{ secrets.DOCKER_PASSWORD }}
                   repository: aiidalab/${{ matrix.target }}
                   short-description: ${{ github.event.repository.description }}
+
+            - uses: softprops/action-gh-release@v0.1.14
+              name: Create release
+              if: startsWith(github.ref, 'refs/tags/v')
+              with:
+                  generate_release_notes: true
