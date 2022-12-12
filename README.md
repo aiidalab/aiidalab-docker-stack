@@ -27,7 +27,7 @@ You can launch a container based on one of our published images directly with [D
 ```console
 docker run -it -p 8888:8888 aiidalab/full-stack
 ```
-However, we recommend to use [AiiDAlab Launch](#deploy-aiidalab-with-aiidalab-launch) to run images locally for production environments.
+However, we recommend to use [aiidalab-launch](#deploy-aiidalab-with-aiidalab-launch) to run images locally for production environments.
 
 _Note: On recent versions of Mac OS-X you will have to select a different port, since port 8888 is already in use by one of the system services._
 
