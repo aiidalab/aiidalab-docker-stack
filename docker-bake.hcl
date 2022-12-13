@@ -64,6 +64,7 @@ target "base" {
   args = {
     "BASE"          = "${JUPYTER_BASE_IMAGE}"
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
+    "PYTHON_VERSION" = "${PYTHON_VERSION}"
   }
 }
 target "base-with-services" {

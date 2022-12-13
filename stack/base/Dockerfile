@@ -19,8 +19,8 @@ ARG PYTHON_VERSION
 
 # Install the shared requirements.
 COPY requirements.txt .
-RUN echo python==${PYTHON_VERSION} >> requirements.txt
-RUN echo aiida-core==${AIIDA_VERSION} >> requirements.txt
+RUN echo "aiida-core==${AIIDA_VERSION}" >> requirements.txt
+RUN echo "python==${PYTHON_VERSION}" >> requirements.txt
 # Install separate environment for aiida-core/aiidalab
 RUN mamba create --name aiida-base
 RUN mamba install -n aiida-base --yes \

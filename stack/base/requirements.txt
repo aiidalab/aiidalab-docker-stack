@@ -1,3 +1,2 @@
 pip==22.0.4
-# TODO: Ensure same version as in the base environment
 ipykernel==6.16.0
