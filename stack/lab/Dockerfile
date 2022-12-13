@@ -35,10 +35,11 @@ RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
 # Install the aiidalab-home app.
 ARG AIIDALAB_HOME_VERSION
+# TODO: Into which environment should the aiidalab-home app be installed?
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
-     pip install --quiet --no-cache-dir "./" && \
+     mamba run -n aiida-base pip install --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"

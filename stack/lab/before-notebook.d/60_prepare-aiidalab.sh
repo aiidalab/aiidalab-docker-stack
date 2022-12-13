@@ -44,7 +44,7 @@ if [[ ${INITIAL_SETUP} == 1 ]]; then
 
   # Iterate over lines in AIIDALAB_DEFAULT_APPS variable.
   for app in ${AIIDALAB_DEFAULT_APPS:-}; do
-      aiidalab install --yes "${app}"
+      mamba run -n aiida-base aiidalab install --yes "${app}"
   done
 fi
 
