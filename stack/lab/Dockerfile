@@ -23,7 +23,7 @@ RUN apt-get update --yes && \
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION
-RUN mamba install --yes \
+RUN mamba install -n aiida-base --yes \
      aiidalab=${AIIDALAB_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \

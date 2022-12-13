@@ -15,6 +15,14 @@ else
     NEED_SETUP_PROFILE=false;
 fi
 
+# TODO: Do this only once at startup
+export AIIDA_CONDA_DIR=/home/${NB_USER}/conda/aiida-homebase
+if [[ ! -d ${AIIDA_CONDA_DIR} ]];then
+    mamba create --clone aiida-base -p ${AIIDA_CONDA_DIR}
+fi
+
+alias verdi="mamba run -n aiida-base verdi"
+
 # Setup AiiDA profile if needed.
 if [[ ${NEED_SETUP_PROFILE} == true ]]; then
 

@@ -15,11 +15,15 @@ RUN apt-get update --yes && \
 WORKDIR /opt/
 
 ARG AIIDA_VERSION
+ARG PYTHON_VERSION
 
 # Install the shared requirements.
 COPY requirements.txt .
-RUN mamba install --yes \
-     aiida-core=${AIIDA_VERSION} \
+RUN echo python==${PYTHON_VERSION} >> requirements.txt
+RUN echo aiida-core==${AIIDA_VERSION} >> requirements.txt
+# Install separate environment for aiida-core/aiidalab
+RUN mamba create --name aiida-base
+RUN mamba install -n aiida-base --yes \
      --file requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
@@ -27,6 +31,7 @@ RUN mamba install --yes \
 
 
 # Pin shared requirements in the base environemnt.
+# TODO: These should be pinned in aiida-base as well
 RUN cat requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
 # Configure pip to use requirements file as constraints file.
