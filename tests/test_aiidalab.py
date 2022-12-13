@@ -32,7 +32,9 @@ def test_correct_python_version_installed(docker_exec, python_version):
     assert info["name"] == "python"
     assert parse(info["version"]) == parse(python_version)
 
-    info = json.loads(docker_exec("mamba list -n aiida-base --json --full-name python").decode())[0]
+    info = json.loads(
+        docker_exec("mamba list -n aiida-base --json --full-name python").decode()
+    )[0]
     assert info["name"] == "python"
     assert parse(info["version"]) == parse(python_version)
 
@@ -48,9 +50,9 @@ def test_correct_aiida_version_installed(docker_exec, aiida_version):
 def test_correct_aiidalab_version_installed(docker_exec, aiidalab_version, variant):
     if "lab" not in variant:
         pytest.skip()
-    info = json.loads(docker_exec("mamba list -n aiida-base --json --full-name aiidalab").decode())[
-        0
-    ]
+    info = json.loads(
+        docker_exec("mamba list -n aiida-base --json --full-name aiidalab").decode()
+    )[0]
     assert info["name"] == "aiidalab"
     assert parse(info["version"]) == parse(aiidalab_version)
 
