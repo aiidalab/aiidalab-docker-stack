@@ -9,25 +9,22 @@ set -x
 export SHELL=/bin/bash
 
 # Check if user requested to set up AiiDA profile (and if it exists already)
-if [[ ${SETUP_DEFAULT_AIIDA_PROFILE} == true ]] && ! verdi profile show ${AIIDA_PROFILE_NAME} &> /dev/null; then
-    NEED_SETUP_PROFILE=true;
+if [[ ${SETUP_DEFAULT_AIIDA_PROFILE} == true ]] && ! mamba run -n aiida-base verdi profile show ${AIIDA_PROFILE_NAME} &> /dev/null; then
+    NEED_SETUP_PROFILE=true
 else
-    NEED_SETUP_PROFILE=false;
+    NEED_SETUP_PROFILE=false
 fi
 
-# TODO: Do this only once at startup
 export AIIDA_CONDA_DIR=/home/${NB_USER}/conda/aiida-homebase
 if [[ ! -d ${AIIDA_CONDA_DIR} ]];then
     mamba create --clone aiida-base -p ${AIIDA_CONDA_DIR}
 fi
 
-alias verdi="mamba run -n aiida-base verdi"
-
 # Setup AiiDA profile if needed.
 if [[ ${NEED_SETUP_PROFILE} == true ]]; then
 
     # Create AiiDA profile.
-    verdi quicksetup              \
+    mamba run -n aiida-base verdi quicksetup   \
         --non-interactive                            \
         --profile "${AIIDA_PROFILE_NAME}"            \
         --email "${AIIDA_USER_EMAIL}"                \
@@ -56,7 +53,8 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
       exit 1
     fi
 
-    verdi computer show ${computer_name} || verdi computer setup \
+    mamba run -n aiida-base verdi computer show ${computer_name}\
+      || mamba run -n aiida-base verdi computer setup           \
         --non-interactive                                               \
         --label "${computer_name}"                                      \
         --description "this computer"                                   \
@@ -66,20 +64,20 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --work-dir /home/${NB_USER}/aiida_run/                          \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"                \
         --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
-    verdi computer configure core.local "${computer_name}" \
+    mamba run -n aiida-base verdi computer configure core.local "${computer_name}" \
         --non-interactive                                               \
         --safe-interval 0.0
 fi
 
 
 # Show the default profile
-verdi profile show || echo "The default profile is not set."
+mamba run -n aiida-base verdi profile show || echo "The default profile is not set."
 
 # Make sure that the daemon is not running, otherwise the migration will abort.
-verdi daemon stop
+mamba run -n aiida-base verdi daemon stop
 
 # Migration will run for the default profile.
-verdi storage migrate --force
+mamba run -n aiida-base verdi storage migrate --force
 
 # Daemon will start only if the database exists and is migrated to the latest version.
-verdi daemon start || echo "AiiDA daemon is not running."
+mamba run -n aiida-base verdi daemon start || echo "AiiDA daemon is not running."
