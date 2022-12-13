@@ -13,7 +13,7 @@ def test_pip_check(docker_exec, aiidalab_exec, nb_user):
     docker_exec("pip check")
     aiidalab_exec("pip check")
     # Apparently one cannot invoke environment like this
-    #docker_exec(f"mamba run -n /home/{nb_user}/conda/aiida-homebase pip check")
+    # docker_exec(f"mamba run -n /home/{nb_user}/conda/aiida-homebase pip check")
 
 
 def test_aiidalab_available(aiidalab_exec, nb_user, variant):
@@ -142,8 +142,8 @@ def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant)
     assert "dependency conflict" not in output
     assert "Successfully installed" in output
     # Disabling tests due to issues with restarting daemon through verdi
-    #assert "Error:" not in output
-    #assert f"Installed '{package_name}' version" in output
+    # assert "Error:" not in output
+    # assert f"Installed '{package_name}' version" in output
 
 
 def test_path_local_pip(docker_exec, nb_user):
