@@ -43,7 +43,7 @@ def docker_compose(docker_services):
 
 
 @pytest.fixture
-def aiidalab_exec(docker_compose):
+def docker_exec(docker_compose):
     def execute(command, user=None, **kwargs):
         if user:
             command = f"exec -T --user={user} aiidalab {command}"
@@ -53,6 +53,11 @@ def aiidalab_exec(docker_compose):
 
     return execute
 
+@pytest.fixture
+def aiidalab_exec(docker_exec):
+    def execute(command, user=None, **kwargs):
+        return docker_exec(f"mamba run -n aiida-base {command}", user=user, **kwargs)
+    return execute
 
 @pytest.fixture
 def nb_user(aiidalab_exec):
