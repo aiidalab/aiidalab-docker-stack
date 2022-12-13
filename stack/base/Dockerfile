@@ -38,10 +38,10 @@ RUN cat requirements.txt | xargs -I{} conda config --system --add pinned_package
 ENV PIP_CONSTRAINT=/opt/requirements.txt
 
 # Enable verdi autocompletion.
-RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
-     echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     chmod +x "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     fix-permissions "${CONDA_DIR}"
+RUN mkdir -p "${CONDA_DIR}/envs/aiida-base/etc/conda/activate.d" && \
+     echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/envs/aiida-base/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
+     chmod +x "${CONDA_DIR}/envs/aiida-base/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
+     fix-permissions "${CONDA_DIR}"/envs/aiida-base
 
 # Configure AiiDA profile.
 COPY config-quick-setup.yaml .
@@ -73,7 +73,7 @@ USER ${NB_USER}
 WORKDIR "/home/${NB_USER}"
 
 # The vim.tiny shipped with jupyter base stack start vim
-# in compatible mode, by creating `.vimrm` file in user home
+# in compatible mode, by creating `.vimrc` file in user home
 # make it nocompatible mode so the modern vim features is available:
 # https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
-RUN touch .vimrc
+RUN echo "set nocp" > .vimrc
