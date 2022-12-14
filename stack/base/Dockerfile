@@ -65,6 +65,14 @@ if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
    . /opt/bin/load-singlesshagent.sh\n\
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
+# Switch to aiida-base conda environment by default
+RUN echo "conda activate aiida-base" >> "/home/${NB_USER}/.bashrc"
+
+# Install ipykernel from aiida-base environment,
+# remove the default python3 kernel
+RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
+RUN mamba run -n aiida-base jupyter kernelspec remove python3
+
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
 
