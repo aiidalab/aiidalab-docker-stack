@@ -35,7 +35,6 @@ RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
 # Install the aiidalab-home app.
 ARG AIIDALAB_HOME_VERSION
-# TODO: Into which environment should the aiidalab-home app be installed?
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
@@ -53,8 +52,7 @@ RUN git clone https://github.com/oschuett/appmode.git && \
      git checkout v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN pip install ./appmode --no-cache-dir && \
-     fix-permissions "./" && \
-     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/opt/appmode" && \
      jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
@@ -89,5 +87,5 @@ WORKDIR "/home/${NB_USER}"
 RUN  mkdir -p /home/${NB_USER}/apps
 
 ENV NOTEBOOK_ARGS \
-     "--NotebookApp.default_url=/apps/apps/home/start.ipynb" \
+     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
      "--ContentsManager.allow_hidden=True"
