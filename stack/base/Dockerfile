@@ -71,7 +71,7 @@ fi\n' >> "/home/${NB_USER}/.bashrc"
 # Install ipykernel from aiida-base environment,
 # remove the default python3 kernel
 RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
-#RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
+RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
 
 USER ${NB_USER}
 
