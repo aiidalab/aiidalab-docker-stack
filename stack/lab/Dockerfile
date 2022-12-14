@@ -55,9 +55,9 @@ RUN git clone https://github.com/oschuett/appmode.git && \
      cd appmode && \
      git checkout v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
-RUN mamba run -n aiida-base pip install ./appmode --no-cache-dir && \
-     jupyter nbextension enable --py --sys-prefix appmode && \
-     jupyter serverextension enable --py --sys-prefix appmode
+RUN mamba run -n aiida-base pip install /opt/appmode --no-cache-dir && \
+     mamba run -n aiida-base jupyter nbextension enable --py --sys-prefix appmode && \
+     mamba run -n aiida-base jupyter serverextension enable --py --sys-prefix appmode
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
