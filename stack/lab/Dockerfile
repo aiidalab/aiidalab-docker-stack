@@ -46,6 +46,13 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
 # Hack to use the new kernel
 RUN sed -r -i 's/"name": "python[23]"/"name": "aiidalab"/' aiidalab-home/*ipynb
 
+# Hack to make everything work
+RUN mamba install -n base --yes \
+     jupyterlab_widgets widgetsnbextension \
+     && mamba clean --all -f -y && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
+
 # Install and enable appmode.
 RUN git clone https://github.com/oschuett/appmode.git && \
      cd appmode && \
