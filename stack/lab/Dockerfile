@@ -48,7 +48,7 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      fix-permissions "/home/${NB_USER}"
 
 # Hack to use the new kernel
-RUN sed -i 's/"name": "python3"/"name": "aiidalab"/' aiidalab-home/*ipynb
+RUN sed -r -i 's/"name": "python[23]"/"name": "aiidalab"/' aiidalab-home/*ipynb
 
 # Install and enable appmode.
 RUN git clone https://github.com/oschuett/appmode.git && \

@@ -71,7 +71,7 @@ RUN echo "conda activate aiida-base" >> "/home/${NB_USER}/.bashrc"
 # Install ipykernel from aiida-base environment,
 # remove the default python3 kernel
 RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
-RUN mamba run -n aiida-base jupyter kernelspec remove python3
+RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
