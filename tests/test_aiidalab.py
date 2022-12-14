@@ -12,8 +12,7 @@ def test_notebook_service_available(notebook_service):
 def test_pip_check(docker_exec, aiidalab_exec, nb_user):
     docker_exec("pip check")
     aiidalab_exec("pip check")
-    # Apparently one cannot invoke environment like this
-    # docker_exec(f"mamba run -n /home/{nb_user}/conda/aiida-homebase pip check")
+    docker_exec(f"mamba run -n aiida-homebase pip check")
 
 
 def test_aiidalab_available(aiidalab_exec, nb_user, variant):
@@ -146,6 +145,7 @@ def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant)
     # assert f"Installed '{package_name}' version" in output
 
 
+@pytest.mark.skip(reason="No longer adding this path")
 def test_path_local_pip(docker_exec, nb_user):
     """test that the pip local bin path ~/.local/bin is added to PATH"""
     output = docker_exec("bash -c 'echo \"${PATH}\"'", user=nb_user).decode()
