@@ -73,8 +73,10 @@ RUN echo "conda activate aiida-base" >> "/home/${NB_USER}/.bashrc"
 RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
 RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
 
-# Add ~/.local/bin to PATH where the dependencies get installed via pip
-ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
+# Add conda envs_dirs in home directory,
+# which will persist between container invocation
+RUN mamba config --system --add envs_dirs /opt/conda
+RUN mamba config --system --add envs_dirs "~/conda/envs"
 
 USER ${NB_USER}
 
