@@ -75,8 +75,9 @@ RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
 
 # Add conda envs_dirs in home directory,
 # which will persist between container invocation
-RUN mamba config --system --add envs_dirs /opt/conda
-RUN mamba config --system --add envs_dirs "~/conda/envs"
+RUN conda config --system --add envs_dirs /opt/conda
+RUN conda config --system --add envs_dirs "~/conda/envs"
+RUN cat /opt/conda/.condarc
 
 USER ${NB_USER}
 
