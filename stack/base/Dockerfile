@@ -81,4 +81,4 @@ WORKDIR "/home/${NB_USER}"
 # in compatible mode, by creating `.vimrc` file in user home
 # make it nocompatible mode so the modern vim features is available:
 # https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
-RUN echo "set nocp\nset noai\nfiletype plugin on\nsyntax on" > .vimrc
+RUN echo -e "set nocp\nset noai\nfiletype plugin on\nsyntax on" > .vimrc
