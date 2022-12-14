@@ -88,7 +88,6 @@ def test_prevent_installation_of_incompatible_aiida_version(
 
 @pytest.mark.parametrize("package_manager", ["mamba", "pip"])
 @pytest.mark.parametrize("incompatible_version", ["22.7.1"])
-@pytest.mark.skip(reason="aiidalab temporarily installed from github")
 def test_prevent_installation_of_incompatible_aiidalab_version(
     aiidalab_exec,
     nb_user,

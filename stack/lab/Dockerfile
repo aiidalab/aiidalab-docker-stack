@@ -23,21 +23,15 @@ RUN apt-get update --yes && \
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION
-#RUN mamba install -n aiida-base --yes \
-#     aiidalab=${AIIDALAB_VERSION} \
-#     && mamba clean --all -f -y && \
-#     fix-permissions "${CONDA_DIR}" && \
-#     fix-permissions "/home/${NB_USER}"
-
-RUN git clone -b conda-envs https://github.com/danielhollas/aiidalab.git && \
-    cd aiidalab && mamba run -n aiida-base pip install -e . && \
-     fix-permissions "./" && \
+RUN mamba install -n aiida-base --yes \
+     aiidalab=${AIIDALAB_VERSION} \
+     && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
 # Pin aiidalab version.
-#RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
-#RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
+RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
+RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
 # Install the aiidalab-home app.
 ARG AIIDALAB_HOME_VERSION
