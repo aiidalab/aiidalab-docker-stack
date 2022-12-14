@@ -12,6 +12,13 @@ COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook
 RUN fix-permissions "${CONDA_DIR}"
 RUN fix-permissions "/home/${NB_USER}"
 
+# TODO: This cannot be in base! It would break the base-with-services build
+# Should it be in lab and base-with-services? Or only here?
+# Add conda envs_dirs in home directory,
+# which will persist between container invocation
+RUN conda config --system --add envs_dirs /opt/conda
+RUN conda config --system --add envs_dirs "~/conda/envs"
+
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
