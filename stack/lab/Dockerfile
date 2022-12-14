@@ -30,7 +30,10 @@ ARG AIIDALAB_VERSION
 #     fix-permissions "/home/${NB_USER}"
 
 RUN git clone -b conda-envs https://github.com/danielhollas/aiidalab.git && \
-    cd aiidalab && mamba run -n aiida-base pip install -e .
+    cd aiidalab && mamba run -n aiida-base pip install -e . && \
+     fix-permissions "./" && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
 
 # Pin aiidalab version.
 #RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
@@ -90,5 +93,5 @@ WORKDIR "/home/${NB_USER}"
 RUN  mkdir -p /home/${NB_USER}/apps
 
 ENV NOTEBOOK_ARGS \
-     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
+     "--NotebookApp.default_url=/apps/apps/home/start.ipynb" \
      "--ContentsManager.allow_hidden=True"
