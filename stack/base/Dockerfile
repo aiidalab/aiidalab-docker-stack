@@ -29,6 +29,8 @@ RUN mamba install -n aiida-base --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
+# https://docs.jupyter.org/en/latest/use/jupyter-directories.html#envvar-JUPYTER_PATH
+ENV JUPYTER_PATH=/home/${NB_USER}/.conda/aiida-homebase
 
 # Pin shared requirements in the base environemnt.
 # TODO: These should be pinned in aiida-base as well
