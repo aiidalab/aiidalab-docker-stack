@@ -15,9 +15,10 @@ else
     NEED_SETUP_PROFILE=false
 fi
 
-export AIIDA_CONDA_DIR=/home/${NB_USER}/conda/envs/aiida-homebase
+# TODO: Check whether aiida-homebase environment exists via `mamba env list`
+export AIIDA_CONDA_DIR=/home/${NB_USER}/.conda/envs/aiida-homebase
 if [[ ! -d ${AIIDA_CONDA_DIR} ]];then
-    mamba create --clone aiida-base -p ${AIIDA_CONDA_DIR}
+    mamba create --clone aiida-base aiida-homebase
 fi
 
 # Setup AiiDA profile if needed.

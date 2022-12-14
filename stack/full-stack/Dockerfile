@@ -17,7 +17,7 @@ RUN fix-permissions "/home/${NB_USER}"
 # Add conda envs_dirs in home directory,
 # which will persist between container invocation
 RUN conda config --system --add envs_dirs /opt/conda
-RUN conda config --system --add envs_dirs "~/conda/envs"
+RUN conda config --system --add envs_dirs "~/.conda/envs"
 
 USER ${NB_USER}
 
