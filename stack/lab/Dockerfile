@@ -62,7 +62,7 @@ RUN pip install ./appmode --no-cache-dir && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      jupyter nbextension enable --py --sys-prefix appmode && \
-     jupyter serverextension enable --py --sys-prefix appmode \
+     jupyter serverextension enable --py --sys-prefix appmode
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
