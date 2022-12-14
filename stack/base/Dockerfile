@@ -66,18 +66,17 @@ if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
 # Switch to aiida-base conda environment by default
-RUN echo "conda activate aiida-base" >> "/home/${NB_USER}/.bashrc"
+#RUN echo "conda activate aiida-base" >> "/home/${NB_USER}/.bashrc"
 
 # Install ipykernel from aiida-base environment,
 # remove the default python3 kernel
 RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
-RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
+#RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
 
 # Add conda envs_dirs in home directory,
 # which will persist between container invocation
 RUN conda config --system --add envs_dirs /opt/conda
 RUN conda config --system --add envs_dirs "~/conda/envs"
-RUN cat /opt/conda/.condarc
 
 USER ${NB_USER}
 
@@ -87,4 +86,4 @@ WORKDIR "/home/${NB_USER}"
 # in compatible mode, by creating `.vimrc` file in user home
 # make it nocompatible mode so the modern vim features is available:
 # https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
-RUN echo "set nocp" > .vimrc
+RUN echo "set nocp\nset noai\nfiletype plugin on\nsyntax on" > .vimrc
