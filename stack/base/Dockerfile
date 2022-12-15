@@ -75,6 +75,13 @@ fi\n' >> "/home/${NB_USER}/.bashrc"
 RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
 RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
 
+# Add conda envs_dirs in home directory,
+# which will persist between container invocation
+# NOTE: The order here is important!
+# We want conda to create environments in ~/.conda/ by default
+RUN conda config --system --add envs_dirs /opt/conda
+RUN conda config --system --add envs_dirs "~/.conda/envs"
+
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
