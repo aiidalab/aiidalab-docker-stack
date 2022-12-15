@@ -1,5 +1,2 @@
-# TODO: Why are we pinning this?
-# We need to ensure version here is the same
-# as in the base image
 pip==22.2.2
 ipykernel==6.16.0
