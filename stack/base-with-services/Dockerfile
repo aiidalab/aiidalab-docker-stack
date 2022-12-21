@@ -8,7 +8,7 @@ WORKDIR /opt/
 
 ARG AIIDA_VERSION
 
-RUN mamba create -p /opt/conda/aiida-core-services --yes \
+RUN mamba create -p /opt/conda/envs/aiida-core-services --yes \
      aiida-core.services=${AIIDA_VERSION} \
      rabbitmq-server=3.8.14 \
      && mamba clean --all -f -y && \
