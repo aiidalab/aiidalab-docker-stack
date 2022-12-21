@@ -15,28 +15,35 @@ RUN apt-get update --yes && \
 WORKDIR /opt/
 
 ARG AIIDA_VERSION
+ARG PYTHON_VERSION
 
 # Install the shared requirements.
 COPY requirements.txt .
-RUN mamba install --yes \
-     aiida-core=${AIIDA_VERSION} \
+RUN echo "aiida-core==${AIIDA_VERSION}" >> requirements.txt
+RUN echo "python==${PYTHON_VERSION}" >> requirements.txt
+# Install separate environment for aiida-core/aiidalab
+RUN mamba create --name aiida-base
+RUN mamba install -n aiida-base --yes \
      --file requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
+# https://docs.jupyter.org/en/latest/use/jupyter-directories.html#envvar-JUPYTER_PATH
+ENV JUPYTER_PATH=/home/${NB_USER}/.conda/aiida-homebase
 
 # Pin shared requirements in the base environemnt.
+# TODO: These should be pinned in aiida-base as well
 RUN cat requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
 # Configure pip to use requirements file as constraints file.
 ENV PIP_CONSTRAINT=/opt/requirements.txt
 
 # Enable verdi autocompletion.
-RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
-     echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     chmod +x "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     fix-permissions "${CONDA_DIR}"
+RUN mkdir -p "${CONDA_DIR}/envs/aiida-base/etc/conda/activate.d" && \
+     echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/envs/aiida-base/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
+     chmod +x "${CONDA_DIR}/envs/aiida-base/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
+     fix-permissions "${CONDA_DIR}"/envs/aiida-base
 
 # Configure AiiDA profile.
 COPY config-quick-setup.yaml .
@@ -60,15 +67,27 @@ if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
    . /opt/bin/load-singlesshagent.sh\n\
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
-# Add ~/.local/bin to PATH where the dependencies get installed via pip
-ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
+# Switch to aiida-base conda environment by default
+#RUN echo "conda activate aiida-base" >> "/home/${NB_USER}/.bashrc"
+
+# Install ipykernel from aiida-base environment,
+# remove the default python3 kernel
+RUN mamba run -n aiida-base ipython kernel install --user --name=aiidalab
+RUN mamba run -n aiida-base jupyter kernelspec remove -y python3
+
+# Add conda envs_dirs in home directory,
+# which will persist between container invocation
+# NOTE: The order here is important!
+# We want conda to create environments in ~/.conda/ by default
+RUN conda config --system --add envs_dirs /opt/conda
+RUN conda config --system --add envs_dirs "~/.conda/envs"
 
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
 
 # The vim.tiny shipped with jupyter base stack start vim
-# in compatible mode, by creating `.vimrm` file in user home
+# in compatible mode, by creating `.vimrc` file in user home
 # make it nocompatible mode so the modern vim features is available:
 # https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
-RUN touch .vimrc
+RUN echo -e "set nocp\nset noai\nfiletype plugin on\nsyntax on" > .vimrc

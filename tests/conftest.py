@@ -32,7 +32,7 @@ def notebook_service(docker_ip, docker_services):
     port = docker_services.port_for("aiidalab", 8888)
     url = f"http://{docker_ip}:{port}"
     docker_services.wait_until_responsive(
-        timeout=30.0, pause=0.1, check=lambda: is_responsive(url)
+        timeout=60.0, pause=0.1, check=lambda: is_responsive(url)
     )
     return url
 
@@ -43,13 +43,21 @@ def docker_compose(docker_services):
 
 
 @pytest.fixture
-def aiidalab_exec(docker_compose):
+def docker_exec(docker_compose):
     def execute(command, user=None, **kwargs):
         if user:
             command = f"exec -T --user={user} aiidalab {command}"
         else:
             command = f"exec -T aiidalab {command}"
         return docker_compose.execute(command, **kwargs)
+
+    return execute
+
+
+@pytest.fixture
+def aiidalab_exec(docker_exec):
+    def execute(command, user=None, **kwargs):
+        return docker_exec(f"mamba run -n aiida-base {command}", user=user, **kwargs)
 
     return execute
 

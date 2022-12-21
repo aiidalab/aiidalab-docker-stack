@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM base-with-services as base
 
-FROM  lab
+FROM lab
 
 USER root
 
@@ -10,7 +10,7 @@ COPY --from=base "${CONDA_DIR}/envs/aiida-core-services" "${CONDA_DIR}/envs/aiid
 COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook.d
 
 RUN fix-permissions "${CONDA_DIR}"
-RUN fix-permissions "/home/${NB_USER}/.aiida"
+RUN fix-permissions "/home/${NB_USER}"
 
 USER ${NB_USER}
 

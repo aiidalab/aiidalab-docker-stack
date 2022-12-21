@@ -23,7 +23,7 @@ RUN apt-get update --yes && \
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION
-RUN mamba install --yes \
+RUN mamba install -n aiida-base --yes \
      aiidalab=${AIIDALAB_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
@@ -38,8 +38,18 @@ ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
-     pip install --quiet --no-cache-dir "./" && \
+     mamba run -n aiida-base pip install --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
+
+# Hack to use the new kernel
+RUN sed -r -i 's/"name": "python[23]"/"name": "aiidalab"/' aiidalab-home/*ipynb
+
+# Hack to make everything work
+RUN mamba install -n base --yes \
+     jupyterlab_widgets widgetsnbextension \
+     && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
@@ -49,6 +59,7 @@ RUN git clone https://github.com/oschuett/appmode.git && \
      git checkout v0.8.0
 COPY gears.svg ./appmode/appmode/static/gears.svg
 RUN pip install ./appmode --no-cache-dir && \
+     fix-permissions "/opt/appmode" && \
      jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
