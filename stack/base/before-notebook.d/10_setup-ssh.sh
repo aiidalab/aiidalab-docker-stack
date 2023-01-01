@@ -13,3 +13,10 @@ fi
 
 # Start the ssh-agent.
 eval `ssh-agent`
+
+# The vim.tiny shipped with jupyter base stack start vim
+# in a so called compatible mode. Let's turn it off to make modern vim features available.
+# https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
+if [[ ! -f /home/$NB_USER/.vimrc ]];then
+  echo "set nocp" > /home/${NB_USER}/.vimrc
+fi
