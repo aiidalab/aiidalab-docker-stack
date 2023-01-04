@@ -59,6 +59,13 @@ RUN wget --quiet --directory-prefix=/opt/bin/ \
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
 
+# Add conda envs_dirs in home directory,
+# which will persist between container invocation
+# NOTE: The order here is important!
+# We want conda to create environments in ~/.conda/ by default
+RUN conda config --system --add envs_dirs /opt/conda
+RUN conda config --system --add envs_dirs "~/.conda/envs"
+
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
