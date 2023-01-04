@@ -12,9 +12,9 @@ if [[ ! -f  /home/${NB_USER}/.ssh/id_rsa ]]; then
 fi
 
 # Set by source load-singlesshagent.sh script
-echo $'\n# Load singlesshagent on shell startup.\n
-if [ -f /opt/bin/load-singlesshagent.sh ]; then\n
-   . /opt/bin/load-singlesshagent.sh\n
+echo $'\n# Load singlesshagent on shell startup.
+if [ -f /opt/bin/load-singlesshagent.sh ]; then
+   . /opt/bin/load-singlesshagent.sh
 fi\n' >> "/home/${NB_USER}/.bashrc"
 
 # Start the ssh-agent.
