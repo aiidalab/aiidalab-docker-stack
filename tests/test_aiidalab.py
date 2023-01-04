@@ -23,6 +23,9 @@ def test_aiidalab_available(aiidalab_exec, nb_user, variant):
 def test_create_conda_environment(aiidalab_exec, nb_user):
     output = aiidalab_exec("conda create -y -n tmp", user=nb_user).decode().strip()
     assert "conda activate tmp" in output
+    # New conda environments should be created in ~/.conda/envs/
+    output = aiidalab_exec("conda env list", user=nb_user).decode().strip()
+    assert f"/home/{nb_user}/.conda/envs/tmp" in output
 
 
 def test_correct_python_version_installed(aiidalab_exec, python_version):
