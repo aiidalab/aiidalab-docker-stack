@@ -15,9 +15,9 @@ if [[ ! -f  /home/${NB_USER}/.bash_logout ]]; then
 fi
 
 # The vim.tiny shipped with jupyter base stack start vim
-# in compatible mode, by creating `.vimrm` file in user home
+# in compatible mode, by creating `.vimrc` file in user home
 # make it nocompatible mode so the modern vim features is available:
 # https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
 if [[ ! -f  /home/${NB_USER}/.vimrc ]]; then
-    touch .vimrc
+    echo "set nocp" > .vimrc
 fi
