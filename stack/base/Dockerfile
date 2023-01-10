@@ -52,13 +52,9 @@ ENV AIIDA_USER_INSTITUTION Khedivial
 
 # Install the load-singlesshagent.sh script as described here:
 # https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
-# The startup of this script is configured in the before-notebook.d/10_setup-ssh.sh file.
+# The startup of this script is configured in the before-notebook.d/20_setup-ssh.sh file.
 RUN wget --quiet --directory-prefix=/opt/bin/ \
-     "https://aiida.readthedocs.io/projects/aiida-core/en/v${AIIDA_VERSION}/_downloads/4265ec5a42c3a3dba586dd460c0db95e/load-singlesshagent.sh" \
-     && echo $'\n# Load singlesshagent on shell startup.\n\
-if [ -f /opt/bin/load-singlesshagent.sh ]; then\n\
-   . /opt/bin/load-singlesshagent.sh\n\
-fi\n' >> "/home/${NB_USER}/.bashrc"
+     "https://aiida.readthedocs.io/projects/aiida-core/en/v${AIIDA_VERSION}/_downloads/4265ec5a42c3a3dba586dd460c0db95e/load-singlesshagent.sh"
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
@@ -73,9 +69,3 @@ RUN conda config --system --add envs_dirs "~/.conda/envs"
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
-
-# The vim.tiny shipped with jupyter base stack start vim
-# in compatible mode, by creating `.vimrm` file in user home
-# make it nocompatible mode so the modern vim features is available:
-# https://superuser.com/questions/543317/what-is-compatible-mode-in-vim/543327#543327
-RUN touch .vimrc

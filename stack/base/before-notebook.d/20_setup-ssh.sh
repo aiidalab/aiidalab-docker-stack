@@ -11,5 +11,11 @@ if [[ ! -f  /home/${NB_USER}/.ssh/id_rsa ]]; then
   ssh-keygen -f /home/${NB_USER}/.ssh/id_rsa -t rsa -b 4096 -m PEM -N ''
 fi
 
+# Set by source load-singlesshagent.sh script
+echo $'\n# Load singlesshagent on shell startup.
+if [ -f /opt/bin/load-singlesshagent.sh ]; then
+   . /opt/bin/load-singlesshagent.sh
+fi\n' >> "/home/${NB_USER}/.bashrc"
+
 # Start the ssh-agent.
 eval `ssh-agent`
