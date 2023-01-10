@@ -3,15 +3,15 @@
 # If the container is start by spawner and the home is remounted.
 # The .bashrc in HOME won't be set properly.
 if [[ ! -f  /home/${NB_USER}/.bashrc ]]; then
-    cat /etc/skel/.bashrc > /home/${NB_USER}/.bashrc
+    cp /etc/skel/.bashrc /home/${NB_USER}/.bashrc
 fi
 
 if [[ ! -f  /home/${NB_USER}/.profile ]]; then
-    cat /etc/skel/.profile > /home/${NB_USER}/.profile
+    cp /etc/skel/.profile /home/${NB_USER}/.profile
 fi
 
 if [[ ! -f  /home/${NB_USER}/.bash_logout ]]; then
-    cat /etc/skel/.bash_logout > /home/${NB_USER}/.bash_logout
+    cp /etc/skel/.bash_logout /home/${NB_USER}/.bash_logout
 fi
 
 # The vim.tiny shipped with jupyter base stack start vim
