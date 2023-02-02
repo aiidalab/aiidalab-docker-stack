@@ -34,6 +34,18 @@ def test_correct_python_version_installed(aiidalab_exec, python_version):
     assert parse(info["version"]) == parse(python_version)
 
 
+def test_correct_pgsql_version_installed(aiidalab_exec, pgsql_version, variant):
+    if "lab" in variant:
+        pytest.skip()
+    info = json.loads(
+        aiidalab_exec(
+            "mamba list -n aiida-core-services --json --full-name postgresql"
+        ).decode()
+    )[0]
+    assert info["name"] == "postgresql"
+    assert parse(info["version"]).major == parse(pgsql_version).major
+
+
 def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiida-core").decode()

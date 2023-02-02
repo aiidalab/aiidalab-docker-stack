@@ -5,6 +5,9 @@ variable "VERSION" {
 variable "PYTHON_VERSION" {
 }
 
+variable "PGSQL_VERSION" {
+}
+
 variable "AIIDA_VERSION" {
 }
 
@@ -35,6 +38,7 @@ function "tags" {
   result = [
     "${REGISTRY}${ORGANIZATION}/${image}:${VERSION}",
     "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
     "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
   ]
 }
@@ -75,6 +79,7 @@ target "base-with-services" {
   platforms = "${PLATFORMS}"
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
+    "PGSQL_VERSION" = "${PGSQL_VERSION}"
   }
 }
 target "lab" {
