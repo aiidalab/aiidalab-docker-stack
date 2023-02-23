@@ -9,10 +9,11 @@ fi
 # Set sshagent by source load-singlesshagent.sh script
 # append the command text of source to .bashrc if the script /opt/bin/load-singlesshagen.sh is present
 # and the command text is not already present in .bashrc
-if [[ -f /opt/bin/load-singlesshagent.sh ]] && ! grep -q "# Load singlesshagent on shell startup." /home/${NB_USER}/.bashrc; then
+header="# Load singlesshagent on shell startup."
+if [[ -f /opt/bin/load-singlesshagent.sh ]] && ! grep -q "${header}" /home/${NB_USER}/.bashrc; then
     cat >> "/home/${NB_USER}/.bashrc" <<- EOF
 
-# Load singlesshagent on shell startup.
+${header}
 if [ -f /opt/bin/load-singlesshagent.sh ]; then
     source /opt/bin/load-singlesshagent.sh
 fi
