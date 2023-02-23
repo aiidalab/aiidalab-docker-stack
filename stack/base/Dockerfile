@@ -20,6 +20,7 @@ ARG AIIDA_VERSION
 COPY requirements.txt .
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
+     mamba-bash-completion \
      --file requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
