@@ -3,8 +3,11 @@
     "PYTHON_VERSION": {
       "default": "3.10.6"
     },
+    "PGSQL_VERSION": {
+      "default": "15"
+    },
     "AIIDA_VERSION": {
-      "default": "2.2.1"
+      "default": "2.2.2"
     },
     "AIIDALAB_VERSION": {
       "default": "22.11.0"
