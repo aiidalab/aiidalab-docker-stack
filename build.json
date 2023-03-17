@@ -10,10 +10,10 @@
       "default": "2.2.2"
     },
     "AIIDALAB_VERSION": {
-      "default": "22.11.0"
+      "default": "23.04.0"
     },
     "AIIDALAB_HOME_VERSION": {
-      "default": "22.11.0"
+      "default": "23.04.0"
     }
   }
 }
