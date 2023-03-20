@@ -6,10 +6,10 @@ name: release-image
 on:
     push:
         branches:
-            - master
-            - develop
+            - support/aiida-1.x
+            - bumpver-1x # remove this before merged
         tags:
-            - v[0-9]+.[0-9]+.[0-9]+*
+            - v1.[0-9]+.[0-9]+*
 
 jobs:
 
