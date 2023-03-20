@@ -20,7 +20,7 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 #
 # Please note that multiple entries must be whitespace delimited.
 # Please see `aiidalab install --help` for more information.
-ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.0"
+ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.4"
 
 USER root
 WORKDIR /opt/
@@ -110,7 +110,7 @@ COPY opt/prepare-aiidalab.sh /opt/
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
 
 # Install the aiidalab-home app.
-ARG aiidalab_home_version=v22.01.0
+ARG aiidalab_home_version=v23.03.0
 RUN git clone https://github.com/aiidalab/aiidalab-home && cd aiidalab-home && git checkout $aiidalab_home_version
 RUN chmod 774 aiidalab-home
 

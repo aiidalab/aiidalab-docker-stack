@@ -1,4 +1,4 @@
-aiidalab==22.7.1
+aiidalab~=23.3
 aiidalab-widgets-base~=1.3
 binaryornot~=0.4
 bokeh~=2.0
