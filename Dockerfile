@@ -84,7 +84,7 @@ RUN /usr/local/bin/jupyter serverextension enable --py --sys-prefix appmode
 # Install some useful packages that are not available on PyPi.
 RUN conda install --yes -c conda-forge \
   openbabel==3.1.1 \
-  rdkit==2021.09.2 \
+  rdkit==2022.09.5 \
   && conda clean --all
 
 # Install AiiDAlab Python packages into user conda environment and populate reentry cache.
