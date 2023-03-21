@@ -9,3 +9,4 @@ pip~=22.0,<22.1
 pysmiles~=1.0
 pythreejs~=2.1
 widget-periodictable~=3.0
+numpy<1.24
