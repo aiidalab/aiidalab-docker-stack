@@ -43,6 +43,9 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
+# Install aiidalab-base-widgets
+RUN pip install --no-cache-dir aiidalab-widgets-base==2.0.0b6
+
 # Install and enable appmode.
 RUN git clone https://github.com/oschuett/appmode.git && \
      cd appmode && \
@@ -70,7 +73,6 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 #
 # Please note that multiple entries must be whitespace delimited.
 # Please see `aiidalab install --help` for more information.
-# ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.0"
 ENV AIIDALAB_DEFAULT_APPS ""
 
 # Specify default factory reset (not set):
@@ -80,7 +82,7 @@ USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
 
-RUN  mkdir -p /home/${NB_USER}/apps
+RUN mkdir -p /home/${NB_USER}/apps
 
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
