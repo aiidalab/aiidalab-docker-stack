@@ -44,6 +44,22 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      fix-permissions "/home/${NB_USER}"
 
 # Install aiidalab-base-widgets
+RUN mamba install --yes \
+    PyCifRW~=4.4 \
+    ansi2html~=1.6 \
+    ase~=3.18 \
+    bokeh~=2.0 \
+    humanfriendly~=10.0 \
+    ipytree~=0.2 \
+    ipywidgets~=7.7 \
+    widgetsnbextension<3.6.3 \
+    more-itertools~=8.0 \
+    pymysql~=0.9 \
+    nglview~=3.0 \
+    spglib~=1.14 \
+     && mamba clean --all -f -y && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
 RUN pip install --no-cache-dir aiidalab-widgets-base==2.0.0b6
 
 # Install and enable appmode.
