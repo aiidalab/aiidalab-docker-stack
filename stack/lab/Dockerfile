@@ -52,7 +52,7 @@ RUN mamba install --yes \
     humanfriendly~=10.0 \
     ipytree~=0.2 \
     ipywidgets~=7.7 \
-    widgetsnbextension<3.6.3 \
+    "widgetsnbextension<3.6.3" \
     more-itertools~=8.0 \
     pymysql~=0.9 \
     nglview~=3.0 \
