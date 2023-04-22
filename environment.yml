@@ -3,7 +3,6 @@ name: aiidalab-docker-stack
 channels:
     - conda-forge
 dependencies:
-    - bumpver=2022.1118
     - docker-compose=1.29.2
     - doit=0.36.0
     - dunamai=1.13.0
@@ -12,3 +11,4 @@ dependencies:
     - requests==2.28.1
     - pip:
           - pytest-docker==1.0.0
+          - bumpver==2022.1120
