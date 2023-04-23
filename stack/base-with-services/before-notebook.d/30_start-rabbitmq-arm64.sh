@@ -16,9 +16,9 @@ RMQ_ETC_DIR="/opt/conda/envs/aiida-core-services/rabbitmq_server-${RMQ_VERSION}/
 echo MNESIA_BASE="${RABBITMQ_DATA_DIR}" >> "${RMQ_ETC_DIR}/rabbitmq-env.conf"
 echo LOG_BASE="${RABBITMQ_DATA_DIR}/log" >> "${RMQ_ETC_DIR}/rabbitmq-env.conf"
 
-# RabbitMQ with versions >= 3.8.15 have reduced some default timeouts 
+# RabbitMQ with versions >= 3.8.15 have reduced some default timeouts
 # baseimage phusion/baseimage:jammy-1.0.0 running ubuntu 22.04 will install higher version of rabbimq by apt.
-# using workaround from https://github.com/aiidateam/aiida-core/wiki/RabbitMQ-version-to-use 
+# using workaround from https://github.com/aiidateam/aiida-core/wiki/RabbitMQ-version-to-use
 # set timeout to 100 hours
 echo "consumer_timeout=3600000" >> "${RMQ_ETC_DIR}/rabbitmq.conf"
 

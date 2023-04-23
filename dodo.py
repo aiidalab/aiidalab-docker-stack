@@ -53,6 +53,7 @@ _PLATFORM_PARAM = {
     "help": "Specify the platform to build for. Examples: linux/amd64, linux/arm64",
 }
 
+
 def task_build():
     """Build all docker images."""
 

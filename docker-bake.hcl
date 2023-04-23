@@ -30,7 +30,7 @@ variable "REGISTRY" {
 }
 
 variable "PLATFORMS" {
-  default = ["linux/amd64"]
+  default = ["linux/amd64", "linux/arm64"]
 }
 
 variable "TARGETS" {
