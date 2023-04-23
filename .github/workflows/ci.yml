@@ -44,8 +44,8 @@ jobs:
             - name: Read build variables
               id: build_vars
               run: |
-                  echo ::set-output name=vars::$(cat build.json | \
-                    jq '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
+                  vars=$(cat build.json | jq -c '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
+                  echo "vars=$vars" >> "${GITHUB_OUTPUT}"
             - name: Docker meta
               id: meta
               uses: docker/metadata-action@v4
@@ -79,10 +79,10 @@ jobs:
               env:
                   BAKE_METADATA: ${{ steps.bake.outputs.metadata }}
               run: |
-                  targets=$(echo "${BAKE_METADATA}"| jq -c 'keys')
-                  echo "::set-output name=targets::${targets}"
-                  images=$(echo "${BAKE_METADATA}"| jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
-                  echo "::set-output name=images::${images}"
+                  targets=$(echo "${BAKE_METADATA}" | jq -c 'keys')
+                  echo "targets=$targets" >> "${GITHUB_OUTPUT}"
+                  images=$(echo "${BAKE_METADATA}" | jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
+                  echo "images=$images" >> "${GITHUB_OUTPUT}"
 
     test:
         needs: build
@@ -173,7 +173,7 @@ jobs:
               id: images
               run: |
                   src=$(echo '${{ needs.build.outputs.images }}'| jq -cr '.[("${{ matrix.target }}"|ascii_upcase|sub("-"; "_"; "g")) + "_IMAGE"]')
-                  echo ::set-output name=src::${src}
+                  echo "src=$src" >> "${GITHUB_OUTPUT}"
             - name: Push image
               uses: akhilerm/tag-push-action@v2.0.0
               with:
