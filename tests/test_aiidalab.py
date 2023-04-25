@@ -45,6 +45,16 @@ def test_correct_pgsql_version_installed(aiidalab_exec, pgsql_version, variant):
     assert parse(info["version"]).major == parse(pgsql_version).major
 
 
+def test_rabbitmq_can_start(aiidalab_exec, variant):
+    """Test the rabbitmq-server can start, the output should be empty if
+    the command is successful."""
+    if "lab" in variant:
+        pytest.skip()
+    output = aiidalab_exec("mamba run -n aiida-core-services rabbitmq-server -detached")
+
+    assert output == b""
+
+
 def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiida-core").decode()
