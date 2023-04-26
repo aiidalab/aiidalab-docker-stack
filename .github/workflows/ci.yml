@@ -68,6 +68,8 @@ jobs:
                     | tee docker-bake-template-meta.json
             - name: Build images with buildx bake
               id: bake
+              env:
+                  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
               uses: docker/bake-action@v3.0.1
               with:
                   files: |
