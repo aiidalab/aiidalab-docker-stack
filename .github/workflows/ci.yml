@@ -115,7 +115,7 @@ jobs:
     test-arm64:
         needs: build
 
-        runs-on: self-hosted
+        runs-on: buildjet-2vcpu-ubuntu-2204-arm
         timeout-minutes: 20
 
         steps:
@@ -165,7 +165,7 @@ jobs:
 
     integration-test-arm64:
         needs: build
-        runs-on: self-hosted
+        runs-on: buildjet-2vcpu-ubuntu-2204-arm
         timeout-minutes: 20
 
         steps:
