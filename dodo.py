@@ -53,6 +53,7 @@ _PLATFORM_PARAM = {
     "help": "Specify the platform to build for. Examples: linux/amd64, linux/arm64",
 }
 
+
 def task_build():
     """Build all docker images."""
 
@@ -61,7 +62,9 @@ def task_build():
             # Workaround of issue of doit, which rather than override the default value, it appends
             # https://github.com/pydoit/doit/issues/436
             targets = targets[4:]
-        Path("docker-bake.override.json").write_text(json.dumps(dict(VERSION=version, REGISTRY=registry, TARGETS=targets)))
+        Path("docker-bake.override.json").write_text(
+            json.dumps(dict(VERSION=version, REGISTRY=registry, TARGETS=targets))
+        )
 
     return {
         "actions": [
@@ -71,7 +74,7 @@ def task_build():
             "--set '*.platform=%(platform)s' "
             "--load",
         ],
-        'title': title_with_actions,
+        "title": title_with_actions,
         "params": [
             _REGISTRY_PARAM,
             _VERSION_PARAM,
