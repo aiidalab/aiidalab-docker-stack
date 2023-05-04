@@ -132,9 +132,9 @@ jobs:
               run: pytest -v -m "integration"
 
     release:
-        if: >-
-            github.repository == 'aiidalab/aiidalab-docker-stack'
-            && (github.ref_type == 'tag' || github.ref_name == 'main')
+        # if: >-
+        #     github.repository == 'aiidalab/aiidalab-docker-stack'
+        #     && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs:
             - build
             - test
@@ -176,22 +176,31 @@ jobs:
               run: |
                   src=$(echo '${{ needs.build.outputs.images }}'| jq -cr '.[("${{ matrix.target }}"|ascii_upcase|sub("-"; "_"; "g")) + "_IMAGE"]')
                   echo "src=$src" >> "${GITHUB_OUTPUT}"
-            - name: Push image
-              uses: akhilerm/tag-push-action@v2.0.0
-              with:
-                  src: ${{ steps.images.outputs.src }}
-                  dst: ${{ steps.meta.outputs.tags }}
+            # - name: Push image
+            #   uses: akhilerm/tag-push-action@v2.0.0
+            #   with:
+            #       src: ${{ steps.images.outputs.src }}
+            #       dst: ${{ steps.meta.outputs.tags }}
 
-            - name: Docker Hub Description
-              uses: peter-evans/dockerhub-description@v3
-              with:
-                  username: ${{ secrets.DOCKER_USERNAME }}
-                  password: ${{ secrets.DOCKER_PASSWORD }}
-                  repository: aiidalab/${{ matrix.target }}
-                  short-description: ${{ github.event.repository.description }}
+            # - name: Docker Hub Description
+            #   uses: peter-evans/dockerhub-description@v3
+            #   with:
+            #       username: ${{ secrets.DOCKER_USERNAME }}
+            #       password: ${{ secrets.DOCKER_PASSWORD }}
+            #       repository: aiidalab/${{ matrix.target }}
+            #       short-description: ${{ github.event.repository.description }}
 
-            - uses: softprops/action-gh-release@v0.1.14
-              name: Create release
-              if: startsWith(github.ref, 'refs/tags/v')
-              with:
-                  generate_release_notes: true
+            # - uses: softprops/action-gh-release@v0.1.14
+            #   name: Create release
+            #   if: startsWith(github.ref, 'refs/tags/v')
+            #   with:
+            #       generate_release_notes: true
+            - name: test push image
+              run: |
+                  echo "src=${{ steps.images.outputs.src }}"
+                  echo "dst=${{ steps.meta.outputs.tags }}"
+
+            - name: test docker hub description
+              run: |
+                  echo "repository=aiidalab/${{ matrix.target }}"
+                  echo "short-description=${{ github.event.repository.description }}"
