@@ -195,12 +195,3 @@ jobs:
               if: startsWith(github.ref, 'refs/tags/v')
               with:
                   generate_release_notes: true
-            - name: test push image
-              run: |
-                  echo "src=${{ steps.images.outputs.src }}"
-                  echo "dst=${{ steps.meta.outputs.tags }}"
-
-            - name: test docker hub description
-              run: |
-                  echo "repository=aiidalab/${{ matrix.target }}"
-                  echo "short-description=${{ github.event.repository.description }}"
