@@ -30,7 +30,7 @@ jobs:
 
         steps:
 
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v2
             - name: Set up Docker Buildx
@@ -68,7 +68,7 @@ jobs:
                     | tee docker-bake-template-meta.json
             - name: Build images with buildx bake
               id: bake
-              uses: docker/bake-action@v2.2.0
+              uses: docker/bake-action@v2.3.0
               with:
                   files: |
                       docker-bake.hcl
@@ -77,11 +77,8 @@ jobs:
                   push: true
             - name: Set output variables
               id: bake_metadata
-              env:
-                  BAKE_TEMPLATE_META: ${{ steps.meta.outputs.bake-file }}
               run: |
-                  cat ${BAKE_TEMPLATE_META} | jq -c \
-                    | .github/workflows/merge-bake-template-target.sh \
+                  cat docker-bake-template-meta.json \
                     | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("_")), "value": [.value.tags[]][1]}] | from_entries' \
                     | tee bake-meta.json
                   targets=$(echo $(cat bake-meta.json | jq -c 'keys'))
@@ -96,7 +93,7 @@ jobs:
         timeout-minutes: 10
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v2
               with:
@@ -104,7 +101,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
             - name: Setup Python test environment
-              uses: mamba-org/provision-with-micromamba@v13
+              uses: mamba-org/provision-with-micromamba@v14
               with:
                   cache-env: true
             - name: Run tests
@@ -118,7 +115,7 @@ jobs:
         timeout-minutes: 10
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v2
               with:
@@ -126,7 +123,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
             - name: Setup Python test environment
-              uses: mamba-org/provision-with-micromamba@v13
+              uses: mamba-org/provision-with-micromamba@v14
               with:
                   cache-env: true
             - name: Run integration tests
@@ -149,7 +146,7 @@ jobs:
                 target: ${{ fromJSON(needs.build.outputs.targets) }}
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v2
               with:
