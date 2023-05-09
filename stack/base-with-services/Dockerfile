@@ -1,29 +1,16 @@
 # syntax=docker/dockerfile:1
+FROM services
+
 FROM base
 
-LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
-
 USER root
-WORKDIR /opt/
 
-ARG AIIDA_VERSION
-ARG PGSQL_VERSION
+COPY --from=services /opt/config-quick-setup.yaml /opt/
+COPY --from=services "${CONDA_DIR}/envs/aiida-core-services" "${CONDA_DIR}/envs/aiida-core-services"
+COPY --from=services /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook.d
 
-RUN mamba create -p /opt/conda/envs/aiida-core-services --yes \
-     aiida-core.services=${AIIDA_VERSION} \
-     postgresql=${PGSQL_VERSION} \
-     rabbitmq-server=3.8.14 \
-     && mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
-
-# Configure AiiDA profile.
-COPY config-quick-setup.yaml .
-COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
+RUN fix-permissions "${CONDA_DIR}"
 
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
-
-# Initialize the database
-RUN mamba run -n aiida-core-services initdb -D aiida_db -U aiida

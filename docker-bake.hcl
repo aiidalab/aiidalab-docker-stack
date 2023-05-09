@@ -74,17 +74,25 @@ target "base" {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
   }
 }
+
+target "services" {
+  context = "stack/services"
+  platforms = "${PLATFORMS}"
+  args = {
+    "BASE"          = "${JUPYTER_BASE_IMAGE}"
+    "AIIDA_VERSION" = "${AIIDA_VERSION}"
+    "PGSQL_VERSION" = "${PGSQL_VERSION}"
+  }
+}
+
 target "base-with-services" {
   inherits = ["base-with-services-meta"]
   context = "stack/base-with-services"
   contexts = {
     base = "target:base"
+    services = "target:services"
   }
   platforms = "${PLATFORMS}"
-  args = {
-    "AIIDA_VERSION" = "${AIIDA_VERSION}"
-    "PGSQL_VERSION" = "${PGSQL_VERSION}"
-  }
 }
 target "lab" {
   inherits = ["lab-meta"]
@@ -102,8 +110,8 @@ target "full-stack" {
   inherits = ["full-stack-meta"]
   context = "stack/full-stack"
   contexts = {
-    base-with-services = "target:base-with-services"
-    lab        = "target:lab"
+    services = "target:services"
+    lab      = "target:lab"
   }
   platforms = "${PLATFORMS}"
 }
