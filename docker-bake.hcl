@@ -33,6 +33,10 @@ variable "PLATFORMS" {
   default = ["linux/amd64"]
 }
 
+variable "TARGETS" {
+  default = ["base", "base-with-services", "lab", "full-stack"]
+}
+
 function "tags" {
   params = [image]
   result = [
@@ -44,7 +48,7 @@ function "tags" {
 }
 
 group "default" {
-  targets = ["base", "base-with-services", "lab", "full-stack"]
+  targets = "${TARGETS}"
 }
 
 target "base-meta" {
