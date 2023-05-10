@@ -68,7 +68,7 @@ fi
 verdi profile show || echo "The default profile is not set."
 
 # Make sure that the daemon is not running, otherwise the migration will abort.
-verdi daemon stop
+verdi daemon clean_stale_pid_file && verdi daemon stop
 
 # Migration will run for the default profile.
 verdi storage migrate --force
