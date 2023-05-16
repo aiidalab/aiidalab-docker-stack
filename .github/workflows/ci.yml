@@ -70,7 +70,7 @@ jobs:
               id: bake
               uses: docker/bake-action@v3.0.1
               with:
-                  # Using provenance to disable default attestation so it will build only desired images: 
+                  # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
                   files: |
