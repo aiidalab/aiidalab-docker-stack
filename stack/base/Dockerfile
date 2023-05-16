@@ -17,11 +17,10 @@ WORKDIR /opt/
 ARG AIIDA_VERSION
 
 # Install the shared requirements.
-# XXX: bring back mamba-bash-completion once it is available on conda-forge.
-# https://github.com/conda-forge/mamba-bash-completion-feedstock/pull/2
 COPY requirements.txt .
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
+     mamba-bash-completion \
      --file requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
