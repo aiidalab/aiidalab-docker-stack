@@ -120,7 +120,7 @@ def test_verdi_status(aiidalab_exec, nb_user):
 def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
-        
+
     output = (
         aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
         .decode()
@@ -129,7 +129,7 @@ def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant)
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{package_name}' version" in output
-    
+
     # Uninstall the package to make sure the test is repeatable
     aiidalab_exec(f"aiidalab uninstall --yes --force {package_name}", user=nb_user)
 
@@ -139,7 +139,7 @@ def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant)
 def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant):
     if "lab" not in variant:
         pytest.skip()
-        
+
     output = (
         aiidalab_exec(
             f"aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
@@ -151,7 +151,7 @@ def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant)
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{package_name}' version" in output
-    
+
     # Uninstall the package to make sure the test is repeatable
     aiidalab_exec(f"aiidalab uninstall --yes --force {package_name}", user=nb_user)
 
