@@ -10,6 +10,7 @@ RUN apt-get update --yes && \
     # for apps which need to install pymatgen:
     # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
     build-essential && \
+    mlocate && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/
