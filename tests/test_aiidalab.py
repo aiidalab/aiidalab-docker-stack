@@ -13,9 +13,7 @@ def test_pip_check(aiidalab_exec):
     aiidalab_exec("pip check")
 
 
-def test_aiidalab_available(aiidalab_exec, nb_user, variant):
-    if "lab" not in variant:
-        pytest.skip()
+def test_aiidalab_available(aiidalab_exec, nb_user):
     output = aiidalab_exec("aiidalab --version", user=nb_user).decode().strip().lower()
     assert "aiidalab" in output
 
@@ -36,6 +34,7 @@ def test_correct_python_version_installed(aiidalab_exec, python_version):
 
 def test_correct_pgsql_version_installed(aiidalab_exec, pgsql_version, variant):
     if "lab" in variant:
+        # PostgreSQL is not installed but from independent container in the lab variant
         pytest.skip()
     info = json.loads(
         aiidalab_exec(
@@ -54,9 +53,7 @@ def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
     assert parse(info["version"]) == parse(aiida_version)
 
 
-def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version, variant):
-    if "lab" not in variant:
-        pytest.skip()
+def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
     info = json.loads(aiidalab_exec("mamba list --json --full-name aiidalab").decode())[
         0
     ]
@@ -64,11 +61,7 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version, var
     assert parse(info["version"]) == parse(aiidalab_version)
 
 
-def test_correct_aiidalab_home_version_installed(
-    aiidalab_exec, aiidalab_home_version, variant
-):
-    if "lab" not in variant:
-        pytest.skip()
+def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_version):
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiidalab-home").decode()
     )[0]
@@ -99,10 +92,7 @@ def test_prevent_installation_of_incompatible_aiidalab_version(
     nb_user,
     package_manager,
     incompatible_version,
-    variant,
 ):
-    if "lab" not in variant:
-        pytest.skip()
     with pytest.raises(Exception):
         aiidalab_exec(
             f"{package_manager} install aiidalab={incompatible_version}", user=nb_user
@@ -118,9 +108,7 @@ def test_verdi_status(aiidalab_exec, nb_user):
 @pytest.mark.integration
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
 @pytest.mark.skip(reason="Last AWB stable release doesn't support AiiDA-2.0 yet")
-def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant):
-    if "lab" not in variant:
-        pytest.skip()
+def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user):
     output = (
         aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
         .decode()
@@ -133,9 +121,7 @@ def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant)
 
 @pytest.mark.integration
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
-def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant):
-    if "lab" not in variant:
-        pytest.skip()
+def test_install_apps_from_master(aiidalab_exec, package_name, nb_user):
     output = (
         aiidalab_exec(
             f"aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
