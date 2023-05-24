@@ -61,9 +61,7 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
     assert parse(info["version"]) == parse(aiidalab_version)
 
 
-def test_correct_aiidalab_home_version_installed(
-    aiidalab_exec, aiidalab_home_version
-):
+def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_version):
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiidalab-home").decode()
     )[0]
