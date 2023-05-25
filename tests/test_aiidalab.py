@@ -106,38 +106,28 @@ def test_verdi_status(aiidalab_exec, nb_user):
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
-def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user):
-    output = (
-        aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
-        .decode()
-        .strip()
-    )
+@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "quantum-espresso"])
+def test_install_apps_from_stable(generate_aiidalab_install_output, package_name):
+    """Test that apps can be installed from app store."""
+    output = generate_aiidalab_install_output(package_name)
+
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{package_name}' version" in output
-
-    # Uninstall the package to make sure the test is repeatable
-    aiidalab_exec(f"aiidalab uninstall --yes --force {package_name}", user=nb_user)
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
-def test_install_apps_from_master(aiidalab_exec, package_name, nb_user):
-    output = (
-        aiidalab_exec(
-            f"aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
-            user=nb_user,
-        )
-        .decode()
-        .strip()
-    )
+@pytest.mark.parametrize("repo_name", ["aiidalab-widgets-base", "aiidalab-qe"])
+def test_install_apps_from_default_branch(
+    generate_aiidalab_install_output, repo_name
+):
+    """Test that apps can be installed from the default branch of the repository."""
+    package = f"{repo_name}@git+https://github.com/aiidalab/{repo_name}.git"
+    output = generate_aiidalab_install_output(package)
+
     assert "ERROR" not in output
     assert "dependency conflict" not in output
-    assert f"Installed '{package_name}' version" in output
-
-    # Uninstall the package to make sure the test is repeatable
-    aiidalab_exec(f"aiidalab uninstall --yes --force {package_name}", user=nb_user)
+    assert f"Installed '{repo_name}' version" in output
 
 
 def test_path_local_pip(aiidalab_exec, nb_user):
