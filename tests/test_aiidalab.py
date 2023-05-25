@@ -118,9 +118,7 @@ def test_install_apps_from_stable(generate_aiidalab_install_output, package_name
 
 @pytest.mark.integration
 @pytest.mark.parametrize("repo_name", ["aiidalab-widgets-base", "aiidalab-qe"])
-def test_install_apps_from_default_branch(
-    generate_aiidalab_install_output, repo_name
-):
+def test_install_apps_from_default_branch(generate_aiidalab_install_output, repo_name):
     """Test that apps can be installed from the default branch of the repository."""
     package = f"{repo_name}@git+https://github.com/aiidalab/{repo_name}.git"
     output = generate_aiidalab_install_output(package)
