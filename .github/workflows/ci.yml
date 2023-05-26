@@ -82,11 +82,11 @@ jobs:
               id: bake_metadata
               run: |
                   cat docker-bake-template-meta.json \
-                    | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("_")), "value": [.value.tags[]][1]}] | from_entries' \
+                    | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("-")), "value": [.value.tags[]][1]}] | from_entries' \
                     | tee bake-meta.json
                   targets=$(echo $(cat bake-meta.json | jq -c 'keys'))
                   echo "targets=$targets" >> "${GITHUB_OUTPUT}"
-                  images=$(echo $(cat bake-meta.json | jq -c '. | [to_entries[] | {"key": (.key|ascii_upcase + "_IMAGE"), "value": .value}] | from_entries'))
+                  images=$(echo $(cat bake-meta.json | jq -c '. | [to_entries[] | {"key": (.key| split("-")| join("_") |ascii_upcase + "_IMAGE"), "value": .value}] | from_entries'))
                   echo "images=$images" >> "${GITHUB_OUTPUT}"
 
     test:
