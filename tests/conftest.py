@@ -97,10 +97,8 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
             .decode()
             .strip()
         )
-        
-        output += (
-            aiidalab_exec(f"pip check", user=nb_user)
-        )
+
+        output += aiidalab_exec(f"pip check", user=nb_user).decode().strip()
 
         # Uninstall the package to make sure the test is repeatable
         app_name = package_name.split("@")[0]
