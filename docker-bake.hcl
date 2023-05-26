@@ -17,6 +17,12 @@ variable "AIIDALAB_VERSION" {
 variable "AIIDALAB_HOME_VERSION" {
 }
 
+variable "AIIDALAB_QE_VERSION" {
+}
+
+variable "QE_VERSION" {
+}
+
 variable "JUPYTER_BASE_IMAGE" {
   default = "jupyter/minimal-notebook:python-${PYTHON_VERSION}"
 }
@@ -65,6 +71,10 @@ target "full-stack-meta" {
   tags = tags("full-stack")
 }
 
+target "qe-meta" {
+  tags = tags("qe")
+}
+
 target "base" {
   inherits = ["base-meta"]
   context = "stack/base"
@@ -106,4 +116,17 @@ target "full-stack" {
     lab        = "target:lab"
   }
   platforms = "${PLATFORMS}"
+}
+
+target "qe" {
+  inherits = ["qe-meta"]
+  context = "stack/qe"
+  contexts = {
+    full-stack = "target:full-stack"
+  }
+  platforms = "${PLATFORMS}"
+  args = {
+    "AIIDALAB_QE_VERSION"    = "${AIIDALAB_QE_VERSION}"
+    "QE_VERSION"             = "${QE_VERSION}"
+  }
 }

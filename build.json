@@ -14,6 +14,12 @@
     },
     "AIIDALAB_HOME_VERSION": {
       "default": "23.03.1"
+    },
+    "AIIDALAB_QE_VERSION": {
+      "default": "23.04.2"
+    },
+    "QE_VERSION": {
+      "default": "7.0"
     }
   }
 }
