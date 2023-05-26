@@ -97,9 +97,14 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
             .decode()
             .strip()
         )
+        
+        output += (
+            aiidalab_exec(f"pip check", user=nb_user)
+        )
 
         # Uninstall the package to make sure the test is repeatable
-        aiidalab_exec(f"aiidalab uninstall --yes --force {package_name}", user=nb_user)
+        app_name = package_name.split("@")[0]
+        aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
 
         return output
 

@@ -114,6 +114,7 @@ def test_install_apps_from_stable(generate_aiidalab_install_output, package_name
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{package_name}' version" in output
+    assert "No broken requirements found" in output
 
 
 @pytest.mark.integration
@@ -126,6 +127,7 @@ def test_install_apps_from_default_branch(generate_aiidalab_install_output, repo
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{repo_name}' version" in output
+    assert "No broken requirements found" in output
 
 
 def test_path_local_pip(aiidalab_exec, nb_user):
