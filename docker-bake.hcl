@@ -40,7 +40,7 @@ variable "PLATFORMS" {
 }
 
 variable "TARGETS" {
-  default = ["base", "base-with-services", "lab", "full-stack"]
+  default = ["base", "base-with-services", "lab", "full-stack", "qe"]
 }
 
 function "tags" {

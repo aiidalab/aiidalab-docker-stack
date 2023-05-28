@@ -58,10 +58,10 @@ def task_build():
     """Build all docker images."""
 
     def generate_version_override(version, registry, targets):
-        if len(targets) > 4:
+        if len(targets) > 5:
             # Workaround of issue of doit, which rather than override the default value, it appends
             # https://github.com/pydoit/doit/issues/436
-            targets = targets[4:]
+            targets = targets[5:]
         Path("docker-bake.override.json").write_text(
             json.dumps(dict(VERSION=version, REGISTRY=registry, TARGETS=targets))
         )
@@ -84,7 +84,7 @@ def task_build():
                 "long": "targets",
                 "short": "t",
                 "type": list,
-                "default": ["base", "base-with-services", "lab", "full-stack"],
+                "default": ["base", "base-with-services", "lab", "full-stack", "qe"],
                 "help": "Specify the target to build.",
             },
         ],
