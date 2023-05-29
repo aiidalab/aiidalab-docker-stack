@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 
+
 @pytest.fixture(scope="function")
 def selenium_driver(selenium, notebook_service):
     def _selenium_driver(nb_path, wait_time=5.0):
@@ -28,6 +29,7 @@ def selenium_driver(selenium, notebook_service):
         return selenium
 
     return _selenium_driver
+
 
 @pytest.fixture
 def final_screenshot(request, screenshot_dir, selenium):
@@ -50,14 +52,20 @@ def screenshot_dir():
         pass
     return sdir
 
+
 def test_pw_executable_exist(aiidalab_exec, qe_version, variant):
     """Test the rabbitmq-server can start, the output should be empty if
     the command is successful."""
     if "qe" not in variant:
         pytest.skip()
-    output = aiidalab_exec(f"mamba run -n quantum-espresso-{qe_version} which pw.x").decode().strip()
+    output = (
+        aiidalab_exec(f"mamba run -n quantum-espresso-{qe_version} which pw.x")
+        .decode()
+        .strip()
+    )
 
     assert output == f"/opt/conda/envs/quantum-espresso-{qe_version}/bin/pw.x"
+
 
 # def test_qe_app_start_and_codes_exist(aiidalab_exec, selenium_driver, variant):
 #     """Black box test for the Quantum Espresso app."""
@@ -85,4 +93,3 @@ def test_pw_executable_exist(aiidalab_exec, qe_version, variant):
 
 #     # Test that we have indeed proceeded to the next step
 #     driver.find_element(By.XPATH, "//span[contains(.,'✓ Step 1')]")
-    

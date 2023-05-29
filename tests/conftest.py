@@ -93,6 +93,7 @@ def aiidalab_home_version(_build_config):
 def qe_version(_build_config):
     return _build_config["QE_VERSION"]["default"]
 
+
 @pytest.fixture(scope="function")
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     def _generate_aiidalab_install_output(package_name):
