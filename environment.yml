@@ -11,4 +11,5 @@ dependencies:
     - pip:
           - docker-compose==1.29.2
           - pytest-docker==1.0.0
+          - pytest-selenium==4.0
           - bumpver==2022.1120

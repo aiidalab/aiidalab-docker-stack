@@ -1,11 +1,88 @@
 import pytest
+import os
+import time
+from pathlib import Path
+from urllib.parse import urljoin
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+import selenium.webdriver.support.expected_conditions as EC
+
+@pytest.fixture(scope="function")
+def selenium_driver(selenium, notebook_service):
+    def _selenium_driver(nb_path, wait_time=5.0):
+        url, token = notebook_service
+        url_with_token = urljoin(url, f"{nb_path}?token={token}")
+        selenium.get(f"{url_with_token}")
+        # By default, let's allow selenium functions to retry for 10s
+        # till a given element is loaded, see:
+        # https://selenium-python.readthedocs.io/waits.html#implicit-waits
+        selenium.implicitly_wait(wait_time)
+        window_width = 800
+        window_height = 600
+        selenium.set_window_size(window_width, window_height)
+
+        selenium.find_element(By.ID, "ipython-main-app")
+        selenium.find_element(By.ID, "notebook-container")
+
+        return selenium
+
+    return _selenium_driver
+
+@pytest.fixture
+def final_screenshot(request, screenshot_dir, selenium):
+    """Take screenshot at the end of the test.
+    Screenshot name is generated from the test function name
+    by stripping the 'test_' prefix
+    """
+    screenshot_name = f"{request.function.__name__[5:]}.png"
+    screenshot_path = Path.joinpath(screenshot_dir, screenshot_name)
+    yield
+    selenium.get_screenshot_as_file(screenshot_path)
+
+
+@pytest.fixture(scope="session")
+def screenshot_dir():
+    sdir = Path.joinpath(Path.cwd(), "screenshots")
+    try:
+        os.mkdir(sdir)
+    except FileExistsError:
+        pass
+    return sdir
 
 def test_pw_executable_exist(aiidalab_exec, qe_version, variant):
     """Test the rabbitmq-server can start, the output should be empty if
     the command is successful."""
     if "qe" not in variant:
         pytest.skip()
-    output = aiidalab_exec(f"mamba run -n quantum-espresso-{qe_version} which pw.x")
+    output = aiidalab_exec(f"mamba run -n quantum-espresso-{qe_version} which pw.x").decode().strip()
 
-    # assert output == b""
+    assert output == f"/opt/conda/envs/quantum-espresso-{qe_version}/bin/pw.x"
+
+# def test_qe_app_start_and_codes_exist(aiidalab_exec, selenium_driver, variant):
+#     """Black box test for the Quantum Espresso app."""
+#     if "qe" not in variant:
+#         pytest.skip()
+#     driver = selenium_driver("apps/apps/aiidalab-qe/qe.ipynb", wait_time=30.0)
+#     driver.set_window_size(1920, 1485)
+
+#     element = WebDriverWait(driver, 10).until(
+#         EC.presence_of_element_located((By.XPATH, "//*[text()='From Examples']"))
+#     )
+#     element.click()
+
+#     driver.find_element(By.XPATH, "//option[@value='Diamond']").click()
+#     time.sleep(10)
+
+#     driver.get_screenshot_as_file(
+#         str(Path.joinpath(screenshot_dir, "qe-app-select-diamond-selected.png"))
+#     )
+
+#     element = WebDriverWait(driver, 60).until(
+#         EC.element_to_be_clickable((By.XPATH, "//button[text()='Confirm']"))
+#     )
+#     element.click()
+
+#     # Test that we have indeed proceeded to the next step
+#     driver.find_element(By.XPATH, "//span[contains(.,'✓ Step 1')]")
+    
