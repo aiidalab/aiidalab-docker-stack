@@ -6,5 +6,5 @@ set -x
 # Copy quantum espresso env to user space.
 mkdir -p /home/${NB_USER}/.conda/envs
 if [ ! -d /home/${NB_USER}/.conda/envs/quantum-espresso-${QE_VERSION} ]; then
-  cp -R /opt/conda/envs/quantum-espresso-${QE_VERSION} /home/${NB_USER}/.conda/envs/
+  ln -s /opt/conda/envs/quantum-espresso /home/${NB_USER}/.conda/envs/quantum-espresso-${QE_VERSION}
 fi

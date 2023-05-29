@@ -18,7 +18,7 @@ RUN git clone https://github.com/aiidalab/aiidalab-qe && \
 
 ARG QE_VERSION
 ENV QE_VERSION ${QE_VERSION}
-RUN mamba create -p /opt/conda/envs/quantum-espresso-${QE_VERSION} --yes \
+RUN mamba create -p /opt/conda/envs/quantum-espresso --yes \
         qe=${QE_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
