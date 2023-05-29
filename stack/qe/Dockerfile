@@ -7,9 +7,10 @@ USER ${NB_USER}
 
 # Install the quantum-espresso app.
 ARG AIIDALAB_QE_VERSION
+ENV AIIDALAB_QE_VERSION ${AIIDALAB_QE_VERSION}
 RUN git clone https://github.com/aiidalab/aiidalab-qe && \
      cd aiidalab-qe && \
-     git checkout v"${AIIDALAB_QE_VERSION}" && \
+     git checkout v${AIIDALAB_QE_VERSION} && \
      pip install --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
@@ -23,6 +24,6 @@ RUN mamba create -p /opt/conda/envs/quantum-espresso-${QE_VERSION} --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-COPY before-notebook.d/70_prepare-qeapp.sh /usr/local/bin/before-notebook.d/
+COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 WORKDIR "/home/${NB_USER}"
