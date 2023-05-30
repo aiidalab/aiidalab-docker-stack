@@ -30,7 +30,11 @@ variable "REGISTRY" {
 }
 
 variable "PLATFORMS" {
-  default = ["linux/amd64"]
+  default = ["linux/amd64", "linux/arm64"]
+}
+
+variable "TARGETS" {
+  default = ["base", "base-with-services", "lab", "full-stack"]
 }
 
 function "tags" {
@@ -44,7 +48,7 @@ function "tags" {
 }
 
 group "default" {
-  targets = ["base", "base-with-services", "lab", "full-stack"]
+  targets = "${TARGETS}"
 }
 
 target "base-meta" {

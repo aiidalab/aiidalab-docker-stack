@@ -13,9 +13,7 @@ def test_pip_check(aiidalab_exec):
     aiidalab_exec("pip check")
 
 
-def test_aiidalab_available(aiidalab_exec, nb_user, variant):
-    if "lab" not in variant:
-        pytest.skip()
+def test_aiidalab_available(aiidalab_exec, nb_user):
     output = aiidalab_exec("aiidalab --version", user=nb_user).decode().strip().lower()
     assert "aiidalab" in output
 
@@ -36,6 +34,7 @@ def test_correct_python_version_installed(aiidalab_exec, python_version):
 
 def test_correct_pgsql_version_installed(aiidalab_exec, pgsql_version, variant):
     if "lab" in variant:
+        # PostgreSQL is not installed but from independent container in the lab variant
         pytest.skip()
     info = json.loads(
         aiidalab_exec(
@@ -46,6 +45,16 @@ def test_correct_pgsql_version_installed(aiidalab_exec, pgsql_version, variant):
     assert parse(info["version"]).major == parse(pgsql_version).major
 
 
+def test_rabbitmq_can_start(aiidalab_exec, variant):
+    """Test the rabbitmq-server can start, the output should be empty if
+    the command is successful."""
+    if "lab" in variant:
+        pytest.skip()
+    output = aiidalab_exec("mamba run -n aiida-core-services rabbitmq-server -detached")
+
+    assert output == b""
+
+
 def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiida-core").decode()
@@ -54,9 +63,7 @@ def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
     assert parse(info["version"]) == parse(aiida_version)
 
 
-def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version, variant):
-    if "lab" not in variant:
-        pytest.skip()
+def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
     info = json.loads(aiidalab_exec("mamba list --json --full-name aiidalab").decode())[
         0
     ]
@@ -64,11 +71,7 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version, var
     assert parse(info["version"]) == parse(aiidalab_version)
 
 
-def test_correct_aiidalab_home_version_installed(
-    aiidalab_exec, aiidalab_home_version, variant
-):
-    if "lab" not in variant:
-        pytest.skip()
+def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_version):
     info = json.loads(
         aiidalab_exec("mamba list --json --full-name aiidalab-home").decode()
     )[0]
@@ -99,10 +102,7 @@ def test_prevent_installation_of_incompatible_aiidalab_version(
     nb_user,
     package_manager,
     incompatible_version,
-    variant,
 ):
-    if "lab" not in variant:
-        pytest.skip()
     with pytest.raises(Exception):
         aiidalab_exec(
             f"{package_manager} install aiidalab={incompatible_version}", user=nb_user
@@ -116,37 +116,28 @@ def test_verdi_status(aiidalab_exec, nb_user):
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
-@pytest.mark.skip(reason="Last AWB stable release doesn't support AiiDA-2.0 yet")
-def test_install_apps_from_stable(aiidalab_exec, package_name, nb_user, variant):
-    if "lab" not in variant:
-        pytest.skip()
-    output = (
-        aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
-        .decode()
-        .strip()
-    )
+@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "quantum-espresso"])
+def test_install_apps_from_stable(generate_aiidalab_install_output, package_name):
+    """Test that apps can be installed from app store."""
+    output = generate_aiidalab_install_output(package_name)
+
     assert "ERROR" not in output
     assert "dependency conflict" not in output
     assert f"Installed '{package_name}' version" in output
+    assert "No broken requirements found" in output
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "aiidalab-qe"])
-def test_install_apps_from_master(aiidalab_exec, package_name, nb_user, variant):
-    if "lab" not in variant:
-        pytest.skip()
-    output = (
-        aiidalab_exec(
-            f"aiidalab install --yes {package_name}@git+https://github.com/aiidalab/{package_name}.git",
-            user=nb_user,
-        )
-        .decode()
-        .strip()
-    )
+@pytest.mark.parametrize("repo_name", ["aiidalab-widgets-base", "aiidalab-qe"])
+def test_install_apps_from_default_branch(generate_aiidalab_install_output, repo_name):
+    """Test that apps can be installed from the default branch of the repository."""
+    package = f"{repo_name}@git+https://github.com/aiidalab/{repo_name}.git"
+    output = generate_aiidalab_install_output(package)
+
     assert "ERROR" not in output
     assert "dependency conflict" not in output
-    assert f"Installed '{package_name}' version" in output
+    assert f"Installed '{repo_name}' version" in output
+    assert "No broken requirements found" in output
 
 
 def test_path_local_pip(aiidalab_exec, nb_user):
