@@ -54,8 +54,7 @@ def screenshot_dir():
 
 
 def test_pw_executable_exist(aiidalab_exec, qe_version, variant):
-    """Test the rabbitmq-server can start, the output should be empty if
-    the command is successful."""
+    """Test that pw.x executable exists in the conda environment"""
     if "qe" not in variant:
         pytest.skip()
     output = (
