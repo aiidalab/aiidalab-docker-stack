@@ -13,7 +13,9 @@ import selenium.webdriver.support.expected_conditions as EC
 def selenium_driver(selenium, notebook_service):
     def _selenium_driver(wait_time=5.0):
         url, token = notebook_service
-        url_with_token = urljoin(url, f"apps/apps/quantum-espresso/qe.ipynb?token={token}")
+        url_with_token = urljoin(
+            url, f"apps/apps/quantum-espresso/qe.ipynb?token={token}"
+        )
         selenium.get(f"{url_with_token}")
         # By default, let's allow selenium functions to retry for 10s
         # till a given element is loaded, see:
@@ -62,6 +64,7 @@ def test_pw_executable_exist(aiidalab_exec, qe_version, variant):
     )
 
     assert output == f"/home/jovyan/.conda/envs/quantum-espresso-{qe_version}/bin/pw.x"
+
 
 def test_qe_app_select_silicon_and_confirm(
     selenium_driver,
