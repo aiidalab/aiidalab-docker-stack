@@ -55,8 +55,6 @@ def screenshot_dir():
 
 def test_pw_executable_exist(aiidalab_exec, qe_version, variant):
     """Test that pw.x executable exists in the conda environment"""
-    if "qe" not in variant:
-        pytest.skip()
     output = (
         aiidalab_exec(f"mamba run -n quantum-espresso-{qe_version} which pw.x")
         .decode()
@@ -69,6 +67,7 @@ def test_qe_app_select_silicon_and_confirm(
     selenium_driver,
     screenshot_dir,
     final_screenshot,
+    variant,
 ):
     driver = selenium_driver(wait_time=60.0)
     driver.set_window_size(1920, 1485)

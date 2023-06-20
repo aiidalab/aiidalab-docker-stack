@@ -107,11 +107,13 @@ jobs:
               uses: mamba-org/provision-with-micromamba@v14
               with:
                   cache-env: true
+            - name: Set jupyter token env
+              run: echo "JUPYTER_TOKEN=$(openssl rand -hex 32)" >> $GITHUB_ENV
             - name: Run tests
               shell: bash -l {0}  # required to activate the conda environment
               env: ${{ fromJSON(needs.build.outputs.images) }}
               run: |
-                  pytest -v -m "not integration"
+                  pytest -v -m "not integration" tests/test_aiidalab.py
 
 #    test-arm64:
 #        needs: build
@@ -159,10 +161,57 @@ jobs:
               uses: mamba-org/provision-with-micromamba@v14
               with:
                   cache-env: true
+            - name: Set jupyter token env
+              run: echo "JUPYTER_TOKEN=$(openssl rand -hex 32)" >> $GITHUB_ENV
             - name: Run integration tests
               shell: bash -l {0}  # required to activate the conda environment
               env: ${{ fromJSON(needs.build.outputs.images) }}
-              run: pytest -v -m "integration"
+              run: pytest -v -m "integration" tests/test_aiidalab.py
+
+    extra-package-test:
+        needs: build
+
+        strategy:
+            matrix:
+                tag: [latest]
+                browser: [Chrome, Firefox]
+            fail-fast: false
+
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+
+        steps:
+            - uses: actions/checkout@v3
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Setup Python test environment
+              uses: mamba-org/provision-with-micromamba@v14
+              with:
+                  cache-env: true
+            - name: Set jupyter token env
+              run: echo "JUPYTER_TOKEN=$(openssl rand -hex 32)" >> $GITHUB_ENV
+            # The Firefox and its engine geckodrive need do be installed manually to run
+            # selenium tests.
+            - name: Install Firefox
+              uses: browser-actions/setup-firefox@latest
+              with:
+                  firefox-version: '96.0'
+              if: matrix.browser == 'Firefox'
+
+            - name: Install geckodriver
+              run: |
+                  wget -c https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
+                  tar xf geckodriver-v0.30.0-linux64.tar.gz -C /usr/local/bin
+              if: matrix.browser == 'Firefox'
+
+            - name: Run tests
+              shell: bash -l {0}  # required to activate the conda environment
+              env: ${{ fromJSON(needs.build.outputs.images) }}
+              run: pytest -v --driver ${{matrix.browser}} tests/test_qe.py
 
 #     integration-test-arm64:
 #         needs: build
