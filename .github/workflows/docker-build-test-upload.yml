@@ -1,0 +1,66 @@
+---
+name: Download parent image, build a new one and test it; then upload the image, tags and manifests to GitHub artifacts
+
+env:
+    OWNER: ${{ github.repository_owner }}
+
+on:
+    workflow_call:
+        inputs:
+            parentImage:
+                description: Parent image name
+                required: true
+                type: string
+            image:
+                description: Image name
+                required: true
+                type: string
+            platform:
+                description: Image platform
+                required: true
+                type: string
+            runsOn:
+                description: GitHub Actions Runner image
+                required: true
+                type: string
+
+jobs:
+    build-test-upload:
+        runs-on: ${{ inputs.runsOn }}
+
+        steps:
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v3
+            - name: Create dev environment 📦
+              uses: ./.github/actions/create-dev-env
+              with:
+                  platform: ${{ inputs.platform }}
+
+            - name: Load parent built image to Docker 📥
+              if: ${{ inputs.parentImage != '' }}
+              uses: ./.github/actions/load-image
+              with:
+                  image: ${{ inputs.parentImage }}
+                  platform: ${{ inputs.platform }}
+
+            - name: Build image 🛠
+              run: docker build --rm --force-rm --tag ${{ env.OWNER }}/${{ inputs.image }} stack/${{ inputs.image }}/
+              env:
+                  DOCKER_BUILDKIT: 1
+          # Full logs for CI build
+                  BUILDKIT_PROGRESS: plain
+              shell: bash
+
+            - name: Run tests ✅
+              run: pytest -v -m "not integration"
+              shell: bash
+
+            - name: Save image as a tar for later use 💾
+              run: docker save ${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+              shell: bash
+            - name: Upload image as artifact 💾
+              uses: actions/upload-artifact@v3
+              with:
+                  name: ${{ inputs.image }}-${{ inputs.platform }}
+                  path: /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+                  retention-days: 3
