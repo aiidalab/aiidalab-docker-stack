@@ -51,7 +51,7 @@ jobs:
               shell: bash
 
             - name: Run tests ✅
-              run: pytest -v -m "not integration"
+              run: pytest -s tests/test-common.py tests/test-${{ inputs.image }}.py --variant ${{ inputs.image }}
               shell: bash
 
             - name: Save image as a tar for later use 💾
