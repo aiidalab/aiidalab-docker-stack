@@ -9,5 +9,6 @@ requests
 tabulate
 # from old test strategy
 pytest-docker
+docker-compose
 doit
 dunamai
