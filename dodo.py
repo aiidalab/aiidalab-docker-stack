@@ -34,6 +34,15 @@ _REGISTRY_PARAM = {
     "help": "Specify the docker image registry.",
 }
 
+_ORGANIZATION_PARAM = {
+    "name": "organization",
+    "short": "o",
+    "long": "organization",
+    "type": str,
+    "default": "aiidalab",
+    "help": "Specify the docker image organization.",
+}
+
 _VERSION_PARAM = {
     "name": "version",
     "long": "version",
@@ -57,13 +66,13 @@ _PLATFORM_PARAM = {
 def task_build():
     """Build all docker images."""
 
-    def generate_version_override(version, registry, targets):
+    def generate_version_override(version, registry, targets, organization):
         if len(targets) > 4:
             # Workaround of issue of doit, which rather than override the default value, it appends
             # https://github.com/pydoit/doit/issues/436
             targets = targets[4:]
         Path("docker-bake.override.json").write_text(
-            json.dumps(dict(VERSION=version, REGISTRY=registry, TARGETS=targets))
+            json.dumps(dict(VERSION=version, REGISTRY=registry, TARGETS=targets, ORGANIZATION=organization))
         )
 
     return {
@@ -76,6 +85,7 @@ def task_build():
         ],
         "title": title_with_actions,
         "params": [
+            _ORGANIZATION_PARAM,
             _REGISTRY_PARAM,
             _VERSION_PARAM,
             _PLATFORM_PARAM,

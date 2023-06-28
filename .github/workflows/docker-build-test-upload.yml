@@ -44,10 +44,9 @@ jobs:
                   platform: ${{ inputs.platform }}
 
             - name: Build image 🛠
-              run: docker build --rm --force-rm --tag ${{ env.OWNER }}/${{ inputs.image }} stack/${{ inputs.image }}/
+              run: doit build --target ${{ inputs.image }} --platform ${{ inputs.platform }} --organization ${{ env.OWNER }}
               env:
-                  DOCKER_BUILDKIT: 1
-          # Full logs for CI build
+                  # Full logs for CI build
                   BUILDKIT_PROGRESS: plain
               shell: bash
 
@@ -58,6 +57,7 @@ jobs:
             - name: Save image as a tar for later use 💾
               run: docker save ${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
               shell: bash
+
             - name: Upload image as artifact 💾
               uses: actions/upload-artifact@v3
               with:
