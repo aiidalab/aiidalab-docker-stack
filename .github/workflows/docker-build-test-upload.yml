@@ -44,7 +44,7 @@ jobs:
                   platform: ${{ inputs.platform }}
 
             - name: Build image 🛠
-              run: doit build --target ${{ inputs.image }} --platform ${{ inputs.platform }} --organization ${{ env.OWNER }}
+              run: doit build --target ${{ inputs.image }} --organization ${{ env.OWNER }}
               env:
                   # Full logs for CI build
                   BUILDKIT_PROGRESS: plain
@@ -54,16 +54,16 @@ jobs:
             #  run: pytest -s tests/test-common.py tests/test-${{ inputs.image }}.py --variant ${{ inputs.image }}
             #  shell: bash
 
-            # - name: Save image as a tar for later use 💾
-            #   run: docker save ${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
-            #   shell: bash
+            - name: Save image as a tar for later use 💾
+              run: docker save ${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+              shell: bash
 
-            # - name: Upload image as artifact 💾
-            #   uses: actions/upload-artifact@v3
-            #   with:
-            #       name: ${{ inputs.image }}-${{ inputs.platform }}
-            #       path: /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
-            #       retention-days: 3
+            - name: Upload image as artifact 💾
+              uses: actions/upload-artifact@v3
+              with:
+                  name: ${{ inputs.image }}-${{ inputs.platform }}
+                  path: /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+                  retention-days: 3
 
             - name: Login to GitHub Container Registry 🔑
               uses: docker/login-action@v2

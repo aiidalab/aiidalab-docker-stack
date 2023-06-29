@@ -32,14 +32,13 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-  # aarch64-base:
-  #   uses: ./.github/workflows/docker-build-test-upload.yml
-  #   with:
-  #     parentImage: docker-stacks-foundation
-  #     image: base-notebook
-  #     platform: aarch64
-  #     runsOn: buildjet-2vcpu-ubuntu-2204-arm
-  #   if: github.repository == 'aiidalab/aiidalab-docker-stack'
+    aarch64-base:
+        uses: ./.github/workflows/docker-build-test-upload.yml
+        with:
+            parentImage: ""
+            image: base
+            platform: aarch64
+            runsOn: buildjet-2vcpu-ubuntu-2204-arm
 
     x86_64-base:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -49,11 +48,37 @@ jobs:
             platform: x86_64
             runsOn: ubuntu-latest
 
-    x86_64-base-with-services:
-        uses: ./.github/workflows/docker-build-test-upload.yml
+    # x86_64-base-with-services:
+    #     uses: ./.github/workflows/docker-build-test-upload.yml
+    #     with:
+    #         parentImage: base
+    #         image: base-with-services
+    #         platform: x86_64
+    #         runsOn: ubuntu-latest
+    #     needs: [x86_64-base]
+
+    x86_64-images-tag-push:
+        uses: ./.github/workflows/docker-tag-push.yml
+        secrets:
+            DOCKERHUB_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+        strategy:
+            matrix:
+                image: ["base"]
         with:
-            parentImage: base
-            image: base-with-services
             platform: x86_64
-            runsOn: ubuntu-latest
+            image: ${{ matrix.image }}
         needs: [x86_64-base]
+
+    aarch64-images-tag-push:
+        uses: ./.github/workflows/docker-tag-push.yml
+        secrets:
+            DOCKERHUB_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            platform: aarch64
+            image: ${{ matrix.image }}
+        needs: [aarch64-base]
