@@ -29,8 +29,13 @@ variable "REGISTRY" {
   default = "docker.io/"
 }
 
-variable "PLATFORMS" {
-  default = ["linux/amd64", "linux/arm64"]
+variable "ARCH" {
+  default = "amd64"
+}
+
+function "arch2platform" {
+  params = [arch]
+  result = "linux/${arch}"
 }
 
 variable "TARGETS" {
@@ -38,13 +43,13 @@ variable "TARGETS" {
 }
 
 function "tags" {
-  params = [image]
+  params = [image, arch]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:${VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
+    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-${VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-python-${PYTHON_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-postgresql-${PGSQL_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-aiida-${AIIDA_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-newly-build",
   ]
 }
 
@@ -53,23 +58,23 @@ group "default" {
 }
 
 target "base-meta" {
-  tags = tags("base")
+  tags = tags("base", "${ARCH}")
 }
 target "base-with-services-meta" {
-  tags = tags("base-with-services")
+  tags = tags("base-with-services", "${ARCH}")
 }
 target "lab-meta" {
-  tags = tags("lab")
+  tags = tags("lab", "${ARCH}")
 }
 
 target "full-stack-meta" {
-  tags = tags("full-stack")
+  tags = tags("full-stack", "${ARCH}")
 }
 
 target "base" {
   inherits = ["base-meta"]
   context = "stack/base"
-  platforms = "${PLATFORMS}"
+  platforms = [arch2platform("${ARCH}")]
   args = {
     "BASE"          = "${JUPYTER_BASE_IMAGE}"
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
@@ -81,7 +86,7 @@ target "base-with-services" {
   contexts = {
     base = "target:base"
   }
-  platforms = "${PLATFORMS}"
+  platforms = [arch2platform("${ARCH}")]
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
@@ -93,7 +98,7 @@ target "lab" {
   contexts = {
     base = "target:base"
   }
-  platforms = "${PLATFORMS}"
+  platforms = [arch2platform("${ARCH}")]
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
@@ -106,5 +111,5 @@ target "full-stack" {
     base-with-services = "target:base-with-services"
     lab        = "target:lab"
   }
-  platforms = "${PLATFORMS}"
+  platforms = [arch2platform("${ARCH}")]
 }
