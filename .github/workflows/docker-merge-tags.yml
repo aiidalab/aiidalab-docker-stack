@@ -34,12 +34,12 @@ jobs:
             - name: Download amd64 tags file 📥
               uses: actions/download-artifact@v3
               with:
-                  name: ${{ inputs.image }}-amd64-tags
+                  name: ${{ inputs.registry }}-${{ inputs.image }}-amd64-tags
                   path: /tmp/
             - name: Download arm64 tags file 📥
               uses: actions/download-artifact@v3
               with:
-                  name: ${{ inputs.image }}-arm64-tags
+                  name: ${{ inputs.registry }}-${{ inputs.image }}-arm64-tags
                   path: /tmp/
 
             - name: Login to Container Registry 🔑
