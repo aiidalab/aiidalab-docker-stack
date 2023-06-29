@@ -67,7 +67,9 @@ _ARCH_PARAM = {
 def task_build():
     """Build all docker images."""
 
-    def generate_version_override(version, registry, targets, architecture, organization):
+    def generate_version_override(
+        version, registry, targets, architecture, organization
+    ):
         if len(targets) > 4:
             # Workaround of issue of doit, which rather than override the default value, it appends
             # https://github.com/pydoit/doit/issues/436

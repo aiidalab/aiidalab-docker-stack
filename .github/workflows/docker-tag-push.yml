@@ -12,8 +12,8 @@ on:
                 description: Image name
                 required: true
                 type: string
-            platform:
-                description: Image platform
+            architecture:
+                description: Image architecture
                 required: true
                 type: string
         secrets:
@@ -32,12 +32,12 @@ jobs:
             - name: Create dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  platform: x86_64
+                  architecture: x86_64
             - name: Load image to Docker 📥
               uses: ./.github/actions/load-image
               with:
                   image: ${{ inputs.image }}
-                  platform: ${{ inputs.platform }}
+                  architecture: ${{ inputs.architecture }}
 
             - name: Login to Docker Hub 🔐
         # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')

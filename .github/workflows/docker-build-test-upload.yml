@@ -2,8 +2,8 @@
 name: Download parent image, build a new one and test it; then upload the image, tags and manifests to GitHub artifacts
 
 env:
-    # OWNER: ${{ github.repository_owner }}
-    OWNER: jusong
+    OWNER: ${{ github.repository_owner }}
+    # OWNER: jusong
 
 on:
     workflow_call:
@@ -16,8 +16,8 @@ on:
                 description: Image name
                 required: true
                 type: string
-            platform:
-                description: Image platform
+            architecture:
+                description: Image architecture, e.g. amd64, arm64
                 required: true
                 type: string
             runsOn:
@@ -35,17 +35,17 @@ jobs:
             - name: Create dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  platform: ${{ inputs.platform }}
+                  architecture: ${{ inputs.architecture }}
 
             - name: Load parent built image to Docker 📥
               if: ${{ inputs.parentImage != '' }}
               uses: ./.github/actions/load-image
               with:
                   image: ${{ inputs.parentImage }}
-                  platform: ${{ inputs.platform }}
+                  architecture: ${{ inputs.architecture }}
 
             - name: Build image 🛠
-              run: doit build --target ${{ inputs.image }} --organization ${{ env.OWNER }}
+              run: doit build --target ${{ inputs.image }} --arch ${{ inputs.architecture }} --organization ${{ env.OWNER }}
               env:
                   # Full logs for CI build
                   BUILDKIT_PROGRESS: plain
@@ -55,48 +55,42 @@ jobs:
             #  run: pytest -s tests/test-common.py tests/test-${{ inputs.image }}.py --variant ${{ inputs.image }}
             #  shell: bash
 
-            - name: Save image as a tar for later use 💾
-              run: docker save ${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
-              shell: bash
+            # - name: Save image as a tar for later use 💾
+            #   run: docker save ${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.architecture }}.tar
+            #   shell: bash
 
-            - name: Upload image as artifact 💾
-              uses: actions/upload-artifact@v3
+            # - name: Upload image as artifact 💾
+            #   uses: actions/upload-artifact@v3
+            #   with:
+            #       name: ${{ inputs.image }}-${{ inputs.architecture }}
+            #       path: /tmp/${{ inputs.image }}-${{ inputs.architecture }}.tar
+            #       retention-days: 3
+
+            - name: Login to GitHub Container Registry 🔑
+              uses: docker/login-action@v2
               with:
-                  name: ${{ inputs.image }}-${{ inputs.platform }}
-                  path: /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
-                  retention-days: 3
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-            # - name: Login to GitHub Container Registry 🔑
-            #   uses: docker/login-action@v2
-            #   with:
-            #       registry: ghcr.io
-            #       username: ${{ github.actor }}
-            #       password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Docker meta 📝
+              id: meta
+              uses: docker/metadata-action@v4
+              with:
+                  images: |
+                      name=ghcr.io/${{ env.OWNER }}/${{ inputs.image }}
+                  tags: |
+                      type=edge,enable={{is_default_branch}}
+                      type=sha
+                      type=ref,event=pr
+                      type=match,pattern=v(\d{4}\.\d{4}),group=1
 
-            # - name: Docker meta 📝
-            #   id: meta
-            #   uses: docker/metadata-action@v4
-            #   with:
-            #       images: |
-            #           name=ghcr.io/${{ env.OWNER }}/${{ inputs.image }}
-            #       tags: |
-            #           type=edge,enable={{is_default_branch}}
-            #           type=sha
-            #           type=ref,event=pr
-            #           type=match,pattern=v(\d{4}\.\d{4}),group=1
-
-            # - name: Set tags for image 🏷️
-            #   run: |
-            #       declare -a arr=(${{ steps.meta.outputs.tags }})
-            #       for tag in "${arr[@]}"; do
-            #           docker tag aiidalab/${{ inputs.image }}:newly-build ${tag}
-            #       done
-            #   shell: bash
-
-            # - name: Push image to GitHub Container Registry 📤💾
-            #   run: |
-            #       declare -a arr=(${{ steps.meta.outputs.tags }})
-            #       for tag in "${arr[@]}"; do
-            #           docker push ${tag}
-            #       done
-            #   shell: bash
+            - name: Set tags for image and push 🏷️📤💾
+              run: |
+                  declare -a arr=(${{ steps.meta.outputs.tags }})
+                  for tag in "${arr[@]}"; do
+                      arch_tag=$(echo ${tag} | sed "s/:/:${{ inputs.architecture }}-/")
+                      docker tag ${{ env.OWNER }}/${{ inputs.image }}:newly-build ${arch_tag}
+                      docker push ${arch_tag}
+                  done
+              shell: bash
