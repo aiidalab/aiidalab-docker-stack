@@ -57,7 +57,7 @@ jobs:
                       name=${{ inputs.registry }}/${{ env.OWNER }}/${{ inputs.image }}
                   tags: |
                       type=edge,enable={{is_default_branch}}
-                      type=sha
+                      type=sha,enable=${{ github.ref != 'refs/heads/aux-workflow-test' }}
                       type=ref,event=pr
                       type=match,pattern=v(\d{4}\.\d{4}),group=1
 
