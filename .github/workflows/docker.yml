@@ -48,19 +48,6 @@ jobs:
             runsOn: ubuntu-latest
         needs: [amd64-base]
 
-    amd64-images-push-ghcr:
-        uses: ./.github/workflows/docker-push.yml
-        strategy:
-            matrix:
-                image: ["base"]
-        with:
-            architecture: amd64
-            image: ${{ matrix.image }}
-            registry: ghcr.io
-        secrets:
-            REGISTRY_USERNAME: ${{ github.actor }}
-            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        needs: [amd64-base]
 
     # amd64-base-with-services:
     #     uses: ./.github/workflows/docker-build-test-upload.yml
@@ -88,7 +75,22 @@ jobs:
             runsOn: buildjet-2vcpu-ubuntu-2204-arm
         needs: [arm64-base]
 
-    arm64-images-push-ghcr:
+    amd64-push-ghcr:
+        uses: ./.github/workflows/docker-push.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            architecture: amd64
+            image: ${{ matrix.image }}
+            registry: ghcr.io
+            repo: aiidalab
+        secrets:
+            REGISTRY_USERNAME: ${{ github.actor }}
+            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        needs: [amd64-base]
+
+    arm64-push-ghcr:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -97,6 +99,7 @@ jobs:
             architecture: arm64
             image: ${{ matrix.image }}
             registry: ghcr.io
+            repo: aiidalab
         secrets:
             REGISTRY_USERNAME: ${{ github.actor }}
             REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -113,4 +116,50 @@ jobs:
         secrets:
             REGISTRY_USERNAME: ${{ github.actor }}
             REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        needs: [amd64-images-push-ghcr, arm64-images-push-ghcr]
+        needs: [amd64-push-ghcr, arm64-push-ghcr]
+
+    amd64-push-dockerhub:
+        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*')
+        uses: ./.github/workflows/docker-push.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            architecture: amd64
+            image: ${{ matrix.image }}
+            registry: docker.io
+            repo: jusong
+        secrets:
+            REGISTRY_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+        needs: [amd64-base]
+
+    arm64-push-dockerhub:
+        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*')
+        uses: ./.github/workflows/docker-push.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            architecture: arm64
+            image: ${{ matrix.image }}
+            registry: docker.io
+            repo: jusong
+        secrets:
+            REGISTRY_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+        needs: [arm64-base]
+
+    merge-tags-dockerhub:
+        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*')
+        uses: ./.github/workflows/docker-merge-tags.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            image: ${{ matrix.image }}
+            registry: docker.io
+        secrets:
+            REGISTRY_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+        needs: [amd64-push-dockerhub, arm64-push-dockerhub]

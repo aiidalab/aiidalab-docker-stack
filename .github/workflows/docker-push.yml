@@ -1,8 +1,8 @@
 ---
 name: Download Docker image and its tags from GitHub artifacts, apply them and push the image to container registry
 
-env:
-    OWNER: ${{ github.repository_owner }}
+# env:
+#     OWNER: ${{ github.repository_owner }}
 
 on:
     workflow_call:
@@ -17,6 +17,10 @@ on:
                 type: string
             registry:
                 description: Docker registry
+                required: true
+                type: string
+            repo:
+                description: GitHub repository
                 required: true
                 type: string
         secrets:
@@ -54,17 +58,17 @@ jobs:
               env: ${{ fromJson(steps.build_vars.outputs.vars) }}
               with:
                   images: |
-                      name=${{ inputs.registry }}/${{ env.OWNER }}/${{ inputs.image }}
+                      # name=${{ inputs.registry }}/${{ env.OWNER }}/${{ inputs.image }}
+                      name=${{ inputs.registry }}/${{ inputs.repo }}/${{ inputs.image }}
                   tags: |
                       type=edge,enable={{is_default_branch}}
-                      type=sha,enable=${{ github.ref_type == 'tag' }}
+                      type=sha,enable=${{ github.ref_type != 'tag' }}
                       type=ref,event=pr
                       type=match,pattern=v(\d{4}\.\d{4}),group=1
-                      type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=true
-                      # type=raw,value={{tag}},enable=${{ github.ref_type == 'tag' && ! startsWith(github.ref_name, 'v') }}
-                      # type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref_type == 'tag'  && startsWith(github.ref_name, 'v') }}
-                      # type=raw,value=python-${{ env.PYTHON_VERSION }},enable=${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
-                      # type=raw,value=postgresql-${{ env.PGSQL_VERSION }},enable=${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+                      type=raw,value={{tag}},enable=${{ github.ref == 'refs/tags/v*' }}
+                      type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref == 'refs/tags/v*' }}
+                      type=raw,value=python-${{ env.PYTHON_VERSION }},enable=${{ github.ref == 'refs/tags/v*' }}
+                      type=raw,value=postgresql-${{ env.PGSQL_VERSION }},enable=${{ github.ref == 'refs/tags/v*' }}
 
             - name: Login to Container Registry 🔑
               uses: docker/login-action@v2
@@ -78,7 +82,7 @@ jobs:
                   declare -a arr=(${{ steps.meta.outputs.tags }})
                   for tag in "${arr[@]}"; do
                       arch_tag=$(echo ${tag} | sed "s/:/:${{ inputs.architecture }}-/")
-                      docker tag ${{ env.OWNER }}/${{ inputs.image }}:newly-build ${arch_tag}
+                      docker tag aiidalab/${{ inputs.image }}:newly-build ${arch_tag}
                       docker push ${arch_tag}
 
                       # write tag to file

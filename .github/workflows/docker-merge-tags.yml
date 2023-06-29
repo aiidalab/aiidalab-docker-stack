@@ -1,9 +1,6 @@
 ---
 name: Download images tags from GitHub artifacts and create multi-platform manifests
 
-env:
-    OWNER: ${{ github.repository_owner }}
-
 on:
     workflow_call:
         inputs:
