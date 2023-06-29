@@ -33,12 +33,26 @@ concurrency:
 
 jobs:
     amd64-base:
-        uses: ./.github/workflows/docker-build-test-upload.yml
+        uses: ./.github/workflows/docker-build-artifact-upload.yml
         with:
             parentImage: ""
             image: base
             architecture: amd64
             runsOn: ubuntu-latest
+
+    amd64-images-test-push-ghcr:
+        uses: ./.github/workflows/docker-test-push.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            architecture: amd64
+            image: ${{ matrix.image }}
+            registry: ghcr.io
+        secrets:
+            REGISTRY_USERNAME: ${{ github.actor }}
+            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        needs: [amd64-base]
 
     # amd64-base-with-services:
     #     uses: ./.github/workflows/docker-build-test-upload.yml
@@ -49,36 +63,34 @@ jobs:
     #         runsOn: ubuntu-latest
     #     needs: [amd64-base]
 
-    # amd64-images-tag-push:
-    #     uses: ./.github/workflows/docker-tag-push.yml
-    #     secrets:
-    #         DOCKERHUB_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
-    #         DOCKERHUB_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
-    #     strategy:
-    #         matrix:
-    #             image: ["base"]
-    #     with:
-    #         architecture: amd64
-    #         image: ${{ matrix.image }}
-    #     needs: [amd64-base]
-
     arm64-base:
-        uses: ./.github/workflows/docker-build-test-upload.yml
+        uses: ./.github/workflows/docker-build-artifact-upload.yml
         with:
             parentImage: ""
             image: base
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            # runsOn: buildjet-2vcpu-ubuntu-2204-arm # test can run on amd64
+            runsOn: ubuntu-latest
 
-    # arm64-images-tag-push:
-    #     uses: ./.github/workflows/docker-tag-push.yml
-    #     secrets:
-    #         DOCKERHUB_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
-    #         DOCKERHUB_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
-    #     strategy:
-    #         matrix:
-    #             image: ["base"]
-    #     with:
-    #         architecture: arm64
-    #         image: ${{ matrix.image }}
-    #     needs: [arm64-base]
+    arm64-images-test-push-ghcr:
+        uses: ./.github/workflows/docker-test-push.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            architecture: arm64
+            image: ${{ matrix.image }}
+            registry: ghcr.io
+        secrets:
+            REGISTRY_USERNAME: ${{ github.actor }}
+            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        needs: [arm64-base]
+
+    merge-tags:
+        uses: ./.github/workflows/docker-merge-tags.yml
+        strategy:
+            matrix:
+                image: ["base"]
+        with:
+            image: ${{ matrix.image }}
+        needs: [amd64-images-test-push-ghcr, arm64-images-test-push-ghcr]
