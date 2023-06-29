@@ -18,6 +18,7 @@ def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_ve
     assert info["name"] == "aiidalab-home"
     assert parse(info["version"]) == parse(aiidalab_home_version)
 
+
 @pytest.mark.parametrize("incompatible_version", ["22.7.1"])
 def test_prevent_pip_install_of_incompatible_aiidalab_version(
     aiidalab_exec,

@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture(scope="function")
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     def _generate_aiidalab_install_output(package_name):
@@ -18,6 +19,7 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
         return output
 
     return _generate_aiidalab_install_output
+
 
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "quantum-espresso"])
 def test_install_apps_from_stable(generate_aiidalab_install_output, package_name):

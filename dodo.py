@@ -72,7 +72,14 @@ def task_build():
             # https://github.com/pydoit/doit/issues/436
             targets = targets[4:]
         Path("docker-bake.override.json").write_text(
-            json.dumps(dict(VERSION=version, REGISTRY=registry, TARGETS=targets, ORGANIZATION=organization))
+            json.dumps(
+                dict(
+                    VERSION=version,
+                    REGISTRY=registry,
+                    TARGETS=targets,
+                    ORGANIZATION=organization,
+                )
+            )
         )
 
     return {

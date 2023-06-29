@@ -44,6 +44,7 @@ function "tags" {
     "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
     "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
     "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
   ]
 }
 

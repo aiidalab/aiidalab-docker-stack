@@ -64,3 +64,36 @@ jobs:
                   name: ${{ inputs.image }}-${{ inputs.platform }}
                   path: /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
                   retention-days: 3
+
+            - name: Login to GitHub Container Registry 🔑
+              uses: docker/login-action@v2
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Docker meta 📝
+              id: meta
+              uses: docker/metadata-action@v4
+              with:
+                  images: |
+                      name=ghcr.io/aiidalab/${{ inputs.image }}
+                  tags: |
+                      type=edge,enable={{is_default_branch}}
+                      type=sha
+                      type=ref,event=pr
+                      type=match,pattern=v(\d{4}\.\d{4}),group=1
+
+            - name: Set tags for image 🏷️
+              run: |
+                  for tag in ${{ steps.meta.outputs.tags }}; do
+                      docker tag ghcr.io/aiidalab/${{ inputs.image }}:newly-build ghcr.io/aiidalab/${{ inputs.image }}:${tag}
+                  done
+              shell: bash
+
+            - name: Push image to GitHub Container Registry 📤💾
+              run: |
+                  for tag in ${{ steps.meta.outputs.tags }}; do
+                      docker push ghcr.io/aiidalab/${{ inputs.image }}:${tag}
+                  done
+              shell: bash
