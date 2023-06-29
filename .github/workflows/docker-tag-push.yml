@@ -2,7 +2,8 @@
 name: Download Docker image and its tags from GitHub artifacts, apply them and push the image to DockerHub
 
 env:
-    OWNER: ${{ github.repository_owner }}
+    # OWNER: ${{ github.repository_owner }}
+    OWNER: jusong
 
 on:
     workflow_call:
@@ -50,5 +51,5 @@ jobs:
             - name: Push Images to Docker Hub 📤
         # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')
               #run: docker push --all-tags ${{ env.OWNER }}/${{ inputs.image }}
-              run: docker push --all-tags jusong/${{ inputs.image }}
+              run: docker push --all-tags ${{ env.OWNER }}/${{ inputs.image }}
               shell: bash

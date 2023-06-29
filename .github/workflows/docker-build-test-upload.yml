@@ -2,7 +2,8 @@
 name: Download parent image, build a new one and test it; then upload the image, tags and manifests to GitHub artifacts
 
 env:
-    OWNER: ${{ github.repository_owner }}
+    # OWNER: ${{ github.repository_owner }}
+    OWNER: jusong
 
 on:
     workflow_call:
@@ -72,30 +73,30 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Docker meta 📝
-              id: meta
-              uses: docker/metadata-action@v4
-              with:
-                  images: |
-                      name=ghcr.io/aiidalab/${{ inputs.image }}
-                  tags: |
-                      type=edge,enable={{is_default_branch}}
-                      type=sha
-                      type=ref,event=pr
-                      type=match,pattern=v(\d{4}\.\d{4}),group=1
+            # - name: Docker meta 📝
+            #   id: meta
+            #   uses: docker/metadata-action@v4
+            #   with:
+            #       images: |
+            #           name=ghcr.io/${{ env.OWNER }}/${{ inputs.image }}
+            #       tags: |
+            #           type=edge,enable={{is_default_branch}}
+            #           type=sha
+            #           type=ref,event=pr
+            #           type=match,pattern=v(\d{4}\.\d{4}),group=1
 
-            - name: Set tags for image 🏷️
-              run: |
-                  declare -a arr=(${{ steps.meta.outputs.tags }})
-                  for tag in "${arr[@]}"; do
-                      docker tag aiidalab/${{ inputs.image }}:newly-build ${tag}
-                  done
-              shell: bash
+            # - name: Set tags for image 🏷️
+            #   run: |
+            #       declare -a arr=(${{ steps.meta.outputs.tags }})
+            #       for tag in "${arr[@]}"; do
+            #           docker tag aiidalab/${{ inputs.image }}:newly-build ${tag}
+            #       done
+            #   shell: bash
 
-            - name: Push image to GitHub Container Registry 📤💾
-              run: |
-                  declare -a arr=(${{ steps.meta.outputs.tags }})
-                  for tag in "${arr[@]}"; do
-                      docker push ${tag}
-                  done
-              shell: bash
+            # - name: Push image to GitHub Container Registry 📤💾
+            #   run: |
+            #       declare -a arr=(${{ steps.meta.outputs.tags }})
+            #       for tag in "${arr[@]}"; do
+            #           docker push ${tag}
+            #       done
+            #   shell: bash
