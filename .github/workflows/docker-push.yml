@@ -49,6 +49,14 @@ jobs:
                   username: ${{ secrets.REGISTRY_USERNAME }}
                   password: ${{ secrets.REGISTRY_TOKEN }}
 
+            - name: debug
+              run: |
+                  echo ${{ github.ref }}
+                  echo ${{ github.ref_type }}
+                  echo ${{ github.ref == format('refs/heads/{0}', 'aux-workflow-test') }}
+                  echo ${{ github.ref == 'refs/heads/main'}}
+              shell: bash
+
             - name: Docker meta 📝
               id: meta
               uses: docker/metadata-action@v4
