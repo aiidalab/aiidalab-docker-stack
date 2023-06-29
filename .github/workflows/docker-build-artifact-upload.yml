@@ -3,7 +3,6 @@ name: Download parent image, build a new one and test it; then upload the image,
 
 env:
     OWNER: ${{ github.repository_owner }}
-    # OWNER: jusong
 
 on:
     workflow_call:

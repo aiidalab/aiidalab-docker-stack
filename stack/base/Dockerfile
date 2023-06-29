@@ -1,5 +1,6 @@
 ARG BASE
-FROM ${BASE}
+# FROM ${BASE}
+FROM alpine:latest
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 

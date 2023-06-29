@@ -40,8 +40,16 @@ jobs:
             architecture: amd64
             runsOn: ubuntu-latest
 
-    amd64-images-test-push-ghcr:
-        uses: ./.github/workflows/docker-test-push.yml
+    amd64-base-test:
+        uses: ./.github/workflows/docker-test.yml
+        with:
+            image: base
+            architecture: amd64
+            runsOn: ubuntu-latest
+        needs: [amd64-base]
+
+    amd64-images-push-ghcr:
+        uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
                 image: ["base"]
@@ -72,8 +80,16 @@ jobs:
             # runsOn: buildjet-2vcpu-ubuntu-2204-arm # test can run on amd64
             runsOn: ubuntu-latest
 
-    arm64-images-test-push-ghcr:
-        uses: ./.github/workflows/docker-test-push.yml
+    arm64-base-test:
+        uses: ./.github/workflows/docker-test.yml
+        with:
+            image: base
+            architecture: arm64
+            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+        needs: [arm64-base]
+
+    arm64-images-push-ghcr:
+        uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
                 image: ["base"]
@@ -86,11 +102,15 @@ jobs:
             REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         needs: [arm64-base]
 
-    merge-tags:
+    merge-tags-ghcr:
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
                 image: ["base"]
         with:
             image: ${{ matrix.image }}
-        needs: [amd64-images-test-push-ghcr, arm64-images-test-push-ghcr]
+            registry: ghcr.io
+        secrets:
+            REGISTRY_USERNAME: ${{ github.actor }}
+            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        needs: [amd64-images-push-ghcr, arm64-images-push-ghcr]

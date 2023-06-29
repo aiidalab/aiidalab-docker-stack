@@ -1,0 +1,42 @@
+---
+name: Download Docker image and its tags from GitHub artifacts, apply them and push the image to DockerHub
+
+env:
+    OWNER: ${{ github.repository_owner }}
+
+on:
+    workflow_call:
+        inputs:
+            image:
+                description: Image name
+                required: true
+                type: string
+            architecture:
+                description: Image architecture
+                required: true
+                type: string
+            runsOn:
+                description: GitHub Actions Runner image
+                required: true
+                type: string
+
+jobs:
+    test:
+        runs-on: ${{ inputs.runsOn }}
+
+        steps:
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v3
+            # - name: Create dev environment 📦
+            #   uses: ./.github/actions/create-dev-env
+            #   with:
+            #       architecture: ${{ inputs.architecture }}
+            # - name: Load image to Docker 📥
+            #   uses: ./.github/actions/load-image
+            #   with:
+            #       image: ${{ inputs.image }}
+            #       architecture: ${{ inputs.architecture }}
+
+            #- name: Run tests ✅
+            #  run: pytest -s tests/test-common.py tests/test-${{ inputs.image }}.py --variant ${{ inputs.image }}
+            #  shell: bash
