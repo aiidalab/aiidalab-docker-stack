@@ -95,3 +95,4 @@ jobs:
               with:
                   name: ${{ inputs.registry }}-${{ inputs.image }}-${{ inputs.architecture }}-tags
                   path: /tmp/${{ inputs.image }}-${{ inputs.architecture }}-tags.txt
+                  retention-days: 3
