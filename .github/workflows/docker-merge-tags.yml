@@ -9,7 +9,7 @@ on:
                 required: true
                 type: string
             registry:
-                description: Docker registry, e.g. ghcr.io or docker.io
+                description: Docker registry, e.g. ghcr.io, docker.io
                 required: true
                 type: string
         secrets:
