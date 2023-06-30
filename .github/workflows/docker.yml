@@ -15,8 +15,8 @@ on:
             - "stack/base/**"
             - "stack/base-with-services/**"
     push:
-        branches:
-            - main
+        # branches:
+        #     - main
         paths:
             - ".github/workflows/docker.yml"
             - ".github/workflows/docker-build-test-upload.yml"
@@ -119,7 +119,7 @@ jobs:
         needs: [amd64-push-ghcr, arm64-push-ghcr]
 
     amd64-push-dockerhub:
-        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*')
+        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -135,7 +135,7 @@ jobs:
         needs: [amd64-base-test]
 
     arm64-push-dockerhub:
-        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*')
+        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -151,7 +151,7 @@ jobs:
         needs: [arm64-base-test]
 
     merge-tags-dockerhub:
-        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*')
+        # if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
