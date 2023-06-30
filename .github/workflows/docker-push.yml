@@ -1,8 +1,8 @@
 ---
 name: Download Docker image and its tags from GitHub artifacts, apply them and push the image to container registry
 
-# env:
-#     OWNER: ${{ github.repository_owner }}
+env:
+    OWNER: ${{ github.repository_owner }}
 
 on:
     workflow_call:
@@ -17,10 +17,6 @@ on:
                 type: string
             registry:
                 description: Docker registry
-                required: true
-                type: string
-            repo:
-                description: GitHub repository
                 required: true
                 type: string
         secrets:
