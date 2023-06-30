@@ -19,14 +19,10 @@ on:
                 description: Image architecture, e.g. amd64, arm64
                 required: true
                 type: string
-            runsOn:
-                description: GitHub Actions Runner image
-                required: true
-                type: string
 
 jobs:
     build-artifact-upload:
-        runs-on: ${{ inputs.runsOn }}
+        runs-on: ubuntu-latest
 
         steps:
             - name: Checkout Repo ⚡️

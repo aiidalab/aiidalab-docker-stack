@@ -2,21 +2,18 @@
 name: Build, test and push Docker Images
 
 on:
-    schedule:
-    # Weekly, at 03:00 on Monday UTC time
-        - cron: "0 3 * * 1"
     pull_request:
         paths:
             - ".github/workflows/docker.yml"
-      # We use local reusable workflows to make architecture clean an simple
-      # https://docs.github.com/en/actions/using-workflows/reusing-workflows
+            # We use local reusable workflows to make architecture clean an simple
+            # https://docs.github.com/en/actions/using-workflows/reusing-workflows
             - ".github/workflows/docker-build-test-upload.yml"
 
             - "stack/base/**"
             - "stack/base-with-services/**"
     push:
-        # branches:
-        #     - main
+        branches:
+            - main
         paths:
             - ".github/workflows/docker.yml"
             - ".github/workflows/docker-build-test-upload.yml"
@@ -27,7 +24,7 @@ on:
 
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
 concurrency:
-  # only cancel in-progress jobs or runs for the current workflow - matches against branch & tags
+    # only cancel in-progress jobs or runs for the current workflow - matches against branch & tags
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
@@ -38,7 +35,6 @@ jobs:
             parentImage: ""
             image: base
             architecture: amd64
-            runsOn: ubuntu-latest
 
     amd64-base-test:
         uses: ./.github/workflows/docker-test.yml
@@ -64,7 +60,6 @@ jobs:
             parentImage: ""
             image: base
             architecture: arm64
-            runsOn: ubuntu-latest
 
     arm64-base-test:
         uses: ./.github/workflows/docker-test.yml
