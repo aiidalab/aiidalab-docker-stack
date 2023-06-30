@@ -11,6 +11,11 @@ on:
                 description: Parent image name
                 required: true
                 type: string
+            parentImage2:
+                description: Parent image name 2
+                required: false
+                default: ''
+                type: string
             image:
                 description: Image name
                 required: true
@@ -41,6 +46,13 @@ jobs:
               uses: ./.github/actions/load-image
               with:
                   image: ${{ inputs.parentImage }}
+                  architecture: ${{ inputs.architecture }}
+
+            - name: Load parent built image 2 to Docker 📥
+              if: ${{ inputs.parentImage2 != '' }}
+              uses: ./.github/actions/load-image
+              with:
+                  image: ${{ inputs.parentImage2 }}
                   architecture: ${{ inputs.architecture }}
 
             - name: Build image 🛠

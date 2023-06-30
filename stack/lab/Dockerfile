@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM base
+ARG OWNER=aiidalab
+ARG BASE_CONTAINER=$OWNER/base
+FROM $BASE_CONTAINER
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
