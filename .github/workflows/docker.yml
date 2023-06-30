@@ -35,6 +35,7 @@ jobs:
             parentImage: ""
             image: base
             architecture: amd64
+            runsOn: ubuntu-latest
 
     amd64-base-test:
         uses: ./.github/workflows/docker-test.yml
@@ -60,6 +61,7 @@ jobs:
             parentImage: ""
             image: base
             architecture: arm64
+            runsOn: buildjet-2vcpu-ubuntu-2204-arm
 
     arm64-base-test:
         uses: ./.github/workflows/docker-test.yml

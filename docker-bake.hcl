@@ -43,13 +43,13 @@ variable "TARGETS" {
 }
 
 function "tags" {
-  params = [image, arch]
+  params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-${VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-python-${PYTHON_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-postgresql-${PGSQL_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:${arch}-aiida-${AIIDA_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
     "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
+    "${REGISTRY}${ORGANIZATION}/${image}:latest",
   ]
 }
 
@@ -58,17 +58,17 @@ group "default" {
 }
 
 target "base-meta" {
-  tags = tags("base", "${ARCH}")
+  tags = tags("base")
 }
 target "base-with-services-meta" {
-  tags = tags("base-with-services", "${ARCH}")
+  tags = tags("base-with-services")
 }
 target "lab-meta" {
-  tags = tags("lab", "${ARCH}")
+  tags = tags("lab")
 }
 
 target "full-stack-meta" {
-  tags = tags("full-stack", "${ARCH}")
+  tags = tags("full-stack")
 }
 
 target "base" {
