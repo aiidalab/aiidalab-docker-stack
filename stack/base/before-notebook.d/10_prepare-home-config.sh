@@ -37,8 +37,10 @@ if [[ ! -f  /home/${NB_USER}/.vimrc ]]; then
 fi
 
 # Make sure that the known_hosts file is present inside the .ssh folder.
-mkdir -p --mode=0700 /home/${NB_USER}/.ssh && \
-    touch /home/${NB_USER}/.ssh/known_hosts
+if [[ ! -d  /home/${NB_USER}/.ssh ]]; then
+    mkdir -p --mode=0700 /home/${NB_USER}/.ssh
+fi
+touch /home/${NB_USER}/.ssh/known_hosts
 
 
 if [[ ! -f  /home/${NB_USER}/.ssh/id_rsa ]]; then
