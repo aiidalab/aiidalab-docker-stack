@@ -84,6 +84,23 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
+# When a Jupyter notebook server looses a connection to the frontend,
+# it keeps the messages in a buffer. If there is a background thread running
+# and trying to update the frontend, the buffer grows indefinitely,
+# eventually consuming all available RAM.
+# See https://github.com/aiidalab/issues/issues/13 for detailed analysis. 
+# Moreover, it will leave the python kernel running indefinitely which needlessly consumes resources.
+# We could turn this behaviour off by setting "buffer_offline_messages=False",
+# but that may come with other problems for people with flaky internet connections.
+# Instead, here we configure Jupyter to kill all kernels that have been alive for
+# more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     "--ContentsManager.allow_hidden=True"
+     "--ContentsManager.allow_hidden=True" \
+     "--MappingKernelManager.buffer_offline_messages=True" \
+     "--MappingKernelManager.cull_busy=True" \
+     "--MappingKernelManager.cull_connected=True" \
+     "--MappingKernelManager.cull_idle_timeout=64800" \
+     "--MappingKernelManager.cull_interval=300" \
+     "--TerminalManager.cull_inactive_timeout=600" \
+     "--TerminalManager.cull_interval=60"
