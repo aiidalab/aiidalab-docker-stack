@@ -88,7 +88,7 @@ RUN  mkdir -p /home/${NB_USER}/apps
 # it keeps the messages in a buffer. If there is a background thread running
 # and trying to update the frontend, the buffer grows indefinitely,
 # eventually consuming all available RAM.
-# See https://github.com/aiidalab/issues/issues/13 for detailed analysis. 
+# See https://github.com/aiidalab/issues/issues/13 for detailed analysis.
 # Moreover, it will leave the python kernel running indefinitely which needlessly consumes resources.
 # We could turn this behaviour off by setting "buffer_offline_messages=False",
 # but that may come with other problems for people with flaky internet connections.
