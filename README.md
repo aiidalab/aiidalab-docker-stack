@@ -41,15 +41,10 @@ _Note: On recent versions of Mac OS-X you will have to select a different port, 
 
 The repository uses the [doit automation tool](https://pydoit.org/) to automate tasks related to this repository, including _building_, _testing_, and _locally deploying_ Docker images with docker-compose.
 
-To use this system, setup a build end testing environment with [conda](https://docs.conda.io/en/latest/miniconda.html) (or [mamba](https://mamba.readthedocs.io/en/latest/installation.html)):
+To use this system, setup a build end testing environment and install the dependencies with:
 
 ```console
-conda env create -f environment.yml
-```
-
-Then activate the environment with
-```console
-conda activate aiidalab-docker-stack
+pip install -r requirements-dev.txt
 ```
 
 ### Build images locally
@@ -58,7 +53,7 @@ To build the images, run `doit build` (tested with *docker buildx* version v0.8.
 
 The build system will attempt to detect the local architecture and automatically build images for it (tested with amd64 and arm64).
 All commands `build`, `tests`, and `up` will use the locally detected platform and use a version tag based on the state of the local git repository.
-However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit build --platform=linux/amd64 --version=my-version`.
+However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit build --arch=arm64 --version=my-version`.
 
 You can specify target stacks to build with `--target`, example: `doit build --target base --target full-stack`.
 
