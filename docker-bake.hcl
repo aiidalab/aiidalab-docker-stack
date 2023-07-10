@@ -33,11 +33,6 @@ variable "PLATFORMS" {
   default = ["linux/amd64"]
 }
 
-function "arch2platform" {
-  params = [arch]
-  result = "linux/${arch}"
-}
-
 variable "TARGETS" {
   default = ["base", "base-with-services", "lab", "full-stack"]
 }
