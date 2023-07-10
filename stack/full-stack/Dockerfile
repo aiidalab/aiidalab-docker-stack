@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM base-with-services as base
+ARG OWNER=aiidalab
+FROM $OWNER/base-with-services as base
 
-FROM lab
+FROM $OWNER/lab
 
 USER root
 
