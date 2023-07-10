@@ -32,7 +32,6 @@ jobs:
     amd64-base:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: ""
             image: base
             architecture: amd64
             runsOn: ubuntu-latest
@@ -40,7 +39,6 @@ jobs:
     amd64-base-with-services:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: base
             image: base-with-services
             architecture: amd64
             runsOn: ubuntu-latest
@@ -49,7 +47,6 @@ jobs:
     amd64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: base
             image: lab
             architecture: amd64
             runsOn: ubuntu-latest
@@ -58,8 +55,6 @@ jobs:
     amd64-full-stack:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: base-with-services
-            parentImage2: lab
             image: full-stack
             architecture: amd64
             runsOn: ubuntu-latest
@@ -68,7 +63,6 @@ jobs:
     arm64-base:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: ""
             image: base
             architecture: arm64
             runsOn: buildjet-2vcpu-ubuntu-2204-arm
@@ -76,7 +70,6 @@ jobs:
     arm64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: base
             image: lab
             architecture: arm64
             runsOn: buildjet-2vcpu-ubuntu-2204-arm
@@ -85,7 +78,6 @@ jobs:
     arm64-base-with-services:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: base
             image: base-with-services
             architecture: arm64
             runsOn: buildjet-2vcpu-ubuntu-2204-arm
@@ -94,8 +86,6 @@ jobs:
     arm64-full-stack:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
-            parentImage: base-with-services
-            parentImage2: lab
             image: full-stack
             architecture: arm64
             runsOn: buildjet-2vcpu-ubuntu-2204-arm

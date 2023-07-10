@@ -1,5 +1,5 @@
 ---
-name: Download parent image, build a new one and test it; then upload the image, tags and manifests to GitHub artifacts
+name: Build a new image and test it; then upload the image, tags and manifests to GitHub artifacts
 
 env:
     OWNER: ${{ github.repository_owner }}
@@ -7,15 +7,6 @@ env:
 on:
     workflow_call:
         inputs:
-            parentImage:
-                description: Parent image name
-                required: true
-                type: string
-            parentImage2:
-                description: Parent image name 2
-                required: false
-                default: ''
-                type: string
             image:
                 description: Image name
                 required: true
@@ -39,20 +30,6 @@ jobs:
             - name: Create dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: ${{ inputs.architecture }}
-
-            - name: Load parent built image to Docker 📥
-              if: ${{ inputs.parentImage != '' }}
-              uses: ./.github/actions/load-image
-              with:
-                  image: ${{ inputs.parentImage }}
-                  architecture: ${{ inputs.architecture }}
-
-            - name: Load parent built image 2 to Docker 📥
-              if: ${{ inputs.parentImage2 != '' }}
-              uses: ./.github/actions/load-image
-              with:
-                  image: ${{ inputs.parentImage2 }}
                   architecture: ${{ inputs.architecture }}
 
             - name: Build image 🛠

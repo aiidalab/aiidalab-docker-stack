@@ -29,8 +29,8 @@ variable "REGISTRY" {
   default = "docker.io/"
 }
 
-variable "ARCH" {
-  default = "amd64"
+variable "PLATFORMS" {
+  default = ["linux/amd64"]
 }
 
 function "arch2platform" {
@@ -45,9 +45,6 @@ variable "TARGETS" {
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
     "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
     "${REGISTRY}${ORGANIZATION}/${image}:latest",
   ]
@@ -74,7 +71,7 @@ target "full-stack-meta" {
 target "base" {
   inherits = ["base-meta"]
   context = "stack/base"
-  platforms = [arch2platform("${ARCH}")]
+  platforms = "${PLATFORMS}"
   args = {
     "BASE"          = "${JUPYTER_BASE_IMAGE}"
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
@@ -86,7 +83,7 @@ target "base-with-services" {
   contexts = {
     base = "target:base"
   }
-  platforms = [arch2platform("${ARCH}")]
+  platforms = "${PLATFORMS}"
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
@@ -98,7 +95,7 @@ target "lab" {
   contexts = {
     base = "target:base"
   }
-  platforms = [arch2platform("${ARCH}")]
+  platforms = "${PLATFORMS}"
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
@@ -111,5 +108,5 @@ target "full-stack" {
     base-with-services = "target:base-with-services"
     lab        = "target:lab"
   }
-  platforms = [arch2platform("${ARCH}")]
+  platforms = "${PLATFORMS}"
 }

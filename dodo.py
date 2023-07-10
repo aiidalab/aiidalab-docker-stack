@@ -75,6 +75,8 @@ def task_build():
             # https://github.com/pydoit/doit/issues/436
             targets = targets[4:]
 
+        platforms = [f"linux/{architecture}"]
+
         Path("docker-bake.override.json").write_text(
             json.dumps(
                 dict(
@@ -82,7 +84,7 @@ def task_build():
                     REGISTRY=registry,
                     TARGETS=targets,
                     ORGANIZATION=organization,
-                    ARCH=architecture,
+                    PLATFORMS=platforms,
                 )
             )
         )
