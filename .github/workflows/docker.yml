@@ -143,8 +143,8 @@ jobs:
             image: ${{ matrix.image }}
             registry: docker.io
         secrets:
-            REGISTRY_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
-            REGISTRY_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+            REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
 
     arm64-push-dockerhub:
@@ -158,8 +158,8 @@ jobs:
             image: ${{ matrix.image }}
             registry: docker.io
         secrets:
-            REGISTRY_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
-            REGISTRY_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+            REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
 
     merge-tags-dockerhub:
@@ -172,6 +172,6 @@ jobs:
             image: ${{ matrix.image }}
             registry: docker.io
         secrets:
-            REGISTRY_USERNAME: ${{ secrets.TEST_DOCKERHUB_USERNAME }}
-            REGISTRY_TOKEN: ${{ secrets.TEST_DOCKERHUB_TOKEN }}
+            REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         needs: [amd64-push-dockerhub, arm64-push-dockerhub]
