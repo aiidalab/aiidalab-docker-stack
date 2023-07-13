@@ -17,10 +17,12 @@ WORKDIR /opt/
 ARG AIIDA_VERSION
 
 # Install the shared requirements.
+# We also bump the traitlets version for performance improvements
 COPY requirements.txt .
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
      mamba-bash-completion \
+     traitlets=5.9.0 \
      --file requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
