@@ -30,7 +30,7 @@ variable "REGISTRY" {
 }
 
 variable "PLATFORMS" {
-  default = ["linux/amd64", "linux/arm64"]
+  default = ["linux/amd64"]
 }
 
 variable "TARGETS" {
@@ -40,10 +40,8 @@ variable "TARGETS" {
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:${VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
+    "${REGISTRY}${ORGANIZATION}/${image}:latest",
   ]
 }
 
