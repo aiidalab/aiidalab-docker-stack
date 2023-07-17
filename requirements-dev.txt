@@ -1,0 +1,14 @@
+docker
+plumbum
+pre-commit
+pytest
+# `pytest-xdist` is a plugin that provides the `--numprocesses` flag,
+# allowing us to run `pytest` tests in parallel
+pytest-xdist
+requests
+tabulate
+# from old test strategy
+pytest-docker
+docker-compose
+doit
+dunamai

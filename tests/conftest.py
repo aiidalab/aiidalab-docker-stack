@@ -16,14 +16,19 @@ def is_responsive(url):
         return False
 
 
-@pytest.fixture(scope="session", params=["full-stack", "lab"])
-def variant(request):
-    return request.param
+def pytest_addoption(parser):
+    parser.addoption(
+        "--variant",
+        action="store",
+        default="base",
+        help="Variant (image name) of the docker-compose file to use.",
+    )
 
 
 @pytest.fixture(scope="session")
-def docker_compose_file(pytestconfig, variant):
-    return f"docker-compose.{variant}.yml"
+def docker_compose_file(pytestconfig):
+    variant = pytestconfig.getoption("variant")
+    return f"stack/docker-compose.{variant}.yml"
 
 
 @pytest.fixture(scope="session")
@@ -87,23 +92,3 @@ def aiidalab_version(_build_config):
 @pytest.fixture(scope="session")
 def aiidalab_home_version(_build_config):
     return _build_config["AIIDALAB_HOME_VERSION"]["default"]
-
-
-@pytest.fixture(scope="function")
-def generate_aiidalab_install_output(aiidalab_exec, nb_user):
-    def _generate_aiidalab_install_output(package_name):
-        output = (
-            aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
-            .decode()
-            .strip()
-        )
-
-        output += aiidalab_exec(f"pip check", user=nb_user).decode().strip()
-
-        # Uninstall the package to make sure the test is repeatable
-        app_name = package_name.split("@")[0]
-        aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
-
-        return output
-
-    return _generate_aiidalab_install_output
