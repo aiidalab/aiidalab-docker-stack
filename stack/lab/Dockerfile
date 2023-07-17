@@ -82,7 +82,7 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
-# When a Jupyter notebook server looses a connection to the frontend,
+# NOTE 1: When a Jupyter notebook server looses a connection to the frontend,
 # it keeps the messages in a buffer. If there is a background thread running
 # and trying to update the frontend, the buffer grows indefinitely,
 # eventually consuming all available RAM.
@@ -92,8 +92,10 @@ RUN  mkdir -p /home/${NB_USER}/apps
 # but that may come with other problems for people with flaky internet connections.
 # Instead, here we configure Jupyter to kill all kernels that have been alive for
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
+# NOTE 2: show_banner=False disables the banner for upgrading to Notebook 7.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
+     "--NotebookApp.show_banner=False" \
      "--ContentsManager.allow_hidden=True" \
      "--MappingKernelManager.buffer_offline_messages=True" \
      "--MappingKernelManager.cull_busy=True" \
