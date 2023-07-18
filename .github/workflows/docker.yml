@@ -125,7 +125,7 @@ jobs:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["base", "base-with-services", "lab", "full-stack", "qe"]
         with:
             architecture: amd64
             image: ${{ matrix.image }}
@@ -139,7 +139,7 @@ jobs:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["base", "base-with-services", "lab", "full-stack", "qe"]
         with:
             architecture: arm64
             image: ${{ matrix.image }}
@@ -153,7 +153,7 @@ jobs:
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["base", "base-with-services", "lab", "full-stack", "qe"]
         with:
             image: ${{ matrix.image }}
             registry: ghcr.io
@@ -167,7 +167,7 @@ jobs:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["base", "base-with-services", "lab", "full-stack", "qe"]
         with:
             architecture: amd64
             image: ${{ matrix.image }}
@@ -182,7 +182,7 @@ jobs:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["base", "base-with-services", "lab", "full-stack", "qe"]
         with:
             architecture: arm64
             image: ${{ matrix.image }}
@@ -197,7 +197,7 @@ jobs:
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["base", "base-with-services", "lab", "full-stack", "qe"]
         with:
             image: ${{ matrix.image }}
             registry: docker.io

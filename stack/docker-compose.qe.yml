@@ -4,7 +4,7 @@ version: '3.4'
 services:
 
     aiidalab:
-        image: ${REGISTRY:-}${BASE_WITH_SERVICES_IMAGE:-aiidalab/base-with-services}:${VERSION:-latest}
+        image: ${REGISTRY:-}${QE_IMAGE:-aiidalab/qe-stack}:${VERSION:-latest}
         environment:
             TZ: Europe/Zurich
             DOCKER_STACKS_JUPYTER_CMD: notebook
