@@ -47,7 +47,6 @@ function "tags" {
   params = [image]
   result = [
     "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
-    "${REGISTRY}${ORGANIZATION}/${image}:latest",
   ]
 }
 
