@@ -70,11 +70,6 @@ def task_build():
     def generate_version_override(
         version, registry, targets, architecture, organization
     ):
-        if len(targets) > 4:
-            # Workaround of issue of doit, which rather than override the default value, it appends
-            # https://github.com/pydoit/doit/issues/436
-            targets = targets[4:]
-
         platforms = [f"linux/{architecture}"]
 
         Path("docker-bake.override.json").write_text(
@@ -107,7 +102,7 @@ def task_build():
                 "long": "targets",
                 "short": "t",
                 "type": list,
-                "default": ["base", "base-with-services", "lab", "full-stack"],
+                "default": [],
                 "help": "Specify the target to build.",
             },
         ],
