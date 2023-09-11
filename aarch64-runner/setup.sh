@@ -3,27 +3,67 @@ set -ex
 
 GITHUB_RUNNER_USER="runner-user"
 
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root"
-    exit 1
-fi
+if  [ $UID -ne 0 ] ; then echo "Please run $0 as root." && exit 1; fi
 
-# Install homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+getHiddenUserUid()
+{
+    local __UIDS=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -ugr)
+
+    #echo $__UIDS
+    local __NewUID
+    for __NewUID in $__UIDS
+    do
+        if [[ $__NewUID -lt 499 ]] ; then
+            break;
+        fi
+    done
+
+    echo $((__NewUID+1))
+}
+
+getInteractiveUserUid()
+{
+    # Find out the next available user ID
+    local __MAXID=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1)
+    echo $((__MAXID+1))
+}
 
 
 echo "Setting up runner-user, who will run GitHub Actions runner"
-adduser --disabled-password --gecos "" ${GITHUB_RUNNER_USER}
-mkdir /home/${GITHUB_RUNNER_USER}/.ssh/
-cp "/home/${SUDO_USER}/.ssh/authorized_keys" "/home/${GITHUB_RUNNER_USER}/.ssh/authorized_keys"
-chown --recursive ${GITHUB_RUNNER_USER}:${GITHUB_RUNNER_USER} /home/${GITHUB_RUNNER_USER}/.ssh
 
+# Create the user account by running dscl (normally you would have to do each of these commands one
+# by one in an obnoxious and time consuming way.
+
+FULLNAME="Runner User"
+USERID=$(getInteractiveUserUid)
+GROUPID=20
+
+read -s -p "Enter a password for this user: " PASSWORD
+echo
+read -s -p "Validate a password: " PASSWORD_VALIDATE
+echo
+
+if [[ $PASSWORD != $PASSWORD_VALIDATE ]] ; then
+    echo "Passwords do not match!"
+    exit 1;
+fi
+
+sysadminctl -addUser ${GITHUB_RUNNER_USER} -fullName "${FULLNAME}" -UID ${USERID} -GID ${GROUPID} -password "${PASSWORD}" -home /Users/${GITHUB_RUNNER_USER} -admin
+
+mkdir -p /Users/${GITHUB_RUNNER_USER}/.ssh/
+cp "/Users/${SUDO_USER}/.ssh/authorized_keys" "/Users/${GITHUB_RUNNER_USER}/.ssh/authorized_keys" || true
+chown -R $USERID:$GROUPID /Users/${GITHUB_RUNNER_USER}/.ssh
+
+# Install homebrew (as runner-user)
+echo "Setting up homebrew"
+sudo -i -u ${GITHUB_RUNNER_USER} bash << EOF
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
 echo "Setting up python3"
 brew install python3
 curl -sS https://bootstrap.pypa.io/get-pip.py | python3
-
 echo "Setting up docker"
 brew install docker
+brew install colima
+EOF
 
-usermod -aG docker ${GITHUB_RUNNER_USER}
 chmod 666 /var/run/docker.sock
