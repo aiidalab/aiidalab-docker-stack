@@ -103,14 +103,14 @@ jobs:
         with:
             image: base
             architecture: arm64
-            runsOn: jyu
+            runsOn: ARM64
 
     arm64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
             image: lab
             architecture: arm64
-            runsOn: self-hosted-apple-silicon
+            runsOn: ARM64
         needs: [arm64-base]
 
     arm64-base-with-services:
@@ -118,7 +118,7 @@ jobs:
         with:
             image: base-with-services
             architecture: arm64
-            runsOn: self-hosted-apple-silicon
+            runsOn: ARM64
         needs: [arm64-base]
 
     arm64-full-stack:
@@ -126,7 +126,7 @@ jobs:
         with:
             image: full-stack
             architecture: arm64
-            runsOn: self-hosted-apple-silicon
+            runsOn: ARM64
         needs: [arm64-base-with-services, arm64-lab]
 
     arm64-qe:
@@ -134,7 +134,7 @@ jobs:
         with:
             image: qe
             architecture: arm64
-            runsOn: self-hosted-apple-silicon
+            runsOn: ARM64
         needs: [arm64-full-stack]
 
     amd64-push-ghcr:
