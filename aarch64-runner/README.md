@@ -34,6 +34,37 @@ Configure your runner:
    This will create the plist file for the runner service, it is not able to run it with the non-gui user.
    As shown in the [issue](https://github.com/actions/runner/issues/1056#issuecomment-1237426462), real services start on boot, not on login so on macOS this means the service needs to be a `LaunchDaemon` and not a `LaunchAgent`.
 
+   In case the python path is not correct, change the `runsvc.sh` file to the correct path.
+   Since we use `colima` as the container runtime, the docker sock is located at `unix://$HOME/.colima/default/docker.sock`.
+   Change the `runsvc.sh` file to:
+
+   ```bash
+   #!/bin/bash
+
+   # convert SIGTERM signal to SIGINT
+   # for more info on how to propagate SIGTERM to a child process see: http://veithen.github.io/2014/11/16/sigterm-propagation.html
+   trap 'kill -INT $PID' TERM INT
+
+   if [ -f ".path" ]; then
+      # configure
+      export PATH=`cat .path`
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+      export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"
+      export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock
+      echo ".path=${PATH}"
+   fi
+
+   nodever=${GITHUB_ACTIONS_RUNNER_FORCED_NODE_VERSION:-node16}
+
+   # insert anything to setup env when running as a service
+   # run the host process which keep the listener alive
+   ./externals/$nodever/bin/node ./bin/RunnerService.js &
+   PID=$!
+   wait $PID
+   trap - TERM INT
+   wait $PID
+   ```
+
    ```bash
    sudo mv /Users/runner-user/Library/LaunchAgents/actions.runner.*.plist /Library/LaunchDaemons/
    sudo chown root:wheel /Library/LaunchDaemons/actions.runner.*.plist

@@ -59,9 +59,13 @@ echo "Setting up homebrew"
 sudo -i -u ${GITHUB_RUNNER_USER} bash << EOF
 curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
 echo "Setting up python3"
-brew install python3
-curl -sS https://bootstrap.pypa.io/get-pip.py | python3
-echo "Setting up docker"
+brew install python
+# For Apple Silicon machines, the path are slightly different.
+# After running brew install python, must ensure your ~/.zprofile uses the correct Homebrew paths:
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/${GITHUB_RUNNER_USER}/.zprofile
+echo 'export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"' >> /Users/${GITHUB_RUNNER_USER}/.zprofile
+echo 'export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"' >> /Users/${GITHUB_RUNNER_USER}/.zprofile
+echo "Setting up docker "
 brew install docker
 brew install colima
 EOF
