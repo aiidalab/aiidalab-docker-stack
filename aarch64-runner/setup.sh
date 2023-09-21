@@ -55,6 +55,7 @@ cp "/Users/${SUDO_USER}/.ssh/authorized_keys" "/Users/${GITHUB_RUNNER_USER}/.ssh
 chown -R $USERID:$GROUPID /Users/${GITHUB_RUNNER_USER}/.ssh
 
 # Install homebrew (as runner-user)
+# You may need to run this by hand, but only the first time setup the self-hosted runner it is required.
 echo "Setting up homebrew"
 sudo -i -u ${GITHUB_RUNNER_USER} bash << EOF
 curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
@@ -67,7 +68,7 @@ echo 'export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"' >> /Users/${GITH
 echo 'export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"' >> /Users/${GITHUB_RUNNER_USER}/.zprofile
 echo "Setting up docker "
 brew install docker
+brew install docker-compose
+brew install docker-buildx
 brew install colima
 EOF
-
-chmod 666 /var/run/docker.sock

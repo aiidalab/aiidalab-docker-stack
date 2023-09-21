@@ -7,9 +7,10 @@ Configure your runner:
 
 1. Run under `root`:
 
-    XXX: change the xx to the correct repo name after merged
+   Run this with caution. It can also be run manually step by step. See [setup.sh](setup.sh) for details.
+
    ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/xx/HEAD/aarch64-runner/setup.sh)"
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/main/HEAD/aarch64-runner/setup.sh)"
    ```
 
    This will perform the initial runner setup and create a user `runner-user`.
@@ -20,7 +21,7 @@ Configure your runner:
    colima start
    ```
 
-   This command needs to be run every time after reboot. *(TODO: make it auto start on boot)*
+   This command needs to be run every time after reboot. *(Optional: make it auto start on boot)*
 
 3. Setup new GitHub Runner under `runner-user` using [GitHub Instructions](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners).
    **Do not `./run.sh` yet**.
@@ -36,7 +37,7 @@ Configure your runner:
 
    In case the python path is not correct, change the `runsvc.sh` file to the correct path.
    Since we use `colima` as the container runtime, the docker sock is located at `unix://$HOME/.colima/default/docker.sock`.
-   Change the `runsvc.sh` file to:
+   Change the `runsvc.sh` file to (notice we add two export lines so the runner can find the correct python and docker sock):
 
    ```bash
    #!/bin/bash
@@ -49,7 +50,7 @@ Configure your runner:
       # configure
       export PATH=`cat .path`
       eval "$(/opt/homebrew/bin/brew shellenv)"
-      export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"
+      export PATH="/opt/homebrew/bin:$PATH"
       export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock
       echo ".path=${PATH}"
    fi
@@ -65,6 +66,7 @@ Configure your runner:
    wait $PID
    ```
 
+   Then, move the plist file to the correct location and load the service:
    ```bash
    sudo mv /Users/runner-user/Library/LaunchAgents/actions.runner.*.plist /Library/LaunchDaemons/
    sudo chown root:wheel /Library/LaunchDaemons/actions.runner.*.plist
