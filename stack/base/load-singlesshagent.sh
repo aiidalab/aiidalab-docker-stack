@@ -32,7 +32,7 @@ load_singlesshagent() {
         [ "$VERBOSE" == "true" ] && echo "- no existing environment to source" >&2
     fi
 
-    SSH_ADD_OUTPUT=`ssh-add -l`
+    SSH_ADD_OUTPUT=`ssh-add -l 2> /dev/null`
     # Needed, the later 'test' calls will replace this
     SSHADD_RETVAL="$?"
     # Error code: 0: there are keys; 1: there are no keys; 2: cannot contact agent
