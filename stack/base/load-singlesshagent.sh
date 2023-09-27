@@ -54,8 +54,8 @@ load_singlesshagent() {
         [ "$VERBOSE" == "true" ] && echo "  - ssh-add replied with return code $SSHADD_RETVAL - I don't know what to do..." >&2
     fi
 
-    [ "$VERBOSE" == "true" ] && echo "- Debugging, listing all ssh-agents for user $USER:"
-    [ "$VERBOSE" == "true" ] && ps -U "$USER" | grep --color=no '[s]sh-agent'
+    [ "$VERBOSE" == "true" ] && echo "- Debugging, listing all ssh-agents for user $NB_USER:"
+    [ "$VERBOSE" == "true" ] && ps -U "$NB_USER" | grep --color=no '[s]sh-agent'
 }
 
 # Run with the requested verbosity
