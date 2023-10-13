@@ -42,7 +42,11 @@ if [[ -f /opt/bin/load-singlesshagent.sh ]] && ! grep -q "${header}" /home/${NB_
 ${header}
 if [ -f /opt/bin/load-singlesshagent.sh ]; then
     source /opt/bin/load-singlesshagent.sh
-    ssh-add /home/${NB_USER}/.ssh/id_rsa 2> /dev/null
 fi
 EOF
 fi
+
+# load the ssh-agent and add the default key generated
+# the return code can be non-zero if the ssh-agent is not running
+# which will cause the notebook to fail to start so we need to ignore the return code
+source /opt/bin/load-singlesshagent.sh || true

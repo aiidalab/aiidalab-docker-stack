@@ -26,13 +26,13 @@ load_singlesshagent() {
     SSH_ENV="$HOME/.ssh/agent-environment"
     # Source SSH settings, if applicable
     if [ -r "${SSH_ENV}" ]; then
-        source "${SSH_ENV}" > /dev/null
+        source "${SSH_ENV}" 2>& /dev/null
         [ "$VERBOSE" == "true" ] && echo "- sourcing existing environment" >&2
     else
         [ "$VERBOSE" == "true" ] && echo "- no existing environment to source" >&2
     fi
 
-    SSH_ADD_OUTPUT=`ssh-add -l 2> /dev/null`
+    SSH_ADD_OUTPUT=`ssh-add -l`
     # Needed, the later 'test' calls will replace this
     SSHADD_RETVAL="$?"
     # Error code: 0: there are keys; 1: there are no keys; 2: cannot contact agent
@@ -40,12 +40,12 @@ load_singlesshagent() {
     then
         [ "$VERBOSE" == "true" ] && echo "  - unable to contact agent, creating a new one" >&2
         (umask 066; ssh-agent > ${SSH_ENV})
-        source "${SSH_ENV}" > /dev/null
+        source "${SSH_ENV}" 2> /dev/null
     elif [ "$SSHADD_RETVAL" == "1" ]
     then
         [ "$VERBOSE" == "true" ] && echo "  - ssh-agent found (${SSH_AGENT_PID}), no keys (I might want to add keys here)" >&2
-        # Maybe the user wants to do it by himself?
-        #ssh-add
+        # run ssh-add to add the default generate key `id_rsa` to the agent
+        ssh-add ~/.ssh/id_rsa 2> /dev/null
     elif [ "$SSHADD_RETVAL" == "0" ]
     then
         NUMKEYS=`echo "$SSH_ADD_OUTPUT" | wc -l`
