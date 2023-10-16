@@ -59,20 +59,6 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    amd64-base:
-        uses: ./.github/workflows/docker-build-test-upload.yml
-        with:
-            image: base
-            architecture: amd64
-            runsOn: ubuntu-latest
-
-    amd64-base-with-services:
-        uses: ./.github/workflows/docker-build-test-upload.yml
-        with:
-            image: base-with-services
-            architecture: amd64
-            runsOn: ubuntu-latest
-        needs: [amd64-base]
 
     amd64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -80,7 +66,6 @@ jobs:
             image: lab
             architecture: amd64
             runsOn: ubuntu-latest
-        needs: [amd64-base]
 
     amd64-full-stack:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -88,14 +73,7 @@ jobs:
             image: full-stack
             architecture: amd64
             runsOn: ubuntu-latest
-        needs: [amd64-base-with-services, amd64-lab]
-
-    arm64-base:
-        uses: ./.github/workflows/docker-build-test-upload.yml
-        with:
-            image: base
-            architecture: arm64
-            runsOn: ARM64
+        needs: [amd64-lab]
 
     arm64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -103,15 +81,6 @@ jobs:
             image: lab
             architecture: arm64
             runsOn: ARM64
-        needs: [arm64-base]
-
-    arm64-base-with-services:
-        uses: ./.github/workflows/docker-build-test-upload.yml
-        with:
-            image: base-with-services
-            architecture: arm64
-            runsOn: ARM64
-        needs: [arm64-base]
 
     arm64-full-stack:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -119,13 +88,13 @@ jobs:
             image: full-stack
             architecture: arm64
             runsOn: ARM64
-        needs: [arm64-base-with-services, arm64-lab]
+        needs: [arm64-lab]
 
     amd64-push-ghcr:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["lab", "full-stack"]
         with:
             architecture: amd64
             image: ${{ matrix.image }}
@@ -133,13 +102,13 @@ jobs:
         secrets:
             REGISTRY_USERNAME: ${{ github.actor }}
             REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
+        needs: [amd64-lab, amd64-full-stack]
 
     arm64-push-ghcr:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["lab", "full-stack"]
         with:
             architecture: arm64
             image: ${{ matrix.image }}
@@ -147,13 +116,13 @@ jobs:
         secrets:
             REGISTRY_USERNAME: ${{ github.actor }}
             REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
+        needs: [arm64-lab, arm64-full-stack]
 
     merge-tags-ghcr:
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["lab", "full-stack"]
         with:
             image: ${{ matrix.image }}
             registry: ghcr.io
@@ -167,7 +136,7 @@ jobs:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["lab", "full-stack"]
         with:
             architecture: amd64
             image: ${{ matrix.image }}
@@ -175,14 +144,14 @@ jobs:
         secrets:
             REGISTRY_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             REGISTRY_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
-        needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
+        needs: [amd64-lab, amd64-full-stack]
 
     arm64-push-dockerhub:
         if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["lab", "full-stack"]
         with:
             architecture: arm64
             image: ${{ matrix.image }}
@@ -190,14 +159,14 @@ jobs:
         secrets:
             REGISTRY_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             REGISTRY_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
-        needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
+        needs: [arm64-lab, arm64-full-stack]
 
     merge-tags-dockerhub:
         if: github.repository == 'aiidalab/aiidalab-docker-stack' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services", "lab", "full-stack"]
+                image: ["lab", "full-stack"]
         with:
             image: ${{ matrix.image }}
             registry: docker.io
