@@ -4,6 +4,8 @@ pre-commit
 pytest
 # dependencies
 pytest-docker
+
+# test dependencies same runner docker-stack
 doit
 dunamai
 pyyaml<=5.3.1

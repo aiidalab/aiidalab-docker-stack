@@ -8,18 +8,48 @@ on:
             # We use local reusable workflows to make architecture clean an simple
             # https://docs.github.com/en/actions/using-workflows/reusing-workflows
             - ".github/workflows/docker-build-test-upload.yml"
+            - ".github/workflows/docker-merge-tags.yml"
+            - ".github/workflows/docker-push.yml"
+
+            # We use local composite actions to combine multiple workflow steps within one action
+            # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
+            - ".github/actions/create-dev-env/action.yml"
+            - ".github/actions/load-image/action.yml"
 
             - "stack/base/**"
             - "stack/base-with-services/**"
+            - "stack/lab/**"
+            - "stack/full-stack/**"
+            - "build.json"
+            - "docker-bake.hcl"
+            - "tests/**"
+            - "requirements-dev.txt"
     push:
         branches:
             - main
+        tags:
+            - "v*"
         paths:
             - ".github/workflows/docker.yml"
+            # We use local reusable workflows to make architecture clean an simple
+            # https://docs.github.com/en/actions/using-workflows/reusing-workflows
             - ".github/workflows/docker-build-test-upload.yml"
+            - ".github/workflows/docker-merge-tags.yml"
+            - ".github/workflows/docker-push.yml"
+
+            # We use local composite actions to combine multiple workflow steps within one action
+            # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
+            - ".github/actions/create-dev-env/action.yml"
+            - ".github/actions/load-image/action.yml"
 
             - "stack/base/**"
             - "stack/base-with-services/**"
+            - "stack/lab/**"
+            - "stack/full-stack/**"
+            - "build.json"
+            - "docker-bake.hcl"
+            - "tests/**"
+            - "requirements-dev.txt"
     workflow_dispatch:
 
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
@@ -65,14 +95,14 @@ jobs:
         with:
             image: base
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
 
     arm64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
             image: lab
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
         needs: [arm64-base]
 
     arm64-base-with-services:
@@ -80,7 +110,7 @@ jobs:
         with:
             image: base-with-services
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
         needs: [arm64-base]
 
     arm64-full-stack:
@@ -88,7 +118,7 @@ jobs:
         with:
             image: full-stack
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
         needs: [arm64-base-with-services, arm64-lab]
 
     amd64-push-ghcr:
@@ -137,14 +167,14 @@ jobs:
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
-                image: ["base", "base-with-services"]
+                image: ["base", "base-with-services", "lab", "full-stack"]
         with:
             architecture: amd64
             image: ${{ matrix.image }}
             registry: docker.io
         secrets:
-            REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-            REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            REGISTRY_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
         needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
 
     arm64-push-dockerhub:
@@ -158,8 +188,8 @@ jobs:
             image: ${{ matrix.image }}
             registry: docker.io
         secrets:
-            REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-            REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            REGISTRY_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
         needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
 
     merge-tags-dockerhub:
@@ -172,6 +202,18 @@ jobs:
             image: ${{ matrix.image }}
             registry: docker.io
         secrets:
-            REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-            REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            REGISTRY_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            REGISTRY_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
         needs: [amd64-push-dockerhub, arm64-push-dockerhub]
+
+    release:
+        runs-on: ubuntu-latest
+        needs: [merge-tags-ghcr, merge-tags-dockerhub]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Create release
+              uses: softprops/action-gh-release@v1
+              with:
+                  generate_release_notes: true
+              if: github.repository == 'aiidalab/aiidalab-docker-stack' && startsWith(github.ref, 'refs/tags/v')
