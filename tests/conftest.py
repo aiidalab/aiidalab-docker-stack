@@ -20,7 +20,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--variant",
         action="store",
-        default="base",
+        default="lab",
         help="Variant (image name) of the docker-compose file to use.",
     )
 
