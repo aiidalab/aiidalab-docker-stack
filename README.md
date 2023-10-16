@@ -4,9 +4,7 @@ This repository contains the Dockerfiles for the official AiiDAlab docker image 
 All images are based on the [jupyter/minimal-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook).
 
 Image variants:
-- `base` – A minimal image that comes with AiiDA pre-installed and an AiiDA profile set up.
-- `base-with-services` – Like `base`, but AiiDA services (PostgreSQL and RabbitMQ) are installed on the container and automatically launched on startup.
-- `lab` – Like `base`, but uses the AiiDAlab home app as the primary interface (the standard JupyterLab interface is also available).
+- `lab` – A minimal image that comes with AiiDA pre-installed and an AiiDA profile setup, uses the AiiDAlab home app as the primary interface (the standard JupyterLab interface is also available).
 - `full-stack` – Our most comprehensive image, like `lab`, but also comes with services pre-installed and launched.
 
 Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
@@ -55,7 +53,7 @@ The build system will attempt to detect the local architecture and automatically
 All commands `build`, `tests`, and `up` will use the locally detected platform and use a version tag based on the state of the local git repository.
 However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit build --arch=arm64 --version=my-version`.
 
-You can specify target stacks to build with `--target`, example: `doit build --target base --target full-stack`.
+You can specify target stacks to build with `--target`, example: `doit build --target lab --target full-stack`.
 
 ### Run automated tests
 
