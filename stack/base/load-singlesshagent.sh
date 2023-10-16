@@ -26,13 +26,14 @@ load_singlesshagent() {
     SSH_ENV="$HOME/.ssh/agent-environment"
     # Source SSH settings, if applicable
     if [ -r "${SSH_ENV}" ]; then
-        source "${SSH_ENV}" 2>& /dev/null
+        # don't show the output of this source command
+        source "${SSH_ENV}" 1> /dev/null
         [ "$VERBOSE" == "true" ] && echo "- sourcing existing environment" >&2
     else
         [ "$VERBOSE" == "true" ] && echo "- no existing environment to source" >&2
     fi
 
-    SSH_ADD_OUTPUT=`ssh-add -l`
+    SSH_ADD_OUTPUT=`ssh-add -l 2> /dev/null`
     # Needed, the later 'test' calls will replace this
     SSHADD_RETVAL="$?"
     # Error code: 0: there are keys; 1: there are no keys; 2: cannot contact agent
