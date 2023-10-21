@@ -88,7 +88,8 @@ jobs:
             image: full-stack
             architecture: amd64
             runsOn: ubuntu-latest
-        needs: [amd64-base-with-services, amd64-lab]
+        # XXX: for test, will not need to wait.
+        # needs: [amd64-base-with-services, amd64-lab]
 
     arm64-base:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -120,6 +121,22 @@ jobs:
             architecture: arm64
             runsOn: ARM64
         needs: [arm64-base-with-services, arm64-lab]
+
+    # for test
+    amd64-fs-push-ghcr:
+        if: always()    # XXX: and build is successful, how?
+        uses: ./.github/workflows/docker-push.yml
+        strategy:
+            matrix:
+                image: ["full-stack"]
+        with:
+            architecture: amd64
+            image: ${{ matrix.image }}
+            registry: ghcr.io
+        secrets:
+            REGISTRY_USERNAME: ${{ github.actor }}
+            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        needs: [amd64-full-stack]
 
     amd64-push-ghcr:
         uses: ./.github/workflows/docker-push.yml
