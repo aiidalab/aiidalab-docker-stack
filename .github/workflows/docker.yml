@@ -88,8 +88,7 @@ jobs:
             image: full-stack
             architecture: amd64
             runsOn: ubuntu-latest
-        # XXX: for test, will not need to wait.
-        # needs: [amd64-base-with-services, amd64-lab]
+        needs: [amd64-base-with-services, amd64-lab]
 
     arm64-base:
         uses: ./.github/workflows/docker-build-test-upload.yml
@@ -122,23 +121,8 @@ jobs:
             runsOn: ARM64
         needs: [arm64-base-with-services, arm64-lab]
 
-    # for test
-    amd64-fs-push-ghcr:
-        if: always()    # XXX: and build is successful, how?
-        uses: ./.github/workflows/docker-push.yml
-        strategy:
-            matrix:
-                image: ["full-stack"]
-        with:
-            architecture: amd64
-            image: ${{ matrix.image }}
-            registry: ghcr.io
-        secrets:
-            REGISTRY_USERNAME: ${{ github.actor }}
-            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        needs: [amd64-full-stack]
-
     amd64-push-ghcr:
+        if: always()
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -153,6 +137,7 @@ jobs:
         needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
 
     arm64-push-ghcr:
+        if: always()
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -167,6 +152,7 @@ jobs:
         needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
 
     merge-tags-ghcr:
+        if: always()
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
