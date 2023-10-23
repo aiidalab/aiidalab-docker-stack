@@ -22,6 +22,9 @@ ARG AIIDA_VERSION
 RUN echo "pip==23.0.1" > /opt/requirements.txt && \
      echo "aiida-core>=${AIIDA_VERSION},<3" >> /opt/requirements.txt
 
+# Pin shared requirements in the base environemnt.
+RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
+
 # Install the shared requirements.
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
