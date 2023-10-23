@@ -19,11 +19,8 @@ ARG AIIDA_VERSION
 # Pin shared requirements in the base environemnt.
 # The lower bound of aiida-core is set to the version of aiida-core to prevent
 # lower aiida-core DB version installed and trigger database downgrade.
-RUN echo "pip==23.0.1" > /opt/requirements.txt && \
+RUN echo "pip==23.3.1" > /opt/requirements.txt && \
      echo "aiida-core>=${AIIDA_VERSION},<3" >> /opt/requirements.txt
-
-# Pin shared requirements in the base environemnt.
-RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
 # Install the shared requirements.
 RUN mamba install --yes \
@@ -33,6 +30,9 @@ RUN mamba install --yes \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
+
+# Pin shared requirements in the base environemnt.
+RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
 # Configure pip to use requirements file as constraints file.
 ENV PIP_CONSTRAINT=/opt/requirements.txt
