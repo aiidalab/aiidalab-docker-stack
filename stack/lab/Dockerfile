@@ -105,3 +105,9 @@ ENV NOTEBOOK_ARGS \
      "--MappingKernelManager.cull_interval=300" \
      "--TerminalManager.cull_inactive_timeout=600" \
      "--TerminalManager.cull_interval=60"
+
+# Set up the logo of notebook interface
+COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/notebook-logo.png
+# the folder of logo.png is get by find "$CONDA_DIR/lib" -path "*/notebook/static/base/images/logo.png"
+# copy the logo.png to the folder as logo.png
+RUN find "$CONDA_DIR/lib" -path "*/notebook/static/base/images/logo.png" -exec cp ${CONDA_DIR}/notebook-logo.png {} \;
