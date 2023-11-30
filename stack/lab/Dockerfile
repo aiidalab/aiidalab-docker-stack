@@ -109,7 +109,6 @@ ENV NOTEBOOK_ARGS \
 # Set up the logo of notebook interface
 COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png /tmp/notebook-logo.png
 
-# The directory location of logo.png is in the `/opt/conda/lib/python3.9/site-packages/notebook/static/base/images/logo.png`, but the python version may change
-# I use the find to find the location and mv the logo.png to the folder
-# copy the logo.png to the folder as logo.png
-RUN find "$CONDA_DIR/lib" -path "*/notebook/static/base/images/logo.png" -exec mv /tmp/notebook-logo.png {} \;
+# The directory location of logo.png is in the `${CONDA_DIR}/lib/python3.9/site-packages/notebook/static/base/images/logo.png`,
+# but the python version may change in the future, thus we use the wildcard to match the python version.
+RUN mv /tmp/notebook-logo.png ${CONDA_DIR}/lib/python3*/site-packages/notebook/static/base/images/logo.png
