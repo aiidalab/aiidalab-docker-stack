@@ -105,3 +105,10 @@ ENV NOTEBOOK_ARGS \
      "--MappingKernelManager.cull_interval=300" \
      "--TerminalManager.cull_inactive_timeout=600" \
      "--TerminalManager.cull_interval=60"
+
+# Set up the logo of notebook interface
+COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png /tmp/notebook-logo.png
+
+# The directory location of logo.png is in the `${CONDA_DIR}/lib/python3.9/site-packages/notebook/static/base/images/logo.png`,
+# but the python version may change in the future, thus we use the wildcard to match the python version.
+RUN mv /tmp/notebook-logo.png ${CONDA_DIR}/lib/python3*/site-packages/notebook/static/base/images/logo.png
