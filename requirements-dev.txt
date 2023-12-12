@@ -2,8 +2,6 @@ docker
 requests
 pre-commit
 pytest
-# dependencies
 pytest-docker
 doit
 dunamai
-pyyaml<=5.3.1
