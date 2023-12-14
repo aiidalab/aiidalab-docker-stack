@@ -5,7 +5,7 @@ import pytest
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     def _generate_aiidalab_install_output(package_name):
         output = (
-            aiidalab_exec(f"aiidalab install --yes {package_name}", user=nb_user)
+            aiidalab_exec(f"aiidalab install --yes --pre {package_name}", user=nb_user)
             .decode()
             .strip()
         )

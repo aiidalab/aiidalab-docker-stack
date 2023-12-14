@@ -95,14 +95,14 @@ jobs:
         with:
             image: base
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
 
     arm64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
             image: lab
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
         needs: [arm64-base]
 
     arm64-base-with-services:
@@ -110,7 +110,7 @@ jobs:
         with:
             image: base-with-services
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
         needs: [arm64-base]
 
     arm64-full-stack:
@@ -118,10 +118,11 @@ jobs:
         with:
             image: full-stack
             architecture: arm64
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: ARM64
         needs: [arm64-base-with-services, arm64-lab]
 
     amd64-push-ghcr:
+        if: always()
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -136,6 +137,7 @@ jobs:
         needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
 
     arm64-push-ghcr:
+        if: always()
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -150,6 +152,7 @@ jobs:
         needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
 
     merge-tags-ghcr:
+        if: always()
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:

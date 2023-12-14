@@ -15,10 +15,10 @@ runs:
     # See: https://github.com/actions/setup-python/issues/108
     # python3 is manually preinstalled in the arm64 VM self-hosted runner
         - name: Set Up Python 🐍
+          if: ${{ inputs.architecture == 'amd64' }}
           uses: actions/setup-python@v4
           with:
               python-version: 3.x
-          if: ${{ inputs.architecture == 'amd64' }}
 
         - name: Install Dev Dependencies 📦
           run: |

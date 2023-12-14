@@ -16,19 +16,23 @@ WORKDIR /opt/
 
 ARG AIIDA_VERSION
 
+# Pin shared requirements in the base environemnt.
+# The lower bound of aiida-core is set to the version of aiida-core to prevent
+# lower aiida-core DB version installed and trigger database downgrade.
+RUN echo "pip==23.3.1" > /opt/requirements.txt && \
+     echo "aiida-core>=${AIIDA_VERSION},<3" >> /opt/requirements.txt
+
 # Install the shared requirements.
-COPY requirements.txt .
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
      mamba-bash-completion \
-     --file requirements.txt \
+     --file /opt/requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-
 # Pin shared requirements in the base environemnt.
-RUN cat requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
+RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
 # Configure pip to use requirements file as constraints file.
 ENV PIP_CONSTRAINT=/opt/requirements.txt
@@ -54,8 +58,7 @@ ENV AIIDA_USER_INSTITUTION Khedivial
 # Install the load-singlesshagent.sh script as described here:
 # https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
 # The startup of this script is configured in the before-notebook.d/20_setup-ssh.sh file.
-RUN wget --quiet --directory-prefix=/opt/bin/ \
-     "https://aiida.readthedocs.io/projects/aiida-core/en/latest/_downloads/4265ec5a42c3a3dba586dd460c0db95e/load-singlesshagent.sh"
+COPY load-singlesshagent.sh /opt/bin/
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin

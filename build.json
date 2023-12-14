@@ -7,13 +7,19 @@
       "default": "15"
     },
     "AIIDA_VERSION": {
-      "default": "2.3.1"
+      "default": "2.4.0"
     },
     "AIIDALAB_VERSION": {
-      "default": "23.03.0"
+      "default": "23.03.2"
     },
     "AIIDALAB_HOME_VERSION": {
       "default": "23.03.1"
+    },
+    "AIIDALAB_QE_VERSION": {
+      "default": "23.04.6"
+    },
+    "QE_VERSION": {
+      "default": "7.2"
     }
   }
 }

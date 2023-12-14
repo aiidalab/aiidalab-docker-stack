@@ -33,6 +33,9 @@ RUN mamba install --yes \
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
+# Enable aiidalab autocompletion
+RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
+
 # Install the aiidalab-home app.
 ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
@@ -104,3 +107,10 @@ ENV NOTEBOOK_ARGS \
      "--MappingKernelManager.cull_interval=300" \
      "--TerminalManager.cull_inactive_timeout=600" \
      "--TerminalManager.cull_interval=60"
+
+# Set up the logo of notebook interface
+COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png /tmp/notebook-logo.png
+
+# The directory location of logo.png is in the `${CONDA_DIR}/lib/python3.9/site-packages/notebook/static/base/images/logo.png`,
+# but the python version may change in the future, thus we use the wildcard to match the python version.
+RUN mv /tmp/notebook-logo.png ${CONDA_DIR}/lib/python3*/site-packages/notebook/static/base/images/logo.png
