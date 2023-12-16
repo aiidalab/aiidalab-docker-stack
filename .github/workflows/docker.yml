@@ -3,8 +3,6 @@ name: Build, test and push Docker Images
 
 on:
     pull_request:
-        paths-ignore:
-            - "**.md"
     push:
         branches:
             - main
