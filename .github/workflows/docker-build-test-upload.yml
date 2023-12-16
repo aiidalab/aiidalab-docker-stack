@@ -63,11 +63,10 @@ jobs:
               if: always()
 
             - name: Upload image as artifact 💾
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v3
               with:
                   name: ${{ inputs.image }}-${{ inputs.architecture }}
                   path: /tmp/aiidalab/${{ inputs.image }}-${{ inputs.architecture }}.tar
                   retention-days: 3
-                  compression-level: 0
                   if-no-files-found: error
               if: always()
