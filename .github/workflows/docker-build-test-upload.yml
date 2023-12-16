@@ -68,6 +68,6 @@ jobs:
                   name: ${{ inputs.image }}-${{ inputs.architecture }}
                   path: /tmp/aiidalab/${{ inputs.image }}-${{ inputs.architecture }}.tar
                   retention-days: 3
-                  compression-level: 0
+                  compression-level: 1
                   if-no-files-found: error
               if: always()
