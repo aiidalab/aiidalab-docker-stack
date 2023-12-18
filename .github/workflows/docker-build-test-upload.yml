@@ -23,6 +23,7 @@ on:
 jobs:
     build-test-upload:
         runs-on: ${{ inputs.runsOn }}
+        timeout-minutes: 20
 
         steps:
             - name: Checkout Repo ⚡️
