@@ -3,53 +3,11 @@ name: Build, test and push Docker Images
 
 on:
     pull_request:
-        paths:
-            - ".github/workflows/docker.yml"
-            # We use local reusable workflows to make architecture clean an simple
-            # https://docs.github.com/en/actions/using-workflows/reusing-workflows
-            - ".github/workflows/docker-build-test-upload.yml"
-            - ".github/workflows/docker-merge-tags.yml"
-            - ".github/workflows/docker-push.yml"
-
-            # We use local composite actions to combine multiple workflow steps within one action
-            # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
-            - ".github/actions/create-dev-env/action.yml"
-            - ".github/actions/load-image/action.yml"
-
-            - "stack/base/**"
-            - "stack/base-with-services/**"
-            - "stack/lab/**"
-            - "stack/full-stack/**"
-            - "build.json"
-            - "docker-bake.hcl"
-            - "tests/**"
-            - "requirements-dev.txt"
     push:
         branches:
             - main
         tags:
             - "v*"
-        paths:
-            - ".github/workflows/docker.yml"
-            # We use local reusable workflows to make architecture clean an simple
-            # https://docs.github.com/en/actions/using-workflows/reusing-workflows
-            - ".github/workflows/docker-build-test-upload.yml"
-            - ".github/workflows/docker-merge-tags.yml"
-            - ".github/workflows/docker-push.yml"
-
-            # We use local composite actions to combine multiple workflow steps within one action
-            # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
-            - ".github/actions/create-dev-env/action.yml"
-            - ".github/actions/load-image/action.yml"
-
-            - "stack/base/**"
-            - "stack/base-with-services/**"
-            - "stack/lab/**"
-            - "stack/full-stack/**"
-            - "build.json"
-            - "docker-bake.hcl"
-            - "tests/**"
-            - "requirements-dev.txt"
     workflow_dispatch:
 
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
@@ -213,7 +171,7 @@ jobs:
         runs-on: ubuntu-latest
         needs: [merge-tags-ghcr, merge-tags-dockerhub]
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
 
             - name: Create release
               uses: softprops/action-gh-release@v1
