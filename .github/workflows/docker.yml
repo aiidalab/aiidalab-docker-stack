@@ -53,14 +53,14 @@ jobs:
         with:
             image: base
             architecture: arm64
-            runsOn: ARM64
+            runsOn: macos-14
 
     arm64-lab:
         uses: ./.github/workflows/docker-build-test-upload.yml
         with:
             image: lab
             architecture: arm64
-            runsOn: ARM64
+            runsOn: macos-14
         needs: [arm64-base]
 
     arm64-base-with-services:
@@ -68,7 +68,7 @@ jobs:
         with:
             image: base-with-services
             architecture: arm64
-            runsOn: ARM64
+            runsOn: macos-14
         needs: [arm64-base]
 
     arm64-full-stack:
@@ -76,7 +76,7 @@ jobs:
         with:
             image: full-stack
             architecture: arm64
-            runsOn: ARM64
+            runsOn: macos-14
         needs: [arm64-base-with-services, arm64-lab]
 
     amd64-push-ghcr:
