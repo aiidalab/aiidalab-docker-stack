@@ -1,7 +1,7 @@
 docker
 requests
 pre-commit
-pytest
+pytest~=7.0
 pytest-docker
 doit
 dunamai
