@@ -30,9 +30,11 @@ RUN mamba install --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# Pin shared requirements in the base environemnt.
+# Pin shared requirements in the conda base environment.
 RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
+# Upgrade pip to latest
+RUN pip install --upgrade --no-cache-dir pip
 # Configure pip to use requirements file as constraints file.
 ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
