@@ -41,19 +41,17 @@ ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
-     pip install --quiet --no-cache-dir "./" && \
+     pip install --no-user --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
 # Install and enable appmode.
-RUN git clone https://github.com/oschuett/appmode.git && \
-     cd appmode && \
-     git checkout v0.8.0
-COPY gears.svg ./appmode/appmode/static/gears.svg
-RUN pip install ./appmode --no-cache-dir && \
-     jupyter nbextension enable --py --sys-prefix appmode && \
+RUN pip install appmode==0.8.0 --no-cache-dir --no-user
+RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
+COPY gears.svg /tmp/gears.svg
+RUN mv /tmp/gears.svg ${CONDA_DIR}/lib/python3*/site-packages/appmode/static/gears.svg
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
