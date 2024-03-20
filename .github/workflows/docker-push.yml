@@ -32,14 +32,10 @@ jobs:
         steps:
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
+
             - name: Create dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: ${{ inputs.architecture }}
-            - name: Load image to Docker 📥
-              uses: ./.github/actions/load-image
-              with:
-                  image: ${{ inputs.image }}
                   architecture: ${{ inputs.architecture }}
 
             - name: Read build variables
