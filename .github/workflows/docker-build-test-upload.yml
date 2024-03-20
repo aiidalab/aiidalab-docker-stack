@@ -3,6 +3,7 @@ name: Build a new image, upload to ghcr.io and test it
 
 env:
     OWNER: ${{ github.repository_owner }}
+    REGISTRY: ghcr.io
 
 on:
     workflow_call:
@@ -34,6 +35,13 @@ jobs:
               with:
                   architecture: ${{ inputs.architecture }}
 
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
             # Self-hosted runners share a state (whole VM) between runs
             # Also, they might have running or stopped containers,
             # which are not cleaned up by `docker system prun`
@@ -45,13 +53,31 @@ jobs:
                   docker system prune --all --force
               shell: bash
 
-            - name: Build image 🛠
-              run: doit build --target ${{ inputs.image }} --arch ${{ inputs.architecture }} --organization ${{ env.OWNER }}
-              env:
-                  # Full logs for CI build
-                  BUILDKIT_PROGRESS: plain
-              shell: bash
+              #- name: Build image 🛠
+              #run: doit build --target ${{ inputs.image }} --arch ${{ inputs.architecture }} --organization ${{ env.OWNER }}
+              #env:
+              #    # Full logs for CI build
+              #    BUILDKIT_PROGRESS: plain
+              #shell: bash
+              #
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v4
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ inputs.image }}
+                  tags: |
+                      type=sha,enable=${{ github.ref_type != 'tag' }}
+                      type=ref,event=pr
 
-            - name: Run tests ✅
-              run: VERSION=newly-build pytest -s tests/test-common.py tests/test-${{ inputs.image }}.py --variant ${{ inputs.image }}
-              shell: bash
+            - name: Build image
+              id: build
+              uses: docker/build-push-action@v3
+              with:
+                  tags: ${{ steps.meta.outputs.tags }}
+                  arch: ${{ inputs.architectore }}
+                  push: false
+
+              # TODO: Run tests in a separate job
+              #- name: Run tests ✅
+              #run: VERSION=newly-build pytest -s tests/test-common.py tests/test-${{ inputs.image }}.py --variant ${{ inputs.image }}
+              #shell: bash
