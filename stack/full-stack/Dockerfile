@@ -22,7 +22,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
 fi
 
 RUN fix-permissions "${CONDA_DIR}"
-RUN fix-permissions "/home/${NB_USER}/.aiida"
+RUN fix-permissions "/home/${NB_USER}"
 
 USER ${NB_USER}
 
