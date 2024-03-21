@@ -56,11 +56,15 @@ jobs:
 
             - name: Build image
               id: build
-              uses: docker/build-push-action@v5
+              uses: docker/bake-action@v4
               with:
                   tags: ${{ steps.meta.outputs.tags }}
                   platforms: ${{ inputs.architectore }}
                   push: false
                   load: true
-                  target: base
-                  context: ./stack/base/
+                  # Using provenance to disable default attestation so it will build only desired images:
+                  # https://github.com/orgs/community/discussions/45969
+                  provenance: false
+                  files: |
+                      docker-bake.hcl
+                      build.json
