@@ -28,6 +28,9 @@ jobs:
 
         steps:
 
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v4
+
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
 
@@ -60,4 +63,4 @@ jobs:
                   push: false
                   load: true
                   target: base
-                  context: "{{defaultContext}}/stack/base"
+                  context: ./stack/base/
