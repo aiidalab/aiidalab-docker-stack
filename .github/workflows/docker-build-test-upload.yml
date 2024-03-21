@@ -32,7 +32,7 @@ jobs:
               uses: docker/setup-qemu-action@v3
 
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3.2
+              uses: docker/setup-buildx-action@v3
 
             - name: Login to GitHub Container Registry
               # TODO: Bump this to v3
@@ -44,7 +44,7 @@ jobs:
 
             - name: Docker meta
               id: meta
-              uses: docker/metadata-action@v5.5
+              uses: docker/metadata-action@v5
               with:
                   images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ inputs.image }}
                   tags: |
@@ -53,7 +53,7 @@ jobs:
 
             - name: Build image
               id: build
-              uses: docker/build-push-action@v5.3
+              uses: docker/build-push-action@v5
               with:
                   tags: ${{ steps.meta.outputs.tags }}
                   platforms: ${{ inputs.architectore }}
