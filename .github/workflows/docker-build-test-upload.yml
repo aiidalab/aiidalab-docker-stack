@@ -60,4 +60,4 @@ jobs:
                   push: false
                   load: true
                   target: base
-                  context: ./stack/base
+                  context: "{{defaultContext}}/stack/base"
