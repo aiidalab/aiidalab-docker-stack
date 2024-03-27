@@ -16,11 +16,12 @@ WORKDIR /opt/
 
 ARG AIIDA_VERSION
 
-# Pin shared requirements in the base environemnt.
-# The lower bound of aiida-core is set to the version of aiida-core to prevent
-# lower aiida-core DB version installed and trigger database downgrade.
+# Pin shared requirements in the base environment.
+# We pin aiida-core to the exact installed version,
+# to prevent accidental upgrade or downgrade, that might
+# induce DB migration or break shared dependencies of AiiDAlab Apps.
 RUN echo "pip==23.3.1" > /opt/requirements.txt && \
-     echo "aiida-core>=${AIIDA_VERSION},<3" >> /opt/requirements.txt
+  echo "aiida-core==${AIIDA_VERSION}" >> /opt/requirements.txt
 
 # Install the shared requirements.
 RUN mamba install --yes \
