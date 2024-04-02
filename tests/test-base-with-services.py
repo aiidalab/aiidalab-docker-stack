@@ -1,4 +1,5 @@
 """Services related tests."""
+
 import json
 from packaging.version import parse
 
