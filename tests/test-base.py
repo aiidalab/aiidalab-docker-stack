@@ -5,13 +5,13 @@ import json
 from packaging.version import parse
 
 
-@pytest.mark.parametrize("incompatible_version", ["1.6.3"])
+@pytest.mark.parametrize("incompatible_version", ["2.3.0"])
 def test_prevent_pip_install_of_incompatible_aiida_version(
     aiidalab_exec, nb_user, aiida_version, incompatible_version
 ):
     package_manager = "pip"
     assert parse(aiida_version) != parse(incompatible_version)
-    # Expected to succeed:
+    # Expected to succeed, although should be a no-op.
     aiidalab_exec(
         f"{package_manager} install aiida-core=={aiida_version}", user=nb_user
     )
