@@ -64,14 +64,15 @@ def aiidalab_exec(docker_compose):
             command = f"exec -T --user={user} aiidalab {command}"
         else:
             command = f"exec -T aiidalab {command}"
-        return docker_compose.execute(command, **kwargs)
+        out = docker_compose.execute(command, **kwargs)
+        return out.decode()
 
     return execute
 
 
 @pytest.fixture
 def nb_user(aiidalab_exec):
-    return aiidalab_exec("bash -c 'echo \"${NB_USER}\"'").decode().strip()
+    return aiidalab_exec("bash -c 'echo \"${NB_USER}\"'").strip()
 
 
 @pytest.fixture(scope="session")

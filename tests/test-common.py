@@ -9,13 +9,13 @@ def test_notebook_service_available(notebook_service):
 
 
 def test_verdi_status(aiidalab_exec, nb_user):
-    output = aiidalab_exec("verdi status", user=nb_user).decode().strip()
+    output = aiidalab_exec("verdi status", user=nb_user).strip()
     assert "Connected to RabbitMQ" in output
     assert "Daemon is running" in output
 
 
 def test_ssh_agent_is_running(aiidalab_exec, nb_user):
-    output = aiidalab_exec("ps aux | grep ssh-agent", user=nb_user).decode().strip()
+    output = aiidalab_exec("ps aux | grep ssh-agent", user=nb_user).strip()
     assert "ssh-agent" in output
 
     # also check only one ssh-agent process is running
