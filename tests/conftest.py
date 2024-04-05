@@ -6,6 +6,8 @@ import requests
 
 from requests.exceptions import ConnectionError
 
+VARIANTS = ("base", "lab", "base-with-services", "full-stack")
+
 
 def is_responsive(url):
     try:
@@ -16,12 +18,20 @@ def is_responsive(url):
         return False
 
 
+def variant_checker(value):
+    msg = f"Invalid image variant '{value}', must be one of: {VARIANTS}"
+    if value not in VARIANTS:
+        raise pytest.UsageError(msg)
+    return value
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--variant",
         action="store",
-        default="base",
+        required=True,
         help="Variant (image name) of the docker-compose file to use.",
+        type=variant_checker,
     )
 
 
