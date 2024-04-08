@@ -18,13 +18,14 @@ concurrency:
 
 jobs:
     amd64-build:
-        uses: ./.github/workflows/docker-build-upload.yml
+        uses: ./.github/workflows/build.yml
         with:
             architecture: amd64
             runsOn: ubuntu-latest
 
     arm-build:
-        uses: ./.github/workflows/docker-build-upload.yml
+        uses: ./.github/workflows/build.yml
+        if: false
         with:
             architecture: arm64
             runsOn: ARM64
