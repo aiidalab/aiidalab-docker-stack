@@ -8,7 +8,6 @@ repos:
       rev: v4.5.0
       hooks:
           - id: check-json
-          - id: check-yaml
           - id: end-of-file-fixer
           - id: trailing-whitespace
 
@@ -22,3 +21,9 @@ repos:
       rev: 23.12.1
       hooks:
           - id: black
+
+    - repo: https://github.com/python-jsonschema/check-jsonschema
+      rev: "0.27.3"
+      hooks:
+          - id: check-dependabot
+          - id: check-github-workflows
