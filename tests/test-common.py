@@ -1,4 +1,5 @@
 """Tests for all images, which are docker/docker-compose related tests."""
+
 import requests
 
 
