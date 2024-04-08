@@ -17,6 +17,17 @@ def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_ve
     assert parse(info["version"]) == parse(aiidalab_home_version)
 
 
+def test_appmode_installed(aiidalab_exec):
+    """Test that appmode pip package is installed in correct location"""
+    import email
+
+    output = aiidalab_exec("pip show appmode")
+
+    # `pip show` output is in the RFC-compliant email header format
+    msg = email.message_from_string(output)
+    assert msg.get("Location").startswith("/opt/conda/lib/python")
+
+
 @pytest.mark.parametrize("incompatible_version", ["22.7.1"])
 def test_prevent_pip_install_of_incompatible_aiidalab_version(
     aiidalab_exec,

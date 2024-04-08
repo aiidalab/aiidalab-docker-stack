@@ -52,7 +52,7 @@ RUN pip install appmode==0.8.0 --no-cache-dir --no-user
 RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
-# Use an AiiDAlab gears icon instead of appmode one during
+# Swap appmode icon for AiiDAlab gears icon, shown during app load
 COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
 # Copy start-up scripts for AiiDAlab.

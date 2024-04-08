@@ -75,6 +75,21 @@ def nb_user(aiidalab_exec):
     return aiidalab_exec("bash -c 'echo \"${NB_USER}\"'").strip()
 
 
+@pytest.fixture
+def pip_install(aiidalab_exec, nb_user):
+    """Temporarily install package via pip"""
+    package = None
+
+    def _pip_install(pkg, **args):
+        nonlocal package
+        package = pkg
+        return aiidalab_exec(f"pip install {pkg}", **args)
+
+    yield _pip_install
+    if package:
+        aiidalab_exec(f"pip uninstall --yes {package}")
+
+
 @pytest.fixture(scope="session")
 def _build_config():
     return json.loads(Path("build.json").read_text())["variable"]
