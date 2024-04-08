@@ -17,9 +17,14 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    amd64-base:
-        uses: ./.github/workflows/docker-build-test-upload.yml
+    amd64-build:
+        uses: ./.github/workflows/docker-build-upload.yml
         with:
-            image: base
             architecture: amd64
             runsOn: ubuntu-latest
+
+    arm-build:
+        uses: ./.github/workflows/docker-build-upload.yml
+        with:
+            architecture: amd64
+            runsOn: macos-14

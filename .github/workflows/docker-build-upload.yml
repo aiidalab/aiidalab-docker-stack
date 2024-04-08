@@ -1,5 +1,5 @@
 ---
-name: Build a new image, upload to ghcr.io and test it
+name: Build images upload them to ghcr.io
 
 env:
     OWNER: ${{ github.repository_owner }}
@@ -10,7 +10,7 @@ on:
         inputs:
             image:
                 description: Image name
-                required: true
+                required: false
                 type: string
             architecture:
                 description: Image architecture, e.g. amd64, arm64
@@ -60,7 +60,7 @@ jobs:
               with:
                   tags: ${{ steps.meta.outputs.tags }}
                   platforms: ${{ inputs.architectore }}
-                  push: false
+                  push: true
                   load: true
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
