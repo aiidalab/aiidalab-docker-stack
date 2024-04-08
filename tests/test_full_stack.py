@@ -1,15 +1,15 @@
 import pytest
 
 # Tests in this file should pass for the following images
-SUPPORTED_TARGETS = "full-stack"
+TESTED_TARGETS = "full-stack"
 
 
 @pytest.fixture(autouse=True)
-def skip_if_no_password(target):
-    if target in SUPPORTED_TARGETS:
+def skip_if_incompatible_target(target):
+    if target in TESTED_TARGETS:
         yield
     else:
-        pytest.skip("Unsupported image")
+        pytest.skip()
 
 
 @pytest.fixture(scope="function")

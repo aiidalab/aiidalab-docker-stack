@@ -53,7 +53,7 @@ jobs:
               shell: bash
 
             - name: Run tests ✅
-              run: VERSION=newly-build pytest -s --variant ${{ inputs.image }}
+              run: VERSION=newly-build pytest -s --target ${{ inputs.image }}
               shell: bash
 
             - name: Save image as a tar for later use 💾

@@ -4,15 +4,15 @@ import pytest
 from packaging.version import parse
 
 # Tests in this file should pass for the following images
-SUPPORTED_TARGETS = ("lab", "full-stack")
+TESTED_TARGETS = ("lab", "full-stack")
 
 
 @pytest.fixture(autouse=True)
-def skip_if_no_password(target):
-    if target in SUPPORTED_TARGETS:
+def skip_if_incompatible_target(target):
+    if target in TESTED_TARGETS:
         yield
     else:
-        pytest.skip("Unsupported image")
+        pytest.skip()
 
 
 def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
