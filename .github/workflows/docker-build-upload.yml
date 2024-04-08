@@ -50,12 +50,13 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Read and flatten build variables
+              if: false
               id: build_vars
               # Example output:
               # {"PYTHON_VERSION":"3.9.13","PGSQL_VERSION":"15","AIIDA_VERSION":"2.4.3","AIIDALAB_VERSION":"23.03.2","AIIDALAB_HOME_VERSION":"23.03.1"}
               run: |
                   vars=$(cat build.json | jq -c '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
-                  echo "vars=$vars" | tee >> "${GITHUB_OUTPUT}"
+                  cat vars && echo "vars=$vars" >> "${GITHUB_OUTPUT}"
 
             - name: Generate tags for images on ghcr.io
               id: meta
@@ -67,6 +68,14 @@ jobs:
                   tags: |
                       type=sha
                       type=ref,event=pr
+
+            - name: Generate docker-bake meta file.
+              env:
+                  BAKE_TEMPLATE_META: ${{ steps.meta.outputs.bake-file }}
+              run: |
+                  cat ${BAKE_TEMPLATE_META} | jq -c \
+                    | .github/workflows/merge-bake-template-target.sh \
+                    | tee docker-bake-template-meta.json
 
             - name: Build image
               id: build
