@@ -48,7 +48,7 @@ def docker_compose(docker_services):
 
 
 @pytest.fixture
-def aiidalab_exec(docker_compose):
+def aiidalab_exec(notebook_service, docker_compose):
     def execute(command, user=None, **kwargs):
         if user:
             command = f"exec -T --user={user} aiidalab {command}"
