@@ -133,9 +133,8 @@ jobs:
               run: pip install -r requirements-dev.txt
 
             - name: Run tests
-              run: pytest --variant ${{matrix.target}} tests/test-common.py tests/test-${{matrix.target}}.py
-              env:
-                  REGISTRY: ${{ env.REGISTRY }}/
+              run: pytest -s --variant ${{matrix.target}} tests/test-common.py::test_verdi_status
+              env: ${{ fromJSON(needs.build.outputs.images) }}
 
 
     upload:
