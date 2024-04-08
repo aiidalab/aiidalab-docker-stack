@@ -2,6 +2,17 @@ import pytest
 import json
 from packaging.version import parse
 
+# Tests in this file should pass for the following images
+SUPPORTED_TARGETS = ("lab", "full-stack")
+
+
+@pytest.fixture(autouse=True)
+def skip_if_no_password(target):
+    if target in SUPPORTED_TARGETS:
+        yield
+    else:
+        pytest.skip("Unsupported image")
+
 
 def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
     cmd = "mamba list --json --full-name aiidalab"

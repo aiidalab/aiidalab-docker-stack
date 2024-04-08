@@ -1,5 +1,16 @@
 import pytest
 
+# Tests in this file should pass for the following images
+SUPPORTED_TARGETS = "full-stack"
+
+
+@pytest.fixture(autouse=True)
+def skip_if_no_password(target):
+    if target in SUPPORTED_TARGETS:
+        yield
+    else:
+        pytest.skip("Unsupported image")
+
 
 @pytest.fixture(scope="function")
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):

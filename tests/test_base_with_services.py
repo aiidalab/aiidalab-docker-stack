@@ -1,7 +1,19 @@
 """Services related tests."""
 
 import json
+import pytest
 from packaging.version import parse
+
+# Tests in this file should pass for the following images
+SUPPORTED_TARGETS = ("base-with-services", "full-stack")
+
+
+@pytest.fixture(autouse=True)
+def skip_if_no_password(target):
+    if target in SUPPORTED_TARGETS:
+        yield
+    else:
+        pytest.skip("Unsupported image")
 
 
 def test_correct_pgsql_version_installed(aiidalab_exec, pgsql_version):
