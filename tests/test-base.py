@@ -38,10 +38,6 @@ def test_create_conda_environment(aiidalab_exec, nb_user):
     assert f"/home/{nb_user}/.conda/envs/tmp" in output
 
 
-def test_pip_check(aiidalab_exec):
-    aiidalab_exec("pip check")
-
-
 def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
     cmd = "mamba list --json --full-name aiida-core"
     info = json.loads(aiidalab_exec(cmd))[0]

@@ -20,3 +20,7 @@ def test_ssh_agent_is_running(aiidalab_exec, nb_user):
 
     # also check only one ssh-agent process is running
     assert len(output.splitlines()) == 1
+
+
+def test_pip_check(aiidalab_exec):
+    aiidalab_exec("pip check")
