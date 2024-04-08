@@ -1,5 +1,6 @@
 # docker-bake.hcl
 variable "VERSION" {
+  default = "new-build"
 }
 
 variable "PYTHON_VERSION" {
@@ -40,7 +41,7 @@ variable "TARGETS" {
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
+    "${REGISTRY}${ORGANIZATION}/${image}:${VERSION}",
   ]
 }
 
