@@ -58,12 +58,6 @@ jobs:
                   vars=$(cat build.json | jq -c '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
                   echo "vars=$vars" && echo "vars=$vars" >> "${GITHUB_OUTPUT}"
 
-            - name: Read and flatten build variables
-              uses: sergeysova/jq-action@v2
-              id: build_vars2
-              with:
-                  cmd: 'jq [.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries build.json -r'
-
             - name: Generate tags for images on ghcr.io
               id: meta
               uses: docker/metadata-action@v5
