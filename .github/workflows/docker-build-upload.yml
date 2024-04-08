@@ -55,7 +55,7 @@ jobs:
               # {"PYTHON_VERSION":"3.9.13","PGSQL_VERSION":"15","AIIDA_VERSION":"2.4.3","AIIDALAB_VERSION":"23.03.2","AIIDALAB_HOME_VERSION":"23.03.1"}
               run: |
                   vars=$(cat build.json | jq -c '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
-                  cat vars && echo "vars=$vars" >> "${GITHUB_OUTPUT}"
+                  echo "vars=$vars" && echo "vars=$vars" >> "${GITHUB_OUTPUT}"
 
             - name: Generate tags for images on ghcr.io
               id: meta
