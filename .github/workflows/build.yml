@@ -49,6 +49,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
+              # TODO: This probably is not needed here, only for push to Docker
             - name: Read and flatten build variables
               id: build_vars
               # Example output:
@@ -59,7 +60,7 @@ jobs:
 
             - name: Generate tags for images on ghcr.io
               id: meta
-              uses: docker/metadata-action@v5
+              uses: docker/metadata-action@v4
               with:
                   bake-target: __template__-meta
                   images: |
