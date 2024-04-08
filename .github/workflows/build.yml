@@ -6,12 +6,9 @@ env:
     REGISTRY: ghcr.io
 
 on:
+    # TODO: Can we define outputs here?
     workflow_call:
         inputs:
-            image:
-                description: Image name
-                required: false
-                type: string
             architecture:
                 description: Image architecture, e.g. amd64, arm64
                 required: true
@@ -91,6 +88,7 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
+            # TODO: Maybe upload docker-bake-template-meta.json as artifact
             - name: Set output variables
               id: bake_metadata
               run: |
@@ -137,14 +135,3 @@ jobs:
               # TODO: Hack with REGISTRY
               run: REGISTRY= pytest -s --variant ${{matrix.target}} tests/test-common.py
               env: ${{ fromJSON(needs.build.outputs.images) }}
-
-
-    upload:
-        needs: build
-        runs-on: ${{ inputs.runsOn }}
-        timeout-minutes: 20
-
-        steps:
-
-            - name: Checkout Repo ⚡️
-              uses: actions/checkout@v4
