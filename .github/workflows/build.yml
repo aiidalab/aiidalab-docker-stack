@@ -134,7 +134,8 @@ jobs:
               run: pip install -r requirements-dev.txt
 
             - name: Run tests
-              run: pytest -s --variant ${{matrix.target}} tests/test-common.py::test_verdi_status
+              # TODO: Hack with REGISTRY
+              run: REGISTRY= pytest -s --variant ${{matrix.target}} tests/test-common.py::test_verdi_status
               env: ${{ fromJSON(needs.build.outputs.images) }}
 
 
