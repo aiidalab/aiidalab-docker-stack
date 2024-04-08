@@ -28,8 +28,8 @@ jobs:
 
         outputs:
             build_vars: ${{ steps.build_vars.outputs.vars }}
-            #targets: ${{ steps.bake_metadata.outputs.targets }}
-            #images: ${{ steps.bake_metadata.outputs.images }}
+            targets: ${{ steps.bake_metadata.outputs.targets }}
+            images: ${{ steps.bake_metadata.outputs.images }}
 
         steps:
 
@@ -48,6 +48,10 @@ jobs:
                   registry: ${{ env.REGISTRY }}
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Install jq
+              if: inputs.architecture == 'arm64'
+              run: pip install jq
 
             - name: Read and flatten build variables
               id: build_vars
@@ -80,7 +84,7 @@ jobs:
               id: build
               uses: docker/bake-action@v4
               with:
-                  push: false
+                  push: true
                   load: true
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
@@ -96,3 +100,8 @@ jobs:
                   cat docker-bake-template-meta.json \
                     | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("-")), "value": [.value.tags[]][1]}] | from_entries' \
                     | tee bake-meta.json
+                  targets=$(echo $(cat bake-meta.json | jq -c 'keys'))
+                  images=$(echo $(cat bake-meta.json | jq -c '. | [to_entries[] | {"key": (.key| split("-")| join("_") |ascii_upcase + "_IMAGE"), "value": .value}] | from_entries'))
+                  echo -e "targets=$targets\nimages=$images"
+                  echo "targets=$targets" >> "${GITHUB_OUTPUT}"
+                  echo "images=$images" >> "${GITHUB_OUTPUT}"
