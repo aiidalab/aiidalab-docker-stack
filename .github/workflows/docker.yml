@@ -27,4 +27,4 @@ jobs:
         uses: ./.github/workflows/docker-build-upload.yml
         with:
             architecture: amd64
-            runsOn: macos-14
+            runsOn: ARM64
