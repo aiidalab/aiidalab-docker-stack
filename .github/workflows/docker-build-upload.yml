@@ -50,7 +50,6 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Read and flatten build variables
-              if: false
               id: build_vars
               # Example output:
               # {"PYTHON_VERSION":"3.9.13","PGSQL_VERSION":"15","AIIDA_VERSION":"2.4.3","AIIDALAB_VERSION":"23.03.2","AIIDALAB_HOME_VERSION":"23.03.1"}
@@ -81,9 +80,8 @@ jobs:
               id: build
               uses: docker/bake-action@v4
               with:
-                  # tags: ${{ steps.meta.outputs.tags }}
-                  # platforms: ${{ inputs.architecture }}
                   push: false
+                  load: true
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
