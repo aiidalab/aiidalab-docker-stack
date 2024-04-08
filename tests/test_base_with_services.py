@@ -1,6 +1,7 @@
 """Services related tests."""
 
 import json
+
 import pytest
 from packaging.version import parse
 

@@ -1,7 +1,8 @@
 """This module contains tests for the base image, which are AiiDA and package management related tests."""
 
-import pytest
 import json
+
+import pytest
 from packaging.version import parse
 
 

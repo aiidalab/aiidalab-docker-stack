@@ -1,5 +1,6 @@
-import pytest
 import json
+
+import pytest
 from packaging.version import parse
 
 # Tests in this file should pass for the following images

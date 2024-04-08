@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pytest
 import requests
-
 from requests.exceptions import ConnectionError
 
 TARGETS = ("base", "lab", "base-with-services", "full-stack")
