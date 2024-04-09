@@ -133,5 +133,5 @@ jobs:
 
             - name: Run tests
               # TODO: Hack with REGISTRY
-              run: REGISTRY= pytest -s --variant ${{matrix.target}} tests/test-common.py
+              run: REGISTRY= pytest -sv --variant ${{matrix.target}} tests/test-common.py tests/test-${{matrix.target}}.py
               env: ${{ fromJSON(needs.build.outputs.images) }}
