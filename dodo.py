@@ -2,9 +2,8 @@ import json
 import platform
 from pathlib import Path
 
-from doit.tools import title_with_actions
-
 import docker
+from doit.tools import title_with_actions
 from dunamai import Version
 
 _DOCKER_CLIENT = docker.from_env()
@@ -74,13 +73,13 @@ def task_build():
 
         Path("docker-bake.override.json").write_text(
             json.dumps(
-                dict(
-                    VERSION=version,
-                    REGISTRY=registry,
-                    TARGETS=targets,
-                    ORGANIZATION=organization,
-                    PLATFORMS=platforms,
-                )
+                {
+                    "VERSION": version,
+                    "REGISTRY": registry,
+                    "TARGETS": targets,
+                    "ORGANIZATION": organization,
+                    "PLATFORMS": platforms,
+                }
             )
         )
 

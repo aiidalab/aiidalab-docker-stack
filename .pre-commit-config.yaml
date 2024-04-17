@@ -17,10 +17,12 @@ repos:
           - id: yamlfmt
             args: [--preserve-quotes]
 
-    - repo: https://github.com/psf/black
-      rev: 24.3.0
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.3.5
       hooks:
-          - id: black
+          - id: ruff-format
+          - id: ruff
+            args: [--fix, --exit-non-zero-on-fix, --show-fixes]
 
     - repo: https://github.com/python-jsonschema/check-jsonschema
       rev: "0.27.3"

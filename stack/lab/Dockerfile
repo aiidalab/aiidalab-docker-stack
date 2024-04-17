@@ -41,19 +41,19 @@ ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
-     pip install --quiet --no-cache-dir "./" && \
+     pip install --no-user --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# Install and enable appmode.
-RUN git clone https://github.com/oschuett/appmode.git && \
-     cd appmode && \
-     git checkout v0.8.0
-COPY gears.svg ./appmode/appmode/static/gears.svg
-RUN pip install ./appmode --no-cache-dir && \
-     jupyter nbextension enable --py --sys-prefix appmode && \
+# Install and enable appmode, turning Jupyter notebooks to Apps
+RUN pip install appmode==0.8.0 --no-cache-dir --no-user
+# Enable appmode extension
+RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
+
+# Swap appmode icon for AiiDAlab gears icon, shown during app load
+COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
@@ -107,8 +107,5 @@ ENV NOTEBOOK_ARGS \
      "--TerminalManager.cull_interval=60"
 
 # Set up the logo of notebook interface
-COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png /tmp/notebook-logo.png
-
-# The directory location of logo.png is in the `${CONDA_DIR}/lib/python3.9/site-packages/notebook/static/base/images/logo.png`,
-# but the python version may change in the future, thus we use the wildcard to match the python version.
-RUN mv /tmp/notebook-logo.png ${CONDA_DIR}/lib/python3*/site-packages/notebook/static/base/images/logo.png
+ARG PYTHON_MINOR_VERSION
+COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/base/images/logo.png
