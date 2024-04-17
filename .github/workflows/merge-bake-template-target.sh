@@ -28,7 +28,7 @@ fi
 input=$(cat $input_file | jq -c)
 
 # Determine the targets.
-TARGETS=$(docker buildx bake --print build.json docker-bake.hcl | jq -cr '.group.default.targets' | jq -r '.[]')
+TARGETS=$(docker buildx bake --print | jq -cr '.group.default.targets' | jq -r '.[]')
 
 # Generate the meta JSON strings
 meta=""
