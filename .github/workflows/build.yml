@@ -4,6 +4,7 @@ name: Build and test image and upload them to ghcr.io
 env:
     OWNER: ${{ github.repository_owner }}
     REGISTRY: ghcr.io
+    BUILDKIT_PROGRESS: plain
 
 on:
     # TODO: Can we define outputs here?
@@ -81,8 +82,11 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
+              # TODO: Just testing how long it takes to build arm64 image on GHA with QEMU
+              # (looks like ~12min)
             - name: Build images for ARM64 🍎
               id: build-arm64
+              if: false
               uses: docker/bake-action@v4
               with:
                   push: true
