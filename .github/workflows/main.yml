@@ -23,7 +23,8 @@ jobs:
             architecture: amd64
             runsOn: ubuntu-latest
 
-    # TODO: Split test from build
+    # TODO: Split test from build, but we'd need to
+    # pass outputs from build here.
     #amd64-test:
     #    needs: amd64-build
     #    uses: ./.github/workflows/test.yml
@@ -31,8 +32,7 @@ jobs:
     #        architecture: amd64
     #        runsOn: ubuntu-latest
 
-    # Postpone ARM build until amd64 succeeds
-    # but run it in parallel with amd64 tests.
+    # Postpone ARM build until amd64 build and tests succeeds
     arm-build:
         uses: ./.github/workflows/build.yml
         needs: amd64-build

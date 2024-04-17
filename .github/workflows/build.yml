@@ -1,5 +1,5 @@
 ---
-name: Build images upload them to ghcr.io
+name: Build and test image and upload them to ghcr.io
 
 env:
     OWNER: ${{ github.repository_owner }}
@@ -51,19 +51,19 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Generate tags for images on ghcr.io
-              id: meta
+              id: tags_template
               uses: docker/metadata-action@v4
               with:
                   bake-target: __template__-meta
                   images: |
-                      name=ghcr.io/aiidalab/__template__
+                      name=${{ env.REGISTRY }}/aiidalab/__template__
                   tags: |
                       type=sha
                       type=ref,event=pr
 
-            - name: Generate docker-bake meta file.
+            - name: Generate docker-bake metadata file.
               env:
-                  BAKE_TEMPLATE_FILE: ${{ steps.meta.outputs.bake-file }}
+                  BAKE_TEMPLATE_FILE: ${{ steps.tags_template.outputs.bake-file }}
               run: |
                   .github/workflows/merge-bake-template-target.sh ${BAKE_TEMPLATE_FILE} \
                     | tee docker-bake-template-meta.json
@@ -82,15 +82,12 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
-            # TODO: Maybe upload docker-bake-template-meta.json as artifact
             - name: Set output variables
               id: bake_metadata
               run: |
-                  echo "First step" && cat docker-bake-template-meta.json
                   cat docker-bake-template-meta.json \
                     | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("-")), "value": [.value.tags[]][1]}] | from_entries' \
                     | tee bake-meta.json
-                  echo "Second step: bake-meta.json" && cat bake-meta.json
                   targets=$(echo $(cat bake-meta.json | jq -c 'keys'))
                   images=$(echo $(cat bake-meta.json | jq -c '. | [to_entries[] | {"key": (.key| split("-")| join("_") |ascii_upcase + "_IMAGE"), "value": .value}] | from_entries'))
                   echo -e "targets=$targets\nimages=$images"
