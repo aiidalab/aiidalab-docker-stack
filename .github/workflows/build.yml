@@ -121,7 +121,7 @@ jobs:
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
 
-            - uses: docker/login-action@v2 🔑
+            - uses: docker/login-action@v2 
               with:
                   registry: ${{ env.REGISTRY }}
                   username: ${{ github.actor }}
@@ -148,7 +148,7 @@ jobs:
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
 
-            - uses: docker/login-action@v2 🔑
+            - uses: docker/login-action@v2
               with:
                   registry: ${{ env.REGISTRY }}
                   username: ${{ github.actor }}
