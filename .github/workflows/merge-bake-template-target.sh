@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # For each target that is part of the "default" group, replace the term
 # "__template__" in the provided template bake-file, and then merge all
