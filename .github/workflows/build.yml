@@ -82,9 +82,11 @@ jobs:
             - name: Set output variables
               id: bake_metadata
               run: |
+                  echo "First step" && cat docker-bake-template-meta.json
                   cat docker-bake-template-meta.json \
                     | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("-")), "value": [.value.tags[]][1]}] | from_entries' \
                     | tee bake-meta.json
+                  echo "Second step: bake-meta.json" && cat bake-meta.json
                   targets=$(echo $(cat bake-meta.json | jq -c 'keys'))
                   images=$(echo $(cat bake-meta.json | jq -c '. | [to_entries[] | {"key": (.key| split("-")| join("_") |ascii_upcase + "_IMAGE"), "value": .value}] | from_entries'))
                   echo -e "targets=$targets\nimages=$images"
