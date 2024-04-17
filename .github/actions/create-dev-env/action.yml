@@ -25,3 +25,4 @@ runs:
 
         - name: Install dependencies 📦
           run: pip install -r requirements-dev.txt
+          shell: bash
