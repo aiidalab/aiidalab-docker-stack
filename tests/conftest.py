@@ -43,7 +43,6 @@ def target(pytestconfig):
 def docker_compose_file(pytestconfig):
     target = pytestconfig.getoption("target")
     compose_file = f"stack/docker-compose.{target}.yml"
-    print(f"Using docker compose file {compose_file}")
     return compose_file
 
 

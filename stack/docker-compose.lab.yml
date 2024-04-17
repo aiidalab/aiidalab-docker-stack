@@ -25,7 +25,7 @@ services:
             - aiida-rmq-data:/var/lib/rabbitmq/
 
     aiidalab:
-        image: ${REGISTRY:-}${LAB_IMAGE:-aiidalab/lab}${VERSION:-}
+        image: ${REGISTRY:-docker.io}/${LAB_IMAGE:-aiidalab/lab}${VERSION:-}
         environment:
             RMQHOST: messaging
             TZ: Europe/Zurich
