@@ -27,7 +27,7 @@ variable "ORGANIZATION" {
 }
 
 variable "REGISTRY" {
-  default = "docker.io/"
+  default = "docker.io"
 }
 
 variable "PLATFORMS" {
@@ -41,7 +41,7 @@ variable "TARGETS" {
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:${VERSION}",
+    "${REGISTRY}/${ORGANIZATION}/${image}:${VERSION}",
   ]
 }
 
