@@ -6,9 +6,6 @@ variable "VERSION" {
 variable "PYTHON_VERSION" {
 }
 
-# PYTHON_MINOR_VERSION is a Python version string
-# without the patch version (e.g. "3.9")
-# Used to construct paths to Python site-packages folder.
 #variable "PYTHON_MINOR_VERSION" {
 #  default = join(".", slice(split(".", "${PYTHON_VERSION}"), 0, 2))
 #}
@@ -52,6 +49,8 @@ function "tags" {
   ]
 }
 
+# Get a Python version string without the patch version (e.g. "3.9.13" -> "3.9")
+# Used to construct paths to Python site-packages folder.
 function "get_python_minor_version" {
   params = [python_version]
   result = join(".", slice(split(".", "${python_version}"), 0, 2))
