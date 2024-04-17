@@ -12,12 +12,9 @@ runs:
     using: composite
     steps:
         - name: Set Up Python 🐍
-          uses: actions/setup-python@v4.1.0
+          uses: actions/setup-python@v4.0.0
           with:
               python-version: 3.11
-              cache: pip
-              cache-dependency-path: |
-                  **/requirements*.txt
 
         - name: Install dependencies 📦
           run: pip install -r requirements-dev.txt
