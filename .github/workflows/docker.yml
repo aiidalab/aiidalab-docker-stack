@@ -80,7 +80,6 @@ jobs:
         needs: [arm64-base-with-services, arm64-lab]
 
     amd64-push-ghcr:
-        if: always()
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -95,7 +94,6 @@ jobs:
         needs: [amd64-base, amd64-base-with-services, amd64-lab, amd64-full-stack]
 
     arm64-push-ghcr:
-        if: always()
         uses: ./.github/workflows/docker-push.yml
         strategy:
             matrix:
@@ -110,7 +108,6 @@ jobs:
         needs: [arm64-base, arm64-base-with-services, arm64-lab, arm64-full-stack]
 
     merge-tags-ghcr:
-        if: always()
         uses: ./.github/workflows/docker-merge-tags.yml
         strategy:
             matrix:
