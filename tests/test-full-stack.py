@@ -10,6 +10,7 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
         output += aiidalab_exec("pip check", user=nb_user).strip()
 
         # Uninstall the package to make sure the test is repeatable
+        # TODO: The package is uninstalled but not the dependencies, so the test is not fully repeatable
         app_name = package_name.split("@")[0]
         aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
 
