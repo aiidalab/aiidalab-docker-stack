@@ -63,10 +63,9 @@ jobs:
 
             - name: Generate docker-bake meta file.
               env:
-                  BAKE_TEMPLATE_META: ${{ steps.meta.outputs.bake-file }}
+                  BAKE_TEMPLATE_FILE: ${{ steps.meta.outputs.bake-file }}
               run: |
-                  cat ${BAKE_TEMPLATE_META} | jq -c \
-                    | .github/workflows/merge-bake-template-target.sh \
+                  .github/workflows/merge-bake-template-target.sh ${BAKE_TEMPLATE_FILE} \
                     | tee docker-bake-template-meta.json
 
             - name: Build image
