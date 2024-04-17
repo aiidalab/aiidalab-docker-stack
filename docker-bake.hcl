@@ -106,7 +106,7 @@ target "lab" {
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
-    "PYTHON_MINOR_VERSION" = get_python_minor_version(${PYTHON_VERSION})
+    "PYTHON_MINOR_VERSION" = get_python_minor_version("${PYTHON_VERSION}")
   }
 }
 target "full-stack" {
