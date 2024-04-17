@@ -4,13 +4,10 @@ import pytest
 @pytest.fixture(scope="function")
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     def _generate_aiidalab_install_output(package_name):
-        output = (
-            aiidalab_exec(f"aiidalab install --yes --pre {package_name}", user=nb_user)
-            .decode()
-            .strip()
-        )
+        cmd = f"aiidalab install --yes --pre {package_name}"
+        output = aiidalab_exec(cmd, user=nb_user).strip()
 
-        output += aiidalab_exec(f"pip check", user=nb_user).decode().strip()
+        output += aiidalab_exec("pip check", user=nb_user).strip()
 
         # Uninstall the package to make sure the test is repeatable
         app_name = package_name.split("@")[0]

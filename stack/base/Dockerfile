@@ -20,8 +20,7 @@ ARG AIIDA_VERSION
 # We pin aiida-core to the exact installed version,
 # to prevent accidental upgrade or downgrade, that might
 # induce DB migration or break shared dependencies of AiiDAlab Apps.
-RUN echo "pip==23.3.1" > /opt/requirements.txt && \
-  echo "aiida-core==${AIIDA_VERSION}" >> /opt/requirements.txt
+RUN echo "aiida-core==${AIIDA_VERSION}" > /opt/requirements.txt
 
 # Install the shared requirements.
 RUN mamba install --yes \
@@ -32,11 +31,15 @@ RUN mamba install --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# Pin shared requirements in the base environemnt.
+# Pin shared requirements in the conda base environment.
 RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
+# Upgrade pip to latest
+RUN pip install --upgrade --no-cache-dir pip
 # Configure pip to use requirements file as constraints file.
-ENV PIP_CONSTRAINT=/opt/requirements.txt
+ENV PIP_CONSTRAINT /opt/requirements.txt
+# Ensure that pip installs packages to ~/.local by default
+ENV PIP_USER 1
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \

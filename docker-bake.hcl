@@ -83,6 +83,9 @@ target "base-with-services" {
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
   }
 }
+# PYTHON_MINOR_VERSION is a Python version string
+# without the patch version (e.g. "3.9")
+# Used to construct paths to Python site-packages folder.
 target "lab" {
   inherits = ["lab-meta"]
   context = "stack/lab"
@@ -93,6 +96,7 @@ target "lab" {
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
+    "PYTHON_MINOR_VERSION" = join(".", slice(split(".", "${PYTHON_VERSION}"), 0, 2))
   }
 }
 target "full-stack" {
