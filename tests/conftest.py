@@ -3,10 +3,9 @@ from pathlib import Path
 
 import pytest
 import requests
-
 from requests.exceptions import ConnectionError
 
-VARIANTS = ("base", "lab", "base-with-services", "full-stack")
+TARGETS = ("base", "lab", "base-with-services", "full-stack")
 
 
 def is_responsive(url):
@@ -18,27 +17,34 @@ def is_responsive(url):
         return False
 
 
-def variant_checker(value):
-    msg = f"Invalid image variant '{value}', must be one of: {VARIANTS}"
-    if value not in VARIANTS:
+def target_checker(value):
+    msg = f"Invalid image target '{value}', must be one of: {TARGETS}"
+    if value not in TARGETS:
         raise pytest.UsageError(msg)
     return value
 
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--variant",
+        "--target",
         action="store",
         required=True,
-        help="Variant (image name) of the docker-compose file to use.",
-        type=variant_checker,
+        help="target (image name) of the docker-compose file to use.",
+        type=target_checker,
     )
 
 
 @pytest.fixture(scope="session")
+def target(pytestconfig):
+    return pytestconfig.getoption("target")
+
+
+@pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig):
-    variant = pytestconfig.getoption("variant")
-    return f"stack/docker-compose.{variant}.yml"
+    target = pytestconfig.getoption("target")
+    compose_file = f"stack/docker-compose.{target}.yml"
+    print(f"Using docker compose file {compose_file}")
+    return compose_file
 
 
 @pytest.fixture(scope="session")

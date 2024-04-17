@@ -1,5 +1,16 @@
 import pytest
 
+# Tests in this file should pass for the following images
+TESTED_TARGETS = "full-stack"
+
+
+@pytest.fixture(autouse=True)
+def skip_if_incompatible_target(target):
+    if target in TESTED_TARGETS:
+        yield
+    else:
+        pytest.skip()
+
 
 @pytest.fixture(scope="function")
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):
