@@ -1,6 +1,5 @@
 # docker-bake.hcl
 variable "VERSION" {
-  default = "new-build"
 }
 
 variable "PYTHON_VERSION" {
