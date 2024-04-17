@@ -2,15 +2,7 @@
 variable "VERSION" {
 }
 
-# TODO: The default here is just a hotfix to make
-# merge-bake-template-target.sh otherwise I get:
-#
-# "get_python_minor_version" failed: docker-bake.hcl:55,64-65:
-# Invalid function argument; Invalid value for "end_index" parameter:
-# end index must not be greater than the length of the list.., and 1 other diagnostic(s)
-
 variable "PYTHON_VERSION" {
-  default = "3.9.13"
 }
 
 variable "PGSQL_VERSION" {

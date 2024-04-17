@@ -28,7 +28,10 @@ fi
 input=$(cat $input_file | jq -c)
 
 # Determine the targets.
-TARGETS=$(docker buildx bake --print | jq -cr '.group.default.targets' | jq -r '.[]')
+# TODO: This currently fails due to PYTHON_MINOR_VERSION computation,
+# let's just hardcode for now
+# TARGETS=$(docker buildx bake --print | jq -cr '.group.default.targets' | jq -r '.[]')
+TARGETS="base base-with-services lab full-stack"
 
 # Generate the meta JSON strings
 meta=""
