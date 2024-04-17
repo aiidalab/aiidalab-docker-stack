@@ -9,9 +9,9 @@ variable "PYTHON_VERSION" {
 # PYTHON_MINOR_VERSION is a Python version string
 # without the patch version (e.g. "3.9")
 # Used to construct paths to Python site-packages folder.
-variable "PYTHON_MINOR_VERSION" {
-  default = join(".", slice(split(".", "${PYTHON_VERSION}"), 0, 2))
-}
+#variable "PYTHON_MINOR_VERSION" {
+#  default = join(".", slice(split(".", "${PYTHON_VERSION}"), 0, 2))
+#}
 
 variable "PGSQL_VERSION" {
 }
@@ -50,6 +50,11 @@ function "tags" {
   result = [
     "${REGISTRY}/${ORGANIZATION}/${image}:${VERSION}",
   ]
+}
+
+function "get_python_minor_version" {
+  params = [python_version]
+  result = join(".", slice(split(".", "${python_version}"), 0, 2))
 }
 
 group "default" {
@@ -101,7 +106,7 @@ target "lab" {
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
-    "PYTHON_MINOR_VERSION" = "${PYTHON_MINOR_VERSION}"
+    "PYTHON_MINOR_VERSION" = get_python_minor_version(${PYTHON_VERSION})
   }
 }
 target "full-stack" {
