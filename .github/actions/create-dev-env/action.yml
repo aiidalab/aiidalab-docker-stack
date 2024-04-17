@@ -17,5 +17,5 @@ runs:
               python-version: 3.11
 
         - name: Install dependencies 📦
-          run: pip install -r requirements-dev.txt
+          run: pip list && pip install -r requirements-dev.txt
           shell: bash -e {0}
