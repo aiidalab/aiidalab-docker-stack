@@ -1,6 +1,7 @@
 import pytest
 
-# Tests in this file should pass for the following images
+# Integration tests for the full-stack image.
+# Here we make sure we can install aiidalab-widgets-base and aiidalab-qe apps
 TESTED_TARGETS = "full-stack"
 
 
@@ -30,6 +31,7 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
 
 
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "quantum-espresso"])
+@pytest.mark.integration
 def test_install_apps_from_stable(generate_aiidalab_install_output, package_name):
     """Test that apps can be installed from app store."""
     output = generate_aiidalab_install_output(package_name)
@@ -41,6 +43,7 @@ def test_install_apps_from_stable(generate_aiidalab_install_output, package_name
 
 
 @pytest.mark.parametrize("repo_name", ["aiidalab-widgets-base", "aiidalab-qe"])
+@pytest.mark.integration
 def test_install_apps_from_default_branch(generate_aiidalab_install_output, repo_name):
     """Test that apps can be installed from the default branch of the repository."""
     package = f"{repo_name}@git+https://github.com/aiidalab/{repo_name}.git"
