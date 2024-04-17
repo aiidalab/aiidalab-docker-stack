@@ -37,8 +37,8 @@ jobs:
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
 
-              #- name: Set up QEMU
-              #uses: docker/setup-qemu-action@v3
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -50,7 +50,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Generate tags for images on ghcr.io
+            - name: Generate tags for images on ghcr.io 🏷️
               id: tags_template
               uses: docker/metadata-action@v4
               with:
@@ -68,15 +68,29 @@ jobs:
                   .github/workflows/merge-bake-template-target.sh ${BAKE_TEMPLATE_FILE} \
                     | tee docker-bake-template-meta.json
 
-            - name: Build image
+            - name: Build images and upload to ghcr.io 📤
               id: build
               uses: docker/bake-action@v4
               with:
                   push: true
-                  load: false
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
+                  files: |
+                      docker-bake.hcl
+                      build.json
+                      docker-bake-template-meta.json
+
+            - name: Build images for ARM64 🍎
+              id: build-arm64
+              uses: docker/bake-action@v4
+              with:
+                  push: true
+                  # Using provenance to disable default attestation so it will build only desired images:
+                  # https://github.com/orgs/community/discussions/45969
+                  provenance: false
+                  set: |
+                      *.platform=linux/arm64
                   files: |
                       docker-bake.hcl
                       build.json
