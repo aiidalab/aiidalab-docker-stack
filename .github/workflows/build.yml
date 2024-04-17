@@ -128,5 +128,6 @@ jobs:
               run: pip install -r requirements-dev.txt
 
             - name: Run tests
-              run: pytest --target ${{matrix.target}}
+              # TODO: Hack with REGISTRY
+              run: REGISTRY= pytest -s --target ${{matrix.target}}
               env: ${{ fromJSON(needs.build.outputs.images) }}

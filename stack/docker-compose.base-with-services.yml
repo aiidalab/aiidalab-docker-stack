@@ -4,7 +4,7 @@ version: '3.4'
 services:
 
     aiidalab:
-        image: ${REGISTRY:-docker.io}/${BASE_WITH_SERVICES_IMAGE:-aiidalab/base-with-services}${VERSION:-}
+        image: ${REGISTRY:-}${BASE_WITH_SERVICES_IMAGE:-aiidalab/base-with-services}${VERSION:-}
         environment:
             TZ: Europe/Zurich
             DOCKER_STACKS_JUPYTER_CMD: notebook
