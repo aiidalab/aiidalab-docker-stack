@@ -178,7 +178,7 @@ jobs:
             - name: Create Python dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: ${{ inputs.architecture }}
+                  architecture: arm64
 
             - name: Run tests
               run: REGISTRY= pytest -m "not integration" --target ${{matrix.target}}

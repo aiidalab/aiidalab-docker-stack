@@ -17,26 +17,8 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    amd64-build:
+    build:
         uses: ./.github/workflows/build.yml
         with:
             architecture: amd64
             runsOn: ubuntu-latest
-
-    # TODO: Split test from build, but we'd need to
-    # pass outputs from build here.
-    #amd64-test:
-    #    needs: amd64-build
-    #    uses: ./.github/workflows/test.yml
-    #    with:
-    #        architecture: amd64
-    #        runsOn: ubuntu-latest
-
-    # Postpone ARM build until amd64 build and tests succeeds
-    arm-build:
-        uses: ./.github/workflows/build.yml
-        needs: amd64-build
-        if: false
-        with:
-            architecture: arm64
-            runsOn: ARM64
