@@ -87,12 +87,12 @@ jobs:
 
             - name: Set output variables
               id: bake_metadata
+              env:
+                  BAKE_META: ${{ steps.build-amd64.outputs.metadata }}
+              # TODO: Make this into a shell script
               run: |
-                  cat docker-bake-template-meta.json \
-                    | jq -c '.target | [to_entries[] | {"key": (.key|split("-")[:-1] | join("-")), "value": [.value.tags[]][1]}] | from_entries' \
-                    | tee bake-meta.json
-                  targets=$(echo $(cat bake-meta.json | jq -c 'keys'))
-                  images=$(echo $(cat bake-meta.json | jq -c '. | [to_entries[] | {"key": (.key| split("-")| join("_") |ascii_upcase + "_IMAGE"), "value": .value}] | from_entries'))
+                  targets=$(echo "${BAKE_META}"| jq -c 'keys')
+                  images=$(echo "${BAKE_META}"| jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
                   echo -e "targets=$targets\nimages=$images"
                   echo "targets=$targets" >> "${GITHUB_OUTPUT}"
                   echo "images=$images" >> "${GITHUB_OUTPUT}"
