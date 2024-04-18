@@ -37,6 +37,8 @@ jobs:
 
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
 
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
@@ -124,6 +126,8 @@ jobs:
 
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
 
             - uses: docker/login-action@v2
               with:
@@ -151,6 +155,8 @@ jobs:
 
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
 
             - uses: docker/login-action@v2
               with:
