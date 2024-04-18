@@ -86,7 +86,6 @@ jobs:
               # (looks like ~12min)
             - name: Build images for ARM64 🍎
               id: build-arm64
-              if: false
               uses: docker/bake-action@v4
               with:
                   push: true
