@@ -5,6 +5,8 @@ env:
     OWNER: ${{ github.repository_owner }}
     REGISTRY: ghcr.io
     BUILDKIT_PROGRESS: plain
+    # https://github.com/docker/metadata-action?tab=readme-ov-file#environment-variables
+    DOCKER_METADATA_PR_HEAD_SHA: true
 
 on:
     # TODO: Can we define outputs here?
@@ -59,7 +61,7 @@ jobs:
                   images: |
                       name=${{ env.REGISTRY }}/aiidalab/__template__
                   tags: |
-                      type=sha
+                      type=sha,event=push
                       type=ref,event=pr
 
             - name: Generate docker-bake metadata file.
@@ -69,14 +71,14 @@ jobs:
                   .github/workflows/merge-bake-template-target.sh ${BAKE_TEMPLATE_FILE} \
                     | tee docker-bake-template-meta.json
 
-            - name: Build images and upload to ghcr.io 📤
-              id: build
+            - name: Build amd64 images 🏗️
+              id: build-amd64
               uses: docker/bake-action@v4
               with:
+                  # Do not push the resulting images, just load them to Docker for testing
                   load: true
-                  # Using provenance to disable default attestation so it will build only desired images:
-                  # https://github.com/orgs/community/discussions/45969
-                  provenance: false
+                  set: |
+                      *.platform=linux/amd64
                   files: |
                       docker-bake.hcl
                       build.json
@@ -103,16 +105,16 @@ jobs:
               run: REGISTRY= pytest -m "not integration" --target full-stack
               env: ${{ fromJSON(steps.bake_metadata.outputs.images) }}
 
-              # TODO: Just testing how long it takes to build arm64 image on GHA with QEMU
-              # (looks like ~12min)
-            - name: Build images for ARM64 🍎
-              id: build-arm64
+              # Here we build ARM64 images and upload both amd64 and arm64 to ghcr.io
+            - name: Build images for ARM64 and upload to ghcr.io 🍎📤
+              id: build-upload
               uses: docker/bake-action@v4
               with:
                   push: true
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
-                  # provenance: false
+                  provenance: false
+                  # NOTE: linux/amd64 images will be taken from previous step
                   set: |
                       *.platform=linux/arm64,linux/amd64
                   files: |
