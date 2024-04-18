@@ -77,7 +77,7 @@ jobs:
               uses: docker/bake-action@v4
               with:
                   # Do not push the resulting images, just load them to Docker for testing
-                  load: true
+                  push: true
                   set: |
                       *.platform=linux/amd64
                   files: |
