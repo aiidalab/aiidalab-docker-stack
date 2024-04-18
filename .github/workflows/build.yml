@@ -88,7 +88,7 @@ jobs:
                       docker-bake-template-meta.json
 
             - name: Set output variables
-              id: bake_metadata
+              id: bake_metadata_amd64
               env:
                   BAKE_META: ${{ steps.build-amd64.outputs.metadata }}
               # TODO: Make this into a shell script
@@ -106,7 +106,7 @@ jobs:
 
             - name: Run tests for full-stack image
               run: REGISTRY= pytest -m "not integration" --target full-stack
-              env: ${{ fromJSON(steps.bake_metadata.outputs.images) }}
+              env: ${{ fromJSON(steps.bake_metadata_amd64.outputs.images) }}
 
               # Here we build ARM64 images and upload both amd64 and arm64 to ghcr.io
             - name: Build images for ARM64 and upload to ghcr.io 🍎📤
@@ -125,7 +125,8 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
-            - name: Set output variables2
+            - name: Set final output variables
+              id: bake_metadata
               env:
                   BAKE_META: ${{ steps.build-upload.outputs.metadata }}
               run: |
