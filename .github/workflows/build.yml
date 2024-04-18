@@ -102,7 +102,7 @@ jobs:
             - name: Create Python dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: amd64
+                  runner: ${{ inputs.runsOn }}
 
             - name: Run tests for full-stack image
               run: REGISTRY= pytest -m "not integration" --target full-stack

@@ -3,8 +3,8 @@ name: Python environment
 description: Create Python environment and install dependencies for running tests
 
 inputs:
-    architecture:
-        description: architecture to be run on
+    runner:
+        description: Github Actions runner
         required: true
         type: string
 
@@ -15,7 +15,7 @@ runs:
     # See: https://github.com/actions/setup-python/issues/108
     # python3 is manually preinstalled in the arm64 VM self-hosted runner
         - name: Set Up Python 🐍
-          if: ${{ inputs.architecture == 'amd64' }}
+          if: ${{ inputs.runner != 'ARM64' }}
           uses: actions/setup-python@v5
           with:
               python-version: '3.11'
