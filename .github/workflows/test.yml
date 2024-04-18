@@ -21,7 +21,6 @@ on:
                 required: false
                 type: boolean
 
-
 jobs:
 
     test:
@@ -46,6 +45,5 @@ jobs:
                   runner: ${{ inputs.runsOn }}
 
             - name: Run tests
-              # TODO: Enable/disable integration tests
-              run: pytest -m "not integration" --target ${{inputs.target}}
+              run: pytest -m "${{ inputs.integration && "integration" || "not integration" }} --target ${{inputs.target}}
               env: ${{ fromJSON(inputs.images) }}

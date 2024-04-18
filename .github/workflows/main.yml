@@ -23,6 +23,7 @@ jobs:
         with:
             runsOn: ubuntu-latest
 
+    # NOTE: amd64 full-stack image is being tested as part of the build
     test-amd64:
         needs: build
         uses: ./.github/workflows/test.yml
@@ -32,6 +33,7 @@ jobs:
             target: "base"
             integration: false
 
+    # To save self-hosted runner resources, we're only testing full-stack image
     test-arm64:
         needs: build
         uses: ./.github/workflows/test.yml
@@ -40,3 +42,12 @@ jobs:
             images: ${{ needs.build.outputs.images }}
             target: "full-stack"
             integration: false
+
+    test-integration:
+        needs: build
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ARM64
+            images: ${{ needs.build.outputs.images }}
+            target: "full-stack"
+            integration: true
