@@ -1,5 +1,5 @@
 ---
-name: Build and test image and upload them to ghcr.io
+name: Build images and upload them to ghcr.io
 
 env:
     OWNER: ${{ github.repository_owner }}
@@ -9,17 +9,19 @@ env:
     DOCKER_METADATA_PR_HEAD_SHA: true
 
 on:
-    # TODO: Can we define outputs here?
     workflow_call:
         inputs:
-            architecture:
-                description: Image architecture, e.g. amd64, arm64
-                required: true
-                type: string
             runsOn:
                 description: GitHub Actions Runner image
                 required: true
                 type: string
+        outputs:
+            targets:
+                description: Target images
+                value: ${{ jobs.build.outputs.targets }}
+            images:
+                description: Built images, identified with digests
+                value: ${{ jobs.build.outputs.images }}
 
 jobs:
     build:
