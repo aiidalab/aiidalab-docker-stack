@@ -45,5 +45,5 @@ jobs:
                   runner: ${{ inputs.runsOn }}
 
             - name: Run tests
-              run: pytest -m "${{ inputs.integration && "integration" || "not integration" }} --target ${{inputs.target}}
+              run: pytest -m "${{ inputs.integration && 'integration' || 'not integration' }} --target ${{inputs.target}}
               env: ${{ fromJSON(inputs.images) }}
