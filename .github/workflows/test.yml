@@ -1,0 +1,115 @@
+---
+name: Build images and upload them to ghcr.io
+
+env:
+    OWNER: ${{ github.repository_owner }}
+    REGISTRY: ghcr.io
+    BUILDKIT_PROGRESS: plain
+    # https://github.com/docker/metadata-action?tab=readme-ov-file#environment-variables
+    DOCKER_METADATA_PR_HEAD_SHA: true
+
+on:
+    workflow_call:
+        inputs:
+            runsOn:
+                description: GitHub Actions Runner image
+                required: true
+                type: string
+
+            architecture:
+                description: Target architecture ("amd64" or "arm64")
+                required: true
+                type: string
+
+jobs:
+
+    test:
+        runs-on: ${{ inputs.runsOn }}
+        timeout-minutes: 20
+        strategy:
+            matrix:
+                # NOTE: full-stack is tested already during build step
+                target: ["base", "lab", "base-with-services"]
+
+        steps:
+
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v4
+
+            - name: Login to Container Registry 🔑
+              uses: docker/login-action@v2
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create Python dev environment 📦
+              uses: ./.github/actions/create-dev-env
+              with:
+                  architecture: ${{ inputs.architecture }}
+
+            - name: Run tests
+              # TODO: Hack with REGISTRY
+              run: REGISTRY= pytest -m "not integration" --target ${{matrix.target}}
+              env: ${{ fromJSON(inputs.images) }}
+
+    test-arm64:
+        needs: build
+        runs-on: ARM64
+        timeout-minutes: 20
+        strategy:
+            matrix:
+                # Only testing full-stack image to save self-hosted runner resources
+                target: ["full-stack"]
+
+        steps:
+
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v4
+
+            - name: Login to Container Registry 🔑
+              uses: docker/login-action@v2
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create Python dev environment 📦
+              uses: ./.github/actions/create-dev-env
+              with:
+                  architecture: arm64
+
+            - name: Run tests
+              run: REGISTRY= pytest -m "not integration" --target ${{matrix.target}}
+              env: ${{ fromJSON(needs.build.outputs.images) }}
+
+            - name: Run integration tests
+              run: REGISTRY= pytest -m "integration" --target ${{matrix.target}}
+              env: ${{ fromJSON(needs.build.outputs.images) }}
+
+
+    integration-test:
+        runs-on: ${{ inputs.runsOn }}
+        timeout-minutes: 20
+
+        steps:
+
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v4
+
+            - name: Login to Container Registry 🔑
+              uses: docker/login-action@v2
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Create Python dev environment 📦
+              uses: ./.github/actions/create-dev-env
+              with:
+                  architecture: ${{ inputs.architecture }}
+
+            - name: Run tests
+              # TODO: Hack with REGISTRY
+              run: REGISTRY= pytest -m "integration" --target full-stack
+              env: ${{ fromJSON(inputs.images) }}
