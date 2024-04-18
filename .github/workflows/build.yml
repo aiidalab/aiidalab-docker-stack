@@ -82,32 +82,6 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
-            - name: Create Python dev environment 📦
-              uses: ./.github/actions/create-dev-env
-              with:
-                  architecture: ${{ inputs.architecture }}
-
-            - name: Run tests for full-stack image
-              run: REGISTRY= pytest -m "not integration" --target full-stack
-              env: ${{ fromJSON(needs.build.outputs.images) }}
-
-              # TODO: Just testing how long it takes to build arm64 image on GHA with QEMU
-              # (looks like ~12min)
-            - name: Build images for ARM64 🍎
-              id: build-arm64
-              uses: docker/bake-action@v4
-              with:
-                  push: true
-                  # Using provenance to disable default attestation so it will build only desired images:
-                  # https://github.com/orgs/community/discussions/45969
-                  provenance: false
-                  set: |
-                      *.platform=linux/arm64,linux/amd64
-                  files: |
-                      docker-bake.hcl
-                      build.json
-                      docker-bake-template-meta.json
-
             - name: Set output variables
               id: bake_metadata
               run: |
@@ -119,6 +93,32 @@ jobs:
                   echo -e "targets=$targets\nimages=$images"
                   echo "targets=$targets" >> "${GITHUB_OUTPUT}"
                   echo "images=$images" >> "${GITHUB_OUTPUT}"
+
+            - name: Create Python dev environment 📦
+              uses: ./.github/actions/create-dev-env
+              with:
+                  architecture: ${{ inputs.architecture }}
+
+            - name: Run tests for full-stack image
+              run: REGISTRY= pytest -m "not integration" --target full-stack
+              env: ${{ fromJSON(steps.bake_metadata.outputs.images) }}
+
+              # TODO: Just testing how long it takes to build arm64 image on GHA with QEMU
+              # (looks like ~12min)
+            - name: Build images for ARM64 🍎
+              id: build-arm64
+              uses: docker/bake-action@v4
+              with:
+                  push: true
+                  # Using provenance to disable default attestation so it will build only desired images:
+                  # https://github.com/orgs/community/discussions/45969
+                  # provenance: false
+                  set: |
+                      *.platform=linux/arm64,linux/amd64
+                  files: |
+                      docker-bake.hcl
+                      build.json
+                      docker-bake-template-meta.json
 
     test:
         needs: build
