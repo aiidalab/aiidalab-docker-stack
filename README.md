@@ -1,6 +1,6 @@
 # Docker Stack for AiiDAlab
 
-This repository contains the Dockerfiles for the official AiiDAlab docker image stack.
+This repository contains the Dockerfiles for the official [AiiDAlab](https://www.aiidalab.net/) docker image stack.
 All images are based on the [jupyter/minimal-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook).
 
 Image variants:
@@ -11,7 +11,7 @@ Image variants:
 
 Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
 
-- `edge` – the latest commit on the default branch
+- `edge` – the latest commit on the default branch (`main`)
 - `latest` – the latest _regular_ release
 - `aiida-$AIIDA_VERSION` – the _latest_ regular release with that AiiDA version (ex. `aiida-2.0.0`)
 - `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.2`)
@@ -112,9 +112,9 @@ A. V. Yakutovich et al., Comp. Mat. Sci. 188, 110165 (2021).
 
 ## Acknowledgements
 
-This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
-funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX
-European Centre of Excellence](<http://www.max-centre.eu/>) funded by the Horizon 2020 EINFRA-5 program,
+This work is supported by the [MARVEL National Centre for Competency in Research](<https://nccr-marvel.ch>)
+funded by the [Swiss National Science Foundation](<https://www.snf.ch/en>), as well as by the [MaX
+European Centre of Excellence](<https://www.max-centre.eu/>) funded by the Horizon 2020 EINFRA-5 program,
 Grant No. 676598.
 
 ![MARVEL](miscellaneous/logos/MARVEL.png)
