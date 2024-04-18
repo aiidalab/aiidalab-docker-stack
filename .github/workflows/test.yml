@@ -24,6 +24,7 @@ on:
 jobs:
 
     test:
+        name: ${{ inputs.integration && inputs.runsOn || inputs.target }}
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 20
 
@@ -45,5 +46,5 @@ jobs:
                   runner: ${{ inputs.runsOn }}
 
             - name: Run tests
-              run: pytest -m "${{ inputs.integration && 'integration' || 'not integration' }} --target ${{inputs.target}}
+              run: pytest -m "${{ inputs.integration && 'integration' || 'not integration' }}" --target ${{inputs.target}}
               env: ${{ fromJSON(inputs.images) }}
