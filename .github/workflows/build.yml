@@ -102,7 +102,7 @@ jobs:
             - name: Create Python dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: ${{ inputs.architecture }}
+                  architecture: amd64
 
             - name: Run tests for full-stack image
               run: REGISTRY= pytest -m "not integration" --target full-stack
@@ -160,7 +160,7 @@ jobs:
             - name: Create Python dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: ${{ inputs.architecture }}
+                  architecture: amd64
 
             - name: Run tests
               # TODO: Hack with REGISTRY
@@ -222,7 +222,7 @@ jobs:
             - name: Create Python dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
-                  architecture: ${{ inputs.architecture }}
+                  architecture: amd64
 
             - name: Run tests
               # TODO: Hack with REGISTRY
