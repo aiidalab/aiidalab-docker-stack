@@ -17,7 +17,26 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+
     build:
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-latest
+
+    test-amd64:
+        needs: build
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ubuntu-latest
+            images: ${{ needs.build.outputs.images }}
+            target: "base"
+            integration: false
+
+    test-arm64:
+        needs: build
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ARM64
+            images: ${{ needs.build.outputs.images }}
+            target: "full-stack"
+            integration: false
