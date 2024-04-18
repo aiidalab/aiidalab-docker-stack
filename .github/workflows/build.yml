@@ -118,8 +118,9 @@ jobs:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
                   # NOTE: linux/amd64 images will be taken from previous step
+                  # DEBUG: Build only amd64 for now
                   set: |
-                      *.platform=linux/arm64,linux/amd64
+                      *.platform=linux/amd64
                   files: |
                       docker-bake.hcl
                       build.json
