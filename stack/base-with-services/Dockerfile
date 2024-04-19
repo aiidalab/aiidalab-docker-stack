@@ -26,6 +26,10 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"; \
 elif [ "$TARGETARCH" = "arm64" ]; then \
+     apt-get update && apt-get install -y --no-install-recommends  \
+          erlang && \
+     rm -rf /var/lib/apt/lists/* && \
+     apt-get clean all && \
      export RMQ_VERSION=3.9.13 && \
      wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      tar -xf rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
