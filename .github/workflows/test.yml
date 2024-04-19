@@ -41,7 +41,7 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Set Up Python 🐍
-              if: ${{ inputs.runner != 'ARM64' }}
+              if: ${{ inputs.runsOn != 'ARM64' }}
               uses: actions/setup-python@v5
               with:
                   python-version: '3.11'
