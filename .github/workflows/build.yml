@@ -108,7 +108,6 @@ jobs:
               run: REGISTRY= pytest -m "not integration" --target full-stack
               env: ${{ fromJSON(steps.bake_metadata_amd64.outputs.images) }}
 
-
               # Here we build amr64 images (with help of QEMU) and upload both amd64 and arm64 to ghcr.io
             - name: Build images for ARM64 and upload to ghcr.io 🍎📤
               id: build-upload
@@ -120,7 +119,7 @@ jobs:
                   provenance: false
                   # NOTE: linux/amd64 images will be taken from previous step
                   set: |
-                      *.platform=linux/amd64,linux/arm64
+                      *.platform=linux/amd64
                   files: |
                       docker-bake.hcl
                       build.json
