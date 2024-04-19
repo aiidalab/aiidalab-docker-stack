@@ -70,3 +70,6 @@ jobs:
         with:
             runsOn: ubuntu-latest
             images: ${{ needs.build.outputs.images }}
+        secrets:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
