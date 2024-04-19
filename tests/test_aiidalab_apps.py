@@ -22,11 +22,13 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
 
         output += aiidalab_exec("pip check", user=nb_user).strip()
 
-        # Uninstall the package to make sure the test is repeatable
+        yield output
+        # Now, ninstall the package to make sure the test is repeatable.
+        # NOTE: This will only uninstall the package itself, not its dependencies!
+        # Since the dependencies are installed via pip, this is basically a pip limitation
+        # that would be hard to workaround here.
         app_name = package_name.split("@")[0]
         aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
-
-        return output
 
     return _generate_aiidalab_install_output
 

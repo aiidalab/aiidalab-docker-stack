@@ -9,10 +9,8 @@ COPY --from=base /opt/config-quick-setup.yaml /opt/
 COPY --from=base "${CONDA_DIR}/envs/aiida-core-services" "${CONDA_DIR}/envs/aiida-core-services"
 COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook.d
 
-# This is needed because we use multi-stage build.
+# This is needed because we use multi-stage build,
 # the erlang package is not available after the first stage.
-# After we move base-with-services to a aiida-core repo, we can remove this.
-# Note that it is very important to having the TARGETARCH argument here, otherwise the variable is empty.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
     # Install erlang.
