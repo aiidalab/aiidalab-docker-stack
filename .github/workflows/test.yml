@@ -33,7 +33,7 @@ jobs:
             - name: Checkout Repo ⚡️
               uses: actions/checkout@v4
 
-            - name: Login to Container Registry 🔑
+            - name: Login to GitHub Container Registry 🔑
               uses: docker/login-action@v3
               with:
                   registry: ghcr.io
