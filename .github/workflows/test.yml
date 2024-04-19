@@ -49,7 +49,7 @@ jobs:
 
             - name: Install dependencies 📦
               run: |
-                  pip install -r requirements-dev.txt
+                  pip install -r requirements.txt
                   pip freeze
 
             - name: Run tests
