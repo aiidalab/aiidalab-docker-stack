@@ -16,20 +16,17 @@ on:
                 required: true
                 type: string
         outputs:
-            targets:
-                description: Target images
-                value: ${{ jobs.build.outputs.targets }}
             images:
                 description: Built images, identified with digests
                 value: ${{ jobs.build.outputs.images }}
 
 jobs:
     build:
+        name: amd64 and arm64
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 20
 
         outputs:
-            targets: ${{ steps.bake_metadata.outputs.targets }}
             images: ${{ steps.bake_metadata.outputs.images }}
 
         # Make sure we fail if any command in a piped command sequence fails
@@ -87,26 +84,26 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
-            - name: Set output variables
+            - name: Get amd64 images with digests
               id: bake_metadata_amd64
               env:
-                  BAKE_META: ${{ steps.build-amd64.outputs.metadata }}
-              # TODO: Make this into a shell script
+                  BAKE_METADATA: ${{ steps.build-amd64.outputs.metadata }}
               run: |
-                  images=$(echo "${BAKE_META}"| jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
-                  echo "images=$images"
-                  echo "images=$images" >> "${GITHUB_OUTPUT}"
+                  .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
 
             - name: Create Python dev environment 📦
               uses: ./.github/actions/create-dev-env
               with:
                   runner: ${{ inputs.runsOn }}
 
+
+              # We run tests here to catch issues early, before running arm64 build which is slow
             - name: Run tests for full-stack image
               run: REGISTRY= pytest -m "not integration" --target full-stack
               env: ${{ fromJSON(steps.bake_metadata_amd64.outputs.images) }}
 
-              # Here we build ARM64 images and upload both amd64 and arm64 to ghcr.io
+
+              # Here we build amr64 images (with help of QEMU) and upload both amd64 and arm64 to ghcr.io
             - name: Build images for ARM64 and upload to ghcr.io 🍎📤
               id: build-upload
               uses: docker/bake-action@v4
@@ -124,13 +121,9 @@ jobs:
                       build.json
                       docker-bake-template-meta.json
 
-            - name: Set final output variables
+            - name: Set output variables
               id: bake_metadata
               env:
                   BAKE_META: ${{ steps.build-upload.outputs.metadata }}
               run: |
-                  targets=$(echo "${BAKE_META}"| jq -c 'keys')
-                  images=$(echo "${BAKE_META}"| jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
-                  echo -e "targets=$targets\nimages=$images"
-                  echo "targets=$targets" >> "${GITHUB_OUTPUT}"
-                  echo "images=$images" >> "${GITHUB_OUTPUT}"
+                  .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"

@@ -1,5 +1,5 @@
 ---
-name: Build images and upload them to ghcr.io
+name: Test newly built images
 
 on:
     workflow_call:
