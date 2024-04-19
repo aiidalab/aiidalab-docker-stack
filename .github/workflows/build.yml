@@ -54,7 +54,7 @@ jobs:
 
             - name: Generate tags for images on ghcr.io 🏷️
               id: tags_template
-              uses: docker/metadata-action@v4
+              uses: docker/metadata-action@v5
               with:
                   bake-target: __template__-meta
                   images: |
