@@ -26,6 +26,7 @@ jobs:
     test-amd64:
         needs: build
         strategy:
+            fail-fast: false
             matrix:
                  # NOTE: amd64 full-stack image is tested during build step
                 target: ["base", "lab", "base-with-services"]
@@ -50,6 +51,7 @@ jobs:
     test-integration:
         needs: build
         strategy:
+            fail-fast: false
             matrix:
                 runner: ["ubuntu-latest", "ARM64"]
         uses: ./.github/workflows/test.yml
@@ -58,3 +60,12 @@ jobs:
             images: ${{ needs.build.outputs.images }}
             target: "full-stack"
             integration: true
+
+    publish:
+        # TODO: This needs to be more restricted
+        if: github.repository == 'aiidalab/aiidalab-docker-stack'
+        needs: [build, test-amd64, test-arm64]
+        uses: ./.github/workflows/publish.yml
+        with:
+            runsOn: ubuntu-latest
+            images: ${{ needs.build.outputs.images }}
