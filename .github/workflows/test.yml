@@ -40,10 +40,17 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Create Python dev environment 📦
-              uses: ./.github/actions/create-dev-env
+            - name: Set Up Python 🐍
+              if: ${{ inputs.runner != 'ARM64' }}
+              uses: actions/setup-python@v5
               with:
-                  runner: ${{ inputs.runsOn }}
+                  python-version: '3.11'
+                  cache: pip
+
+            - name: Install dependencies 📦
+              run: |
+                  pip install -r requirements-dev.txt
+                  pip freeze
 
             - name: Run tests
               run: pytest -m "${{ inputs.integration && 'integration' || 'not integration' }}" --target ${{inputs.target}}

@@ -91,11 +91,17 @@ jobs:
               run: |
                   .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
 
-            - name: Create Python dev environment 📦
-              uses: ./.github/actions/create-dev-env
+            - name: Set Up Python 🐍
+              if: ${{ inputs.runner != 'ARM64' }}
+              uses: actions/setup-python@v5
               with:
-                  runner: ${{ inputs.runsOn }}
+                  python-version: '3.11'
+                  cache: pip
 
+            - name: Install dependencies 📦
+              run: |
+                  pip install -r requirements-dev.txt
+                  pip freeze
 
               # We run tests here to catch issues early, before running arm64 build which is slow
             - name: Run tests for full-stack image
