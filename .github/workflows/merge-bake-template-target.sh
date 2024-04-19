@@ -13,6 +13,65 @@ set -euo pipefail
 # docker/meta-action (which can currently only handle a single bake-target) for
 # all targets currently specified in the main bake-file ("docker-bake.hcl").
 #
+# Example output (trimmed):
+# {
+#  "target": {
+#    "base-meta": {
+#      "tags": [
+#        "ghcr.io/aiidalab/base:pr-439",
+#        "ghcr.io/aiidalab/base:sha-40bdfc9"
+#      ],
+#      "labels": {
+#        "org.opencontainers.image.created": "2024-04-19T11:50:09.021Z",
+#        "org.opencontainers.image.description": "Docker images with the basic software stack for AiiDAlab",
+#        "org.opencontainers.image.licenses": "NOASSERTION",
+#        "org.opencontainers.image.revision": "40bdfc9491e409c67320ca3566f85aaf3feb36ea",
+#        "org.opencontainers.image.source": "https://github.com/aiidalab/aiidalab-docker-stack",
+#        "org.opencontainers.image.title": "aiidalab-docker-stack",
+#        "org.opencontainers.image.url": "https://github.com/aiidalab/aiidalab-docker-stack",
+#        "org.opencontainers.image.version": "pr-439"
+#      },
+#      "args": {
+#        "DOCKER_META_IMAGES": "ghcr.io/aiidalab/base",
+#        "DOCKER_META_VERSION": "pr-439"
+#      }
+#    },
+#    "base-with-services-meta": {
+#      "tags": [
+#        "ghcr.io/aiidalab/base-with-services:pr-439",
+#        "ghcr.io/aiidalab/base-with-services:sha-40bdfc9"
+#      ],
+#      "labels": {},
+#      "args": {
+#        "DOCKER_META_IMAGES": "ghcr.io/aiidalab/base-with-services",
+#        "DOCKER_META_VERSION": "pr-439"
+#      }
+#    },
+#    "lab-meta": {
+#      "tags": [
+#        "ghcr.io/aiidalab/lab:pr-439",
+#        "ghcr.io/aiidalab/lab:sha-40bdfc9"
+#      ],
+#      "labels": {},
+#      "args": {
+#        "DOCKER_META_IMAGES": "ghcr.io/aiidalab/lab",
+#        "DOCKER_META_VERSION": "pr-439"
+#      }
+#    },
+#    "full-stack-meta": {
+#      "tags": [
+#        "ghcr.io/aiidalab/full-stack:pr-439",
+#        "ghcr.io/aiidalab/full-stack:sha-40bdfc9"
+#      ],
+#      "labels": {},
+#      "args": {
+#        "DOCKER_META_IMAGES": "ghcr.io/aiidalab/full-stack",
+#        "DOCKER_META_VERSION": "pr-439"
+#      }
+#    }
+#  }
+#}
+
 if [[ -z ${1-} ]];then
   echo "ERROR: Provide path to bake-file template as first parameter"
   exit 1
