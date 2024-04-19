@@ -83,7 +83,7 @@ jobs:
                   # Do not push the resulting images, just load them to Docker for testing
                   push: true
                   set: |
-                      *.platform=linux/amd64
+                      *.platform=linux/amd64,linux/arm64
                   files: |
                       docker-bake.hcl
                       build.json

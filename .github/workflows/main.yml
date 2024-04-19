@@ -40,7 +40,6 @@ jobs:
 
     # To save self-hosted runner resources, we're only testing full-stack image
     test-arm64:
-        if: false
         needs: build
         uses: ./.github/workflows/test.yml
         with:
@@ -54,7 +53,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                runner: ["ubuntu-latest"] #, "ARM64"]
+                runner: ["ubuntu-latest", "ARM64"]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
@@ -65,11 +64,9 @@ jobs:
     publish:
         # TODO: This needs to be more restricted
         if: github.repository == 'aiidalab/aiidalab-docker-stack'
-        needs: [build, test-amd64] #, test-arm64]
+        needs: [build, test-amd64, test-arm64]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-latest
             images: ${{ needs.build.outputs.images }}
         secrets: inherit
-            # DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
