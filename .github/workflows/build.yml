@@ -24,7 +24,7 @@ jobs:
     build:
         name: amd64 and arm64
         runs-on: ${{ inputs.runsOn }}
-        timeout-minutes: 30
+        timeout-minutes: 60
 
         outputs:
             images: ${{ steps.bake_metadata.outputs.images }}
