@@ -129,6 +129,6 @@ jobs:
             - name: Set output variables
               id: bake_metadata
               env:
-                  BAKE_META: ${{ steps.build-upload.outputs.metadata }}
+                  BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
               run: |
                   .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
