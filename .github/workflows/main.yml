@@ -28,7 +28,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                 # NOTE: amd64 full-stack image is tested during build step
+                # NOTE: amd64 full-stack image is tested during build step
                 target: ["base", "lab", "base-with-services"]
 
         uses: ./.github/workflows/test.yml
