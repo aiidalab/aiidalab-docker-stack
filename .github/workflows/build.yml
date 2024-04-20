@@ -60,7 +60,6 @@ jobs:
                   images: |
                       name=${{ env.REGISTRY }}/aiidalab/__template__
                   tags: |
-                      type=sha
                       type=ref,event=pr
                       type=edge,branch=main
                       type=raw,value={{tag}},enable=${{ github.ref_type == 'tag' && ! startsWith(github.ref_name, 'v') }}
