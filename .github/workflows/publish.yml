@@ -22,8 +22,7 @@ jobs:
         strategy:
             fail-fast: true
             matrix:
-                # TODO: More targets
-                target: ["base"]
+                target: ["base", "base-with-services", "lab", "full-stack"]
 
         steps:
             - uses: actions/checkout@v4
@@ -56,7 +55,7 @@ jobs:
               with:
                   images: docker.io/aiidalab/${{ matrix.target }}
                   tags: |
-                      type=edge
+                      type=edge,branch=main
                       type=raw,value={{tag}},enable=${{ github.ref_type == 'tag' && ! startsWith(github.ref_name, 'v') }}
                       type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref_type == 'tag'  && startsWith(github.ref_name, 'v') }}
                       type=raw,value=python-${{ env.PYTHON_VERSION }},enable=${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
