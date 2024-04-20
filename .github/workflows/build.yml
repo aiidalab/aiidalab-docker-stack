@@ -22,7 +22,7 @@ on:
 
 jobs:
     build:
-        name: amd64 and arm64
+        name: amd64 & arm64
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 120
 
@@ -80,10 +80,9 @@ jobs:
               id: build-amd64
               uses: docker/bake-action@v4
               with:
-                  # Do not push the resulting images, just load them to Docker for testing
                   push: true
                   set: |
-                      *.platform=linux/amd64,linux/arm64
+                      *.platform=linux/amd64
                   files: |
                       docker-bake.hcl
                       build.json
@@ -113,8 +112,9 @@ jobs:
               run: REGISTRY= pytest -m "not integration" --target full-stack
               env: ${{ fromJSON(steps.bake_metadata_amd64.outputs.images) }}
 
-              # Here we build amr64 images (with help of QEMU) and upload both amd64 and arm64 to ghcr.io
-            - name: Build images for ARM64 and upload to ghcr.io 🍎📤
+              # Here we build arm64 images (with help of QEMU virtualization)
+              # and upload both amd64 and arm64 images to ghcr.io
+            - name: Build ARM64 and upload to ghcr.io 🍎📤
               id: build-upload
               uses: docker/bake-action@v4
               with:
@@ -122,9 +122,9 @@ jobs:
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
-                  # NOTE: linux/amd64 images will be taken from previous step
+                  # NOTE: linux/amd64 images are taken from previous step
                   set: |
-                      *.platform=linux/amd64
+                      *.platform=linux/amd64,linux/arm64
                   files: |
                       docker-bake.hcl
                       build.json
