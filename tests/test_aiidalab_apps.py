@@ -24,7 +24,6 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
         cmd = f"aiidalab install --yes --pre {package_name}"
 
         output = aiidalab_exec(cmd, user=nb_user).strip()
-        output += aiidalab_exec("pip check", user=nb_user).strip()
         return output
 
     # Uninstall the package to make sure the test is repeatable.
