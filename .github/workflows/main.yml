@@ -21,7 +21,7 @@ jobs:
     build:
         uses: ./.github/workflows/build.yml
         with:
-            runsOn: ubuntu-latest
+            runsOn: ubuntu-22.04
 
     test-amd64:
         needs: build
@@ -33,7 +33,7 @@ jobs:
 
         uses: ./.github/workflows/test.yml
         with:
-            runsOn: ubuntu-latest
+            runsOn: ubuntu-22.04
             images: ${{ needs.build.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
@@ -53,7 +53,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                runner: ["ubuntu-latest", "ARM64"]
+                runner: ["ubuntu-22.04", "ARM64"]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
@@ -68,6 +68,6 @@ jobs:
         needs: [build, test-amd64, test-arm64]
         uses: ./.github/workflows/publish.yml
         with:
-            runsOn: ubuntu-latest
+            runsOn: ubuntu-22.04
             images: ${{ needs.build.outputs.images }}
         secrets: inherit

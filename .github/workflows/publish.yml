@@ -70,8 +70,6 @@ jobs:
                   echo "src=$src" >> "${GITHUB_OUTPUT}"
 
             - name: Push image
-              # TODO: Enable this
-              if: false
               uses: akhilerm/tag-push-action@v2.2.0
               with:
                   src: ${{ steps.images.outputs.src }}
