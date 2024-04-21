@@ -1,5 +1,6 @@
 docker
 requests
+pre-commit
 pytest~=7.0
 pytest-docker
 doit
