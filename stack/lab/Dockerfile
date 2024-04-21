@@ -16,9 +16,6 @@ WORKDIR /opt/
 # Install additional system packages
 RUN apt-get update --yes && \
      apt-get install --yes --no-install-recommends \
-     # Install C-compilers etc for apps which need to install pymatgen from source:
-     # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
-     build-essential \
      curl \
      povray \
      && apt-get clean \
