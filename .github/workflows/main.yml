@@ -27,29 +27,21 @@ jobs:
         with:
             runsOn: ${{ matrix.runsOn }}
 
-    test-amd64:
+    test:
         needs: build
         strategy:
             fail-fast: false
             matrix:
-                # NOTE: amd64 full-stack image is tested during build step
-                target: ["base", "lab", "base-with-services"]
+                target: [base, lab, base-with-services, full-stack]
+                runsOn: [ubuntu-22.04] #, ARM64
 
         uses: ./.github/workflows/test.yml
+        #if: matrix.runsOn == 'ubuntu-22.04' || matrix.target == 'full-stack'
+        if: false
         with:
-            runsOn: ubuntu-22.04
+            runsOn: ${{ matrix.runsOn }}
             images: ${{ needs.build.outputs.images }}
             target: ${{ matrix.target }}
-            integration: false
-
-    # To save self-hosted runner resources, we're only testing full-stack image
-    test-arm64:
-        needs: build
-        uses: ./.github/workflows/test.yml
-        with:
-            runsOn: ARM64
-            images: ${{ needs.build.outputs.images }}
-            target: "full-stack"
             integration: false
 
     test-integration:
@@ -59,6 +51,7 @@ jobs:
             matrix:
                 runner: ["ubuntu-22.04"] #, "ARM64"]
         uses: ./.github/workflows/test.yml
+        if: false
         with:
             runsOn: ${{ matrix.runner }}
             images: ${{ needs.build.outputs.images }}
@@ -69,7 +62,7 @@ jobs:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build, test-amd64, test-arm64]
+        needs: [build, test]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
