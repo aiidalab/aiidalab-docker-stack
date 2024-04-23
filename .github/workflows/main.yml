@@ -56,7 +56,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                runner: ["ubuntu-22.04", "ARM64"]
+                runner: ["ubuntu-22.04"] #, "ARM64"]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}

@@ -53,7 +53,8 @@ jobs:
               id: build
               uses: docker/bake-action@v4
               with:
-                  push: true
+                  push: false
+                  load: true
                   set: |
                       *.platform=linux/${{ inputs.runsOn == 'ARM64' && 'arm64' || 'amd64' }}
                   files: |
@@ -61,13 +62,6 @@ jobs:
                       build.json
 
             - name: Get image names with digests
-              id: bake_metadata_amd64
-              env:
-                  BAKE_METADATA: ${{ steps.build-amd64.outputs.metadata }}
-              run: |
-                  .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
-
-            - name: Set output variables
               id: bake_metadata
               run: .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
               env:
