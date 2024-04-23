@@ -53,9 +53,9 @@ jobs:
               uses: docker/bake-action@v4
               with:
                   push: true
-                  #*.output=type=registry,push-by-digest=true,name-canonical=true
                   set: |
                       *.platform=linux/${{ startsWith(inputs.runsOn, 'ubuntu') && 'amd64' || 'arm64' }}
+                      *.output=type=registry,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
                       build.json
