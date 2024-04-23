@@ -48,10 +48,13 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
               # https://docs.docker.com/build/ci/github-actions/multi-platform/#with-bake
-            - name: Build images 🏗️
+            - name: Build untagged images and push to ghcr.io 🏗️
               id: build
               uses: docker/bake-action@v4
               with:
+                  # Using provenance to disable default attestation so it will build only desired images:
+                  # https://github.com/orgs/community/discussions/45969
+                  provenance: false
                   push: true
                   set: |
                       *.platform=linux/${{ startsWith(inputs.runsOn, 'ubuntu') && 'amd64' || 'arm64' }}
