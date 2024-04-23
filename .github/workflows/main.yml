@@ -36,7 +36,7 @@ jobs:
                 runsOn: [ubuntu-22.04] #, ARM64
 
         uses: ./.github/workflows/test.yml
-        if: ${{ matrix.runsOn == 'ubuntu-22.04' || matrix.target == 'full-stack' }}
+        # if: ${{ matrix.runsOn == 'ubuntu-22.04' || matrix.target == 'full-stack' }}
         with:
             runsOn: ${{ matrix.runsOn }}
             images: ${{ needs.build.outputs.images }}
