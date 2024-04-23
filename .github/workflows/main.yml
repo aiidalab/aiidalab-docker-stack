@@ -20,8 +20,11 @@ jobs:
 
     build:
         uses: ./.github/workflows/build.yml
+        strategy:
+            matrix:
+                runsOn: [ubuntu-22.04, ARM64]
         with:
-            runsOn: ubuntu-22.04
+            runsOn: ${{ matrix.runsOn }}
 
     test-amd64:
         needs: build
