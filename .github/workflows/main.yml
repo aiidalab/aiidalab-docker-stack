@@ -18,50 +18,50 @@ concurrency:
 
 jobs:
 
-    build:
+    build-amd64:
         uses: ./.github/workflows/build.yml
-        strategy:
-            fail-fast: false
-            matrix:
-                runsOn: [ubuntu-22.04] # , ARM64]
         with:
-            runsOn: ${{ matrix.runsOn }}
+            runsOn: ubuntu-22.04
 
-    test:
-        needs: build
+    test-amd64:
+        needs: build-amd64
         strategy:
             fail-fast: false
             matrix:
                 target: [base, full-stack] #[base, lab, base-with-services, full-stack]
-                runsOn: [ubuntu-22.04] #, ARM64
 
         uses: ./.github/workflows/test.yml
-        # if: ${{ matrix.runsOn == 'ubuntu-22.04' || matrix.target == 'full-stack' }}
         with:
-            runsOn: ${{ matrix.runsOn }}
-            images: ${{ needs.build.outputs.images }}
+            runsOn: ubuntu-22.04
+            images: ${{ needs.build-amd64.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
 
-    test-integration:
-        needs: build
+    # To save arm64 runner resources, we only try to build once amd64 build and tests succeed
+    build-arm64:
+        needs: [build-amd64, test-amd64]
+        uses: ./.github/workflows/build.yml
+        with:
+            runsOn: ARM64
+
+    test-arm64:
+        needs: build-arm64
         strategy:
             fail-fast: false
             matrix:
-                runner: ["ubuntu-22.04"] #, "ARM64"]
+                target: [base, full-stack] #[base, lab, base-with-services, full-stack]
         uses: ./.github/workflows/test.yml
-        if: false
         with:
-            runsOn: ${{ matrix.runner }}
-            images: ${{ needs.build.outputs.images }}
-            target: "full-stack"
-            integration: true
+            runsOn: ubuntu-22.04
+            images: ${{ needs.build-arm64.outputs.images }}
+            target: ${{ matrix.target }}
+            integration: false
 
     publish:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build, test]
+        needs: [build-amd64, test-amd64]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
