@@ -2,8 +2,6 @@
 name: Build images and upload them to ghcr.io
 
 env:
-    OWNER: ${{ github.repository_owner }}
-    REGISTRY: ghcr.io
     BUILDKIT_PROGRESS: plain
     # https://github.com/docker/metadata-action?tab=readme-ov-file#environment-variables
     DOCKER_METADATA_PR_HEAD_SHA: true
@@ -45,7 +43,7 @@ jobs:
             - name: Login to GitHub Container Registry 🔑
               uses: docker/login-action@v3
               with:
-                  registry: ${{ env.REGISTRY }}
+                  registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
