@@ -21,8 +21,9 @@ jobs:
     build:
         uses: ./.github/workflows/build.yml
         strategy:
+            fail-fast: false
             matrix:
-                runsOn: [ubuntu-22.04, ARM64]
+                runsOn: [ubuntu-22.04] # , ARM64]
         with:
             runsOn: ${{ matrix.runsOn }}
 

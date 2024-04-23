@@ -22,7 +22,7 @@ on:
 
 jobs:
     build:
-        name: amd64 & arm64
+        name: build
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 120
 
