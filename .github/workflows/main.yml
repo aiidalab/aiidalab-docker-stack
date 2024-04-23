@@ -75,6 +75,7 @@ jobs:
         uses: ./.github/workflows/publish_ghcr.yml
         with:
             runsOn: ubuntu-22.04
+            registry: ghcr.io
             images_amd64: ${{ needs.test_amd64.inputs.images }}
             images_arm64: ${{ needs.test_arm64.inputs.images }}
         secrets:
@@ -89,6 +90,7 @@ jobs:
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
+            registry: docker.io
             images: ${{ needs.publish_ghcr.outputs.images }}
         secrets:
             REGISTRY_USERNAME: ${{ secrets.DOCKER_USERNAME }}
