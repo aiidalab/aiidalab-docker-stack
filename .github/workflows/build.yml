@@ -55,7 +55,7 @@ jobs:
               uses: docker/bake-action@v4
               with:
                   set: |
-                      *.tags=
+                      *.tags=tip
                       *.platform=linux/${{ startsWith(inputs.runsOn, 'ubuntu') && 'amd64' || 'arm64' }}
                       *.output=type=image,push-by-digest=true,name-canonical=true,push=true
                   files: |
