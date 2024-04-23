@@ -61,7 +61,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                runsOn: [ubuntu-22.04, buildjet-2vcpu-ubuntu-2204-arm]
+                runsOn: [ubuntu-22.04, ARM64]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runsOn}}
