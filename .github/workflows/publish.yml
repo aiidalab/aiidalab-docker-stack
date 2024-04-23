@@ -1,5 +1,9 @@
 ---
-name: Publish images to DockerHub
+name: Publish images to Docker container registries
+
+env:
+    # https://github.com/docker/metadata-action?tab=readme-ov-file#environment-variables
+    DOCKER_METADATA_PR_HEAD_SHA: true
 
 on:
     workflow_call:
@@ -58,8 +62,10 @@ jobs:
               uses: docker/metadata-action@v5
               env: ${{ fromJSON(steps.build_vars.outputs.vars) }}
               with:
-                  images: ${{ inputs.registry }}/aiidalab/${{ matrix.target }}
+                  # e.g. ghcr.io/aiidalab/full-stack
+                  images: ${{ inputs.registry }}/${{ github.repository_owner }}/${{ matrix.target }}
                   tags: |
+                      type=ref,event=pr
                       type=edge,enable={{is_default_branch}}
                       type=raw,value={{tag}},enable=${{ github.ref_type == 'tag' && ! startsWith(github.ref_name, 'v') }}
                       type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref_type == 'tag'  && startsWith(github.ref_name, 'v') }}
@@ -67,7 +73,7 @@ jobs:
                       type=raw,value=postgresql-${{ env.PGSQL_VERSION }},enable=${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
                       type=match,pattern=v(\d{4}\.\d{4}(-.+)?),group=1
 
-            - name: Determine src image tag
+            - name: Determine source image
               id: images
               run: |
                   src=$(echo '${{ inputs.images }}'| jq -cr '.[("${{ matrix.target }}"|ascii_upcase|sub("-"; "_"; "g")) + "_IMAGE"]')
