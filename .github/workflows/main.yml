@@ -29,7 +29,6 @@ jobs:
             fail-fast: false
             matrix:
                 target: [base, full-stack] #[base, lab, base-with-services, full-stack]
-
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ubuntu-22.04
@@ -52,16 +51,29 @@ jobs:
                 target: [base, full-stack] #[base, lab, base-with-services, full-stack]
         uses: ./.github/workflows/test.yml
         with:
-            runsOn: ARM64
+            runsOn: buildjet-2vcpu-ubuntu-2204-arm
             images: ${{ needs.build-arm64.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
+
+    test-integration:
+        needs: [build-arm64, build-amd64]
+        strategy:
+            fail-fast: false
+            matrix:
+                runsOn: [ubuntu-22.04, buildjet-2vcpu-ubuntu-2204-arm]
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ${{ matrix.runsOn}}
+            images: ${{ startsWith(matrix.runsOn, 'ubuntu') && needs.build-amd64.outputs.images || needs.build-arm64.outputs.images }}
+            target: full-stack
+            integration: true
 
     publish:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build-amd64, test-amd64]
+        needs: [test-amd64, test-arm64]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
