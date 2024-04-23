@@ -59,6 +59,7 @@ jobs:
                   files: |
                       docker-bake.hcl
                       build.json
+                      .github/workflows/env.hcl
 
             - name: Get image names with digests
               id: bake_metadata
