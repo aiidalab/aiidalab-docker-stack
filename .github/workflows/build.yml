@@ -55,7 +55,7 @@ jobs:
               with:
                   push: true
                   set: |
-                      *.platform=linux/${{ inputs.runsOn == 'ARM64' && 'arm64' || 'amd64' }}
+                      *.platform=linux/${{ startsWith(inputs.runsOn, 'ubuntu') && 'amd64' || 'arm64' }}
                   files: |
                       docker-bake.hcl
                       build.json
