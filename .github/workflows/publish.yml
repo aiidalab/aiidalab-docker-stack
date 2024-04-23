@@ -12,11 +12,15 @@ on:
                 description: Images built in build step
                 required: true
                 type: string
+            registry:
+                description: Docker container registry
+                required: true
+                type: string
 
 jobs:
 
     release:
-        name: DockerHub release
+        name: Release to ${{ inputs.registry }}
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 30
         strategy:
@@ -36,6 +40,7 @@ jobs:
 
             - name: Login to DockerHub 🔑
               uses: docker/login-action@v3
+              if: inputs.registry == 'docker.io'
               with:
                   registry: docker.io
                   username: ${{ secrets.DOCKER_USERNAME }}
@@ -53,7 +58,7 @@ jobs:
               uses: docker/metadata-action@v5
               env: ${{ fromJSON(steps.build_vars.outputs.vars) }}
               with:
-                  images: docker.io/aiidalab/${{ matrix.target }}
+                  images: ${{ inputs.registry }}/aiidalab/${{ matrix.target }}
                   tags: |
                       type=edge,enable={{is_default_branch}}
                       type=raw,value={{tag}},enable=${{ github.ref_type == 'tag' && ! startsWith(github.ref_name, 'v') }}
@@ -76,15 +81,10 @@ jobs:
                   dst: ${{ steps.meta.outputs.tags }}
 
             - name: Docker Hub Description
+              if: inputs.registry == 'docker.io'
               uses: peter-evans/dockerhub-description@v4
               with:
                   username: ${{ secrets.DOCKER_USERNAME }}
                   password: ${{ secrets.DOCKER_PASSWORD }}
                   repository: aiidalab/${{ matrix.target }}
                   short-description: ${{ github.event.repository.description }}
-
-            - uses: softprops/action-gh-release@v0.1.14
-              name: Create release
-              if: startsWith(github.ref, 'refs/tags/v')
-              with:
-                  generate_release_notes: true
