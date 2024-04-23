@@ -42,7 +42,7 @@ jobs:
         needs: [build-amd64, test-amd64]
         uses: ./.github/workflows/build.yml
         with:
-            runsOn: buildjet-2vcpu-ubuntu-2204-arm
+            runsOn: buildjet-4vcpu-ubuntu-2204-arm
 
     test-arm64:
         needs: build-arm64
