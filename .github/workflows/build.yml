@@ -49,13 +49,15 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
+              # https://docs.docker.com/build/ci/github-actions/multi-platform/#with-bake
             - name: Build images 🏗️
               id: build
               uses: docker/bake-action@v4
               with:
-                  push: true
                   set: |
+                      *.tags=
                       *.platform=linux/${{ startsWith(inputs.runsOn, 'ubuntu') && 'amd64' || 'arm64' }}
+                      *.output=type=image,push-by-digest=true,name-canonical=true,push=true
                   files: |
                       docker-bake.hcl
                       build.json
