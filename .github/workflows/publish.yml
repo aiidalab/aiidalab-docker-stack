@@ -45,7 +45,6 @@ jobs:
 
             - name: Login to DockerHub 🔑
               uses: docker/login-action@v3
-              if: ${{ inputs.registry != ghcr.io }}
               with:
                   registry: ${{ inputs.registry }}
                   username: ${{ secrets.REGISTRY_USERNAME }}
