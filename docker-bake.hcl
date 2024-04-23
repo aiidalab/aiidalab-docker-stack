@@ -37,10 +37,11 @@ variable "TARGETS" {
   default = ["base", "base-with-services", "lab", "full-stack"]
 }
 
+# TODO: Automatically handle both empty and non-empty VERSION
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}/${ORGANIZATION}/${image}:${VERSION}",
+    "${REGISTRY}/${ORGANIZATION}/${image}${VERSION}",
   ]
 }
 
