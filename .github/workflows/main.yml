@@ -42,7 +42,7 @@ jobs:
         needs: [build-amd64, test-amd64]
         uses: ./.github/workflows/build.yml
         with:
-            runsOn: ARM64
+            runsOn: buildjet-2vcpu-ubuntu-2204-arm
 
     test-arm64:
         needs: build-arm64
@@ -52,7 +52,7 @@ jobs:
                 target: [base, full-stack] #[base, lab, base-with-services, full-stack]
         uses: ./.github/workflows/test.yml
         with:
-            runsOn: ubuntu-22.04
+            runsOn: ARM64
             images: ${{ needs.build-arm64.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
