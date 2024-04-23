@@ -41,8 +41,15 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Set Up Python 🐍
-              if: ${{ inputs.runsOn != 'ARM64' }}
+              if: ${{ startsWith(inputs.runsOn, 'ubuntu') }}
               uses: actions/setup-python@v5
+              with:
+                  python-version: '3.11'
+                  cache: pip
+
+            - name: Set Up Python on buildjet 🐍
+              if: ${{ startsWith(inputs.runsOn, 'buildjet') }}
+              uses: buildjet/setup-python@v5
               with:
                   python-version: '3.11'
                   cache: pip
