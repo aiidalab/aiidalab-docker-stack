@@ -48,7 +48,8 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
       exit 1
     fi
 
-    verdi computer show ${computer_name} || verdi computer setup \
+    # TODO: Load config from YAML file
+    verdi computer setup \
         --non-interactive                                               \
         --label "${computer_name}"                                      \
         --description "this computer"                                   \
@@ -61,17 +62,15 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
     verdi computer configure core.local "${computer_name}" \
         --non-interactive                                               \
         --safe-interval 0.0
+
+else
+
+  # Migration will run for the default profile.
+  verdi storage migrate --force
+
+  # Show the default profile
+  verdi profile show
 fi
-
-
-# Show the default profile
-verdi profile show || echo "The default profile is not set."
-
-# Make sure that the daemon is not running, otherwise the migration will abort.
-verdi daemon stop
-
-# Migration will run for the default profile.
-verdi storage migrate --force
 
 # Daemon will start only if the database exists and is migrated to the latest version.
 verdi daemon start || echo "AiiDA daemon is not running."
