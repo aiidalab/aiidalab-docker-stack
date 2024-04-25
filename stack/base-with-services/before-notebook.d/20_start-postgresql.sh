@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Activate the conda environment with PostgreSQL installed in it.
 # conda activate pgsql

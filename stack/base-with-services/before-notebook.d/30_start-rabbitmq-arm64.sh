@@ -1,5 +1,5 @@
 #!/bin/bash
-set -em
+set -emx
 
 RABBITMQ_DATA_DIR="/home/${NB_USER}/.rabbitmq"
 

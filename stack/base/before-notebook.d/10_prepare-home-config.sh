@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # If the container is start by spawner and the home is remounted.
 # The .bashrc in HOME won't be set properly.
