@@ -58,7 +58,7 @@ jobs:
                   provenance: false
                   set: |
                       *.platform=linux/amd64
-                      *.output=type=docker,push-by-digest=true,name-canonical=true
+                      *.output=type=registry,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
                       build.json
