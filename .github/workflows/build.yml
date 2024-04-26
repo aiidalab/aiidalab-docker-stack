@@ -56,10 +56,10 @@ jobs:
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
-                  push: true
+                  load: true
                   set: |
                       *.platform=linux/amd64
-                      *.output=type=registry,push-by-digest=true,name-canonical=true
+                      *.output=type=image,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
                       build.json
