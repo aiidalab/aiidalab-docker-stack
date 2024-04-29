@@ -16,6 +16,9 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
+env:
+    FORCE_COLOR: 1
+
 jobs:
 
     build:
@@ -45,7 +48,7 @@ jobs:
         with:
             runsOn: ARM64
             images: ${{ needs.build.outputs.images }}
-            target: "full-stack"
+            target: full-stack
             integration: false
 
     test-integration:
@@ -53,21 +56,31 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                runner: ["ubuntu-22.04", "ARM64"]
+                runner: [ubuntu-22.04, ARM64]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
             images: ${{ needs.build.outputs.images }}
-            target: "full-stack"
+            target: full-stack
             integration: true
 
-    publish:
-        if: >-
-            github.repository == 'aiidalab/aiidalab-docker-stack'
-            && (github.ref_type == 'tag' || github.ref_name == 'main')
+    publish-ghcr:
         needs: [build, test-amd64, test-arm64]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
             images: ${{ needs.build.outputs.images }}
+            registry: ghcr.io
+        secrets: inherit
+
+    publish-dockerhub:
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
+        needs: [build, publish-ghcr]
+        uses: ./.github/workflows/publish.yml
+        with:
+            runsOn: ubuntu-22.04
+            images: ${{ needs.build.outputs.images }}
+            registry: docker.io
         secrets: inherit

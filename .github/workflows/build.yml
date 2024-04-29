@@ -2,11 +2,7 @@
 name: Build images and upload them to ghcr.io
 
 env:
-    OWNER: ${{ github.repository_owner }}
-    REGISTRY: ghcr.io
     BUILDKIT_PROGRESS: plain
-    # https://github.com/docker/metadata-action?tab=readme-ov-file#environment-variables
-    DOCKER_METADATA_PR_HEAD_SHA: true
 
 on:
     workflow_call:
@@ -48,54 +44,36 @@ jobs:
             - name: Login to GitHub Container Registry 🔑
               uses: docker/login-action@v3
               with:
-                  registry: ${{ env.REGISTRY }}
+                  registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Generate tags for images on ghcr.io 🏷️
-              id: tags_template
-              uses: docker/metadata-action@v5
-              with:
-                  bake-target: __template__-meta
-                  images: |
-                      name=${{ env.REGISTRY }}/aiidalab/__template__
-                  tags: |
-                      type=ref,event=pr
-                      type=edge,branch=main
-                      type=raw,value={{tag}},enable=${{ github.ref_type == 'tag' && ! startsWith(github.ref_name, 'v') }}
-                      type=raw,value=aiida-${{ env.AIIDA_VERSION }},enable=${{ github.ref_type == 'tag'  && startsWith(github.ref_name, 'v') }}
-                      type=raw,value=python-${{ env.PYTHON_VERSION }},enable=${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
-                      type=raw,value=postgresql-${{ env.PGSQL_VERSION }},enable=${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
-                      type=match,pattern=v(\d{4}\.\d{4}(-.+)?),group=1
-
-            - name: Generate docker-bake metadata file.
-              env:
-                  BAKE_TEMPLATE_FILE: ${{ steps.tags_template.outputs.bake-file }}
-              run: |
-                  .github/workflows/merge-bake-template-target.sh ${BAKE_TEMPLATE_FILE} \
-                    | tee docker-bake-template-meta.json
-
+              # https://docs.docker.com/build/ci/github-actions/multi-platform/#with-bake
             - name: Build amd64 images 🏗️
               id: build-amd64
               uses: docker/bake-action@v4
               with:
-                  push: true
+                  # Using provenance to disable default attestation so it will build only desired images:
+                  # https://github.com/orgs/community/discussions/45969
+                  provenance: false
                   set: |
                       *.platform=linux/amd64
+                      *.output=type=registry,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
                       build.json
-                      docker-bake-template-meta.json
+                      .github/workflows/env.hcl
 
             - name: Get amd64 images with digests
               id: bake_metadata_amd64
               env:
                   BAKE_METADATA: ${{ steps.build-amd64.outputs.metadata }}
               run: |
+                  .github/workflows/extract-image-names.sh
                   .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
 
             - name: Set Up Python 🐍
-              if: ${{ inputs.runner != 'ARM64' }}
+              if: startsWith(inputs.runsOn, 'ubuntu')
               uses: actions/setup-python@v5
               with:
                   python-version: '3.11'
@@ -108,7 +86,7 @@ jobs:
 
               # We run tests here to catch issues early, before running arm64 build which is slow
             - name: Run tests for full-stack image
-              run: REGISTRY= pytest -m "not integration" --target full-stack
+              run: pytest -m "not integration" --target full-stack
               env: ${{ fromJSON(steps.bake_metadata_amd64.outputs.images) }}
 
               # Here we build arm64 images (with help of QEMU virtualization)
@@ -124,10 +102,11 @@ jobs:
                   # NOTE: linux/amd64 images are taken from previous step
                   set: |
                       *.platform=linux/amd64,linux/arm64
+                      *.output=type=registry,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
                       build.json
-                      docker-bake-template-meta.json
+                      .github/workflows/env.hcl
 
             - name: Set output variables
               id: bake_metadata
