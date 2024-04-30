@@ -33,11 +33,10 @@ jobs:
             fail-fast: false
             matrix:
                 target: ["base", "lab", "base-with-services", "full-stack"]
-
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ubuntu-22.04
-            images: ${{ needs.build.outputs.images }}
+            images: ${{ needs.build-amd64.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
 
