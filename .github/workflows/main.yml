@@ -21,25 +21,31 @@ env:
 
 jobs:
 
-    build:
+    build-amd64:
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-22.04
+            platforms: linux/amd64
 
     test-amd64:
-        needs: build
+        needs: build-amd64
         strategy:
             fail-fast: false
             matrix:
-                # NOTE: amd64 full-stack image is tested during build step
-                target: ["base", "lab", "base-with-services"]
-
+                target: ["base", "lab", "base-with-services", "full-stack"]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ubuntu-22.04
-            images: ${{ needs.build.outputs.images }}
+            images: ${{ needs.build-amd64.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
+
+    build:
+        needs: test-amd64
+        uses: ./.github/workflows/build.yml
+        with:
+            runsOn: ubuntu-22.04
+            platforms: linux/amd64,linux/arm64
 
     # To save self-hosted runner resources, we're only testing full-stack image
     test-arm64:
