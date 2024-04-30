@@ -20,7 +20,7 @@ ARG TARGETARCH
 # Note that system erlang from arm64 is already installed in the base image,
 # together with other APT dependencies to save build time.
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
-     mamba install -p /opt/conda/envs/aiida-core-services --yes \
+     mamba create -p /opt/conda/envs/aiida-core-services --yes \
          postgresql=${PGSQL_VERSION} \
          rabbitmq-server=3.8.14  && \
      mamba clean --all -f -y && \
