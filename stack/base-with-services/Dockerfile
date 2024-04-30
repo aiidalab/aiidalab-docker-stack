@@ -18,7 +18,9 @@ RUN mamba create -p /opt/conda/envs/aiida-core-services --yes \
 
 # Install RabbitMQ in a dedicated conda environment.
 # If the architecture is arm64, we install the default version of rabbitmq provided by the generic binary,
-# # https://www.rabbitmq.com/install-generic-unix.html the version needs to be compatible with system's erlang version.
+# https://www.rabbitmq.com/install-generic-unix.html the version needs to be compatible with system's erlang version.
+# Note that system erlang from arm64 is already installed in the base image, together with other APT dependencies
+# to save build time.
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
      mamba install -p /opt/conda/envs/aiida-core-services --yes \
           rabbitmq-server=3.8.14  && \
@@ -26,10 +28,6 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"; \
 elif [ "$TARGETARCH" = "arm64" ]; then \
-     apt-get update && apt-get install -y --no-install-recommends  \
-          erlang && \
-     rm -rf /var/lib/apt/lists/* && \
-     apt-get clean all && \
      export RMQ_VERSION=3.9.13 && \
      wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      tar -xf rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
@@ -38,7 +36,7 @@ elif [ "$TARGETARCH" = "arm64" ]; then \
      fix-permissions "/opt/conda/envs/aiida-core-services/rabbitmq_server-${RMQ_VERSION}" && \
      ln -sf /opt/conda/envs/aiida-core-services/rabbitmq_server-${RMQ_VERSION}/sbin/* /opt/conda/envs/aiida-core-services/bin/; \
 else \
-   echo "Unknown architecture: ${TARGETARCH}."; \
+     echo "Unknown architecture: ${TARGETARCH}."; \
 fi
 
 # Configure AiiDA profile.
