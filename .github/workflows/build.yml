@@ -11,6 +11,10 @@ on:
                 description: GitHub Actions Runner image
                 required: true
                 type: string
+            platforms:
+                description: Target platforms for the build (linux/amd64 and/or linux/arm64)
+                required: true
+                type: string
         outputs:
             images:
                 description: Built images, identified with digests
@@ -18,7 +22,7 @@ on:
 
 jobs:
     build:
-        name: amd64 & arm64
+        name: build ${{ inputs.platforms }}
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 120
 
@@ -48,50 +52,7 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-              # https://docs.docker.com/build/ci/github-actions/multi-platform/#with-bake
-            - name: Build amd64 images 🏗️
-              id: build-amd64
-              uses: docker/bake-action@v4
-              with:
-                  # Using provenance to disable default attestation so it will build only desired images:
-                  # https://github.com/orgs/community/discussions/45969
-                  provenance: false
-                  set: |
-                      *.platform=linux/amd64
-                      *.output=type=registry,push-by-digest=true,name-canonical=true
-                  files: |
-                      docker-bake.hcl
-                      build.json
-                      .github/workflows/env.hcl
-
-            - name: Get amd64 images with digests
-              id: bake_metadata_amd64
-              env:
-                  BAKE_METADATA: ${{ steps.build-amd64.outputs.metadata }}
-              run: |
-                  .github/workflows/extract-image-names.sh
-                  .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
-
-            - name: Set Up Python 🐍
-              if: startsWith(inputs.runsOn, 'ubuntu')
-              uses: actions/setup-python@v5
-              with:
-                  python-version: '3.11'
-                  cache: pip
-
-            - name: Install dependencies 📦
-              run: |
-                  pip install -r requirements.txt
-                  pip freeze
-
-              # We run tests here to catch issues early, before running arm64 build which is slow
-            - name: Run tests for full-stack image
-              run: pytest -m "not integration" --target full-stack
-              env: ${{ fromJSON(steps.bake_metadata_amd64.outputs.images) }}
-
-              # Here we build arm64 images (with help of QEMU virtualization)
-              # and upload both amd64 and arm64 images to ghcr.io
-            - name: Build ARM64 and upload to ghcr.io 🍎📤
+            - name: Build and upload to ghcr.io 📤
               id: build-upload
               uses: docker/bake-action@v4
               with:
@@ -99,9 +60,8 @@ jobs:
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
-                  # NOTE: linux/amd64 images are taken from previous step
                   set: |
-                      *.platform=linux/amd64,linux/arm64
+                      *.platform=${{ inputs.platforms }}
                       *.output=type=registry,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
@@ -110,6 +70,7 @@ jobs:
 
             - name: Set output variables
               id: bake_metadata
-              run: .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
+              run: |
+                  .github/workflows/extract-image-names.sh | tee -a "${GITHUB_OUTPUT}"
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
