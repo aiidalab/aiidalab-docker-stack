@@ -27,7 +27,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"; \
 elif [ "$TARGETARCH" = "arm64" ]; then \
-     mamba install -p /opt/conda/envs/aiida-core-services --yes \
+     mamba create -p /opt/conda/envs/aiida-core-services --yes \
          postgresql=${PGSQL_VERSION} \
      mamba clean --all -f -y && \
      export RMQ_VERSION=3.9.13 && \
