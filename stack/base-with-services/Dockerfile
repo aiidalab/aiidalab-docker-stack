@@ -28,7 +28,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
      fix-permissions "/home/${NB_USER}"; \
 elif [ "$TARGETARCH" = "arm64" ]; then \
      mamba create -p /opt/conda/envs/aiida-core-services --yes \
-         postgresql=${PGSQL_VERSION} \
+         postgresql=${PGSQL_VERSION} && \
      mamba clean --all -f -y && \
      export RMQ_VERSION=3.9.13 && \
      wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
