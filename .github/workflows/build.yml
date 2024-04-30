@@ -17,7 +17,7 @@ on:
                 type: string
         outputs:
             images:
-                description: Built images, identified with digests
+                description: Images identified by digests
                 value: ${{ jobs.build.outputs.images }}
 
 jobs:
@@ -40,6 +40,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Set up QEMU
+              if: ${{ inputs.platforms != 'linux/amd64' }}
               uses: docker/setup-qemu-action@v3
 
             - name: Set up Docker Buildx
@@ -71,6 +72,7 @@ jobs:
             - name: Set output variables
               id: bake_metadata
               run: |
-                  .github/workflows/extract-image-names.sh | tee -a "${GITHUB_OUTPUT}"
+                  .github/workflows/extract-image-names.sh
+                  .github/workflows/extract-image-names.sh >> "${GITHUB_OUTPUT}"
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
