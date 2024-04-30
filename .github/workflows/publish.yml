@@ -54,8 +54,7 @@ jobs:
               id: build_vars
               run: |
                   vars=$(cat build.json | jq -c '[.variable | to_entries[] | {"key": .key, "value": .value.default}] | from_entries')
-                  echo "vars=$vars"
-                  echo "vars=$vars" >> "${GITHUB_OUTPUT}"
+                  echo "vars=$vars" | tee -a "${GITHUB_OUTPUT}"
 
             - name: Docker meta
               id: meta
@@ -77,8 +76,7 @@ jobs:
               id: images
               run: |
                   src=$(echo '${{ inputs.images }}'| jq -cr '.[("${{ matrix.target }}"|ascii_upcase|sub("-"; "_"; "g")) + "_IMAGE"]')
-                  echo "src=$src"
-                  echo "src=$src" >> "${GITHUB_OUTPUT}"
+                  echo "src=$src" | tee -a "${GITHUB_OUTPUT}"
 
             - name: Push image
               uses: akhilerm/tag-push-action@v2.2.0
