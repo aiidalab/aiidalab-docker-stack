@@ -5,17 +5,19 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
 USER root
 
+# build-essential: includes GCC compilers that are needed when building
+# pip packages from sources, which often seems to happen for pymatgen:
+# https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
+# rsync: needed to support the new AiiDA backup command
+# povray: rendering engine used in aiidalab-widgets-base
+ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential"
 RUN apt-get update --yes && \
-    apt-get install --yes --no-install-recommends \
-    # for apps which need to install pymatgen:
-    # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
-    build-essential && \
+    apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/
 
 ARG AIIDA_VERSION
-
 # Pin shared requirements in the base environment.
 # We pin aiida-core to the exact installed version,
 # to prevent accidental upgrade or downgrade, that might
