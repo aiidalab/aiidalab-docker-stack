@@ -46,7 +46,7 @@ _ORGANIZATION_PARAM = {
 _VERSION_PARAM = {
     "name": "version",
     "long": "version",
-    "type": "str",
+    "type": str,
     "default": VERSION,
     "help": (
         "Specify the version of the stack for building / testing. Defaults to a "
@@ -67,7 +67,7 @@ _TARGET_PARAM = {
     "long": "targets",
     "short": "t",
     "type": list,
-    "default": ["base", "lab", "base-with-services", "full-stack"],
+    "default": [],
     "help": "Specify the target to build.",
 }
 
@@ -79,18 +79,18 @@ def task_build():
         version, registry, targets, architecture, organization
     ):
         platforms = [f"linux/{architecture}"]
+        overrides = {
+            "VERSION": f":{version}",
+            "REGISTRY": registry,
+            "ORGANIZATION": organization,
+            "PLATFORMS": platforms,
+        }
+        # If no targets are specifies, we're build all images,
+        # as specified in docker-bake.hcl
+        if targets:
+            overrides["TARGETS"] = targets
 
-        Path("docker-bake.override.json").write_text(
-            json.dumps(
-                {
-                    "VERSION": f":{version}",
-                    "REGISTRY": registry,
-                    "TARGETS": targets,
-                    "ORGANIZATION": organization,
-                    "PLATFORMS": platforms,
-                }
-            )
-        )
+        Path("docker-bake.override.json").write_text(json.dumps(overrides))
 
     return {
         "actions": [
@@ -114,9 +114,10 @@ def task_build():
 def task_tests():
     """Run tests with pytest."""
 
+    # TODO: This currently does not work!
     return {
         "actions": ["REGISTRY=%(registry)s VERSION=:%(version)s pytest -v"],
-        "params": [_REGISTRY_PARAM, _VERSION_PARAM],
+        "params": [_REGISTRY_PARAM, _VERSION_PARAM, _TARGET_PARAM],
         "verbosity": 2,
     }
 
