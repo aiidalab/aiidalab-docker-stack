@@ -63,7 +63,7 @@ jobs:
                   provenance: false
                   set: |
                       *.platform=${{ inputs.platforms }}
-                      *.output=type=registry,name-canonical=true
+                      *.output=type=registry,push-by-digest=true,name-canonical=true
                   files: |
                       docker-bake.hcl
                       build.json
