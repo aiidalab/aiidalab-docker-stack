@@ -62,6 +62,15 @@ _ARCH_PARAM = {
     "help": "Specify the platform to build for. Examples: arm64, amd64.",
 }
 
+_TARGET_PARAM = {
+    "name": "targets",
+    "long": "targets",
+    "short": "t",
+    "type": list,
+    "default": ["base", "lab", "base-with-services", "full-stack"],
+    "help": "Specify the target to build.",
+}
+
 
 def task_build():
     """Build all docker images."""
@@ -74,7 +83,7 @@ def task_build():
         Path("docker-bake.override.json").write_text(
             json.dumps(
                 {
-                    "VERSION": version,
+                    "VERSION": f":{version}",
                     "REGISTRY": registry,
                     "TARGETS": targets,
                     "ORGANIZATION": organization,
@@ -96,14 +105,7 @@ def task_build():
             _REGISTRY_PARAM,
             _VERSION_PARAM,
             _ARCH_PARAM,
-            {
-                "name": "targets",
-                "long": "targets",
-                "short": "t",
-                "type": list,
-                "default": [],
-                "help": "Specify the target to build.",
-            },
+            _TARGET_PARAM,
         ],
         "verbosity": 2,
     }

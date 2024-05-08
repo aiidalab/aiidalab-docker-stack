@@ -22,7 +22,7 @@ on:
 
 jobs:
     build:
-        name: build ${{ inputs.platforms }}
+        name: ${{ inputs.platforms }}
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 120
 
