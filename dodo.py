@@ -85,7 +85,7 @@ def task_build():
             "ORGANIZATION": organization,
             "PLATFORMS": platforms,
         }
-        # If no targets are specifies, we're build all images,
+        # If no targets are specifies via cmdline, we'll build all images,
         # as specified in docker-bake.hcl
         if targets:
             overrides["TARGETS"] = targets
