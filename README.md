@@ -14,10 +14,10 @@ Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
 - `edge` – the latest commit on the default branch (`main`)
 - `latest` – the latest _regular_ release
 - `aiida-$AIIDA_VERSION` – the _latest_ regular release with that AiiDA version (ex. `aiida-2.0.0`)
-- `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.2`)
+- `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.13`)
 - `$version` – the version of a specific release (ex. `2022.1001`)
 
-In addition, `edge`, `latest`, and `$version` are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
+In addition, images are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
 Pull requests into the default branch are further released on ghcr.io with the `pr-###` tag to simplify the testing of development versions.
 
 ## Quickstart
@@ -83,19 +83,18 @@ This will update the README.md file, make a commit, tag it, and then push both t
 
 To create a _special_ release, simply tag it with a tag name of your choice with the exception that it cannot start with the character `v`.
 
-## Deploy AiiDAlab with AiiDAlab Launch
+## Deploy AiiDAlab with aiidalab-launch
 
-The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
-To use it, simply install it via pip
+The [aiidalab-launch](https://github.com/aiidalab/aiidalab-launch) tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
+To use it, simply install it via pipx
 ```console
-pip install aiidalab-launch
+pipx install aiidalab-launch
 ```
-and then start AiiDAlab with
+and then start AiiDAlab container with
 ```console
 aiidalab-launch start
 ```
-Note: AiiDAlab will keep running until you explicitly stop it or shutdown/restart your computer.
-In that case, you will have to run the `aiidalab-launch start` command again to restart AiiDAlab.
+Note: AiiDAlab will keep running until you explicitly stop it with `aiidalab-launch stop` or shutdown/restart your computer.
 
 Please see `aiidalab-launch --help` for a full list of available commands and options.
 
