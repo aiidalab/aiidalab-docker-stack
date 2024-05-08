@@ -24,7 +24,6 @@ on:
 jobs:
 
     release:
-        name: Release to ${{ inputs.registry }}
         runs-on: ${{ inputs.runsOn }}
         timeout-minutes: 30
         strategy:
