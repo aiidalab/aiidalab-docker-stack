@@ -47,13 +47,6 @@ jobs:
                   python-version: '3.11'
                   cache: pip
 
-            - name: Set Up Python on buildjet 🐍
-              if: ${{ startsWith(inputs.runsOn, 'buildjet') }}
-              uses: buildjet/setup-python@v5
-              with:
-                  python-version: '3.11'
-                  cache: pip
-
             - name: Install dependencies 📦
               run: |
                   pip install -r requirements.txt
