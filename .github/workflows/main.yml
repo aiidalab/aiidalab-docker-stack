@@ -3,6 +3,14 @@ name: Docker
 
 on:
     pull_request:
+        paths-ignore:
+            - "**.md"
+            - ruff.toml
+            - bumpver.toml
+            - .pre-commit-config.yaml
+            # We use doit only for local builds
+            - dodo.py
+            - aarch64-runner/**
     push:
         branches:
             - main
@@ -62,6 +70,7 @@ jobs:
             integration: false
 
     test-integration:
+        name: Integration tests
         needs: build
         strategy:
             fail-fast: false
