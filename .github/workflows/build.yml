@@ -64,6 +64,8 @@ jobs:
                   set: |
                       *.platform=${{ inputs.platforms }}
                       *.output=type=registry,push-by-digest=true,name-canonical=true
+                      *.cache-to=type=gha,scope=${{ github.workflow }},mode=max
+                      *.cache-from=type=gha,scope=${{ github.workflow }}
                   files: |
                       docker-bake.hcl
                       build.json
