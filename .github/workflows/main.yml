@@ -52,7 +52,7 @@ jobs:
         needs: build
         uses: ./.github/workflows/test.yml
         with:
-            runsOn: ARM64
+            runsOn: buildjet-4vcpu-ubuntu-2204-arm
             images: ${{ needs.build.outputs.images }}
             target: full-stack
             integration: false
@@ -62,7 +62,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                runner: [ubuntu-22.04, ARM64]
+                runner: [ubuntu-22.04, buildjet-4vcpu-ubuntu-2204-arm]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
