@@ -47,8 +47,12 @@ jobs:
             runsOn: ubuntu-22.04
             platforms: linux/amd64,linux/arm64
 
-    # To save self-hosted runner resources, we're only testing full-stack image
+    # To save arm64 runner resources, we run the tests only on main
+    # and only for full-stack image (same for integration tests below).
     test-arm64:
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs: build
         uses: ./.github/workflows/test.yml
         with:
@@ -58,6 +62,9 @@ jobs:
             integration: false
 
     test-integration:
+        if: >-
+            startsWith(matrix.runner, 'ubuntu')
+            || github.ref_type == 'tag' || github.ref_name == 'main'
         needs: build
         strategy:
             fail-fast: false
@@ -71,7 +78,7 @@ jobs:
             integration: true
 
     publish-ghcr:
-        needs: [build, test-amd64, test-arm64]
+        needs: [build, test-amd64]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
@@ -83,7 +90,7 @@ jobs:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build, publish-ghcr]
+        needs: [build, test-amd64, test-arm64, publish-ghcr]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
