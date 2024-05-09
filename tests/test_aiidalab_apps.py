@@ -1,6 +1,8 @@
 import pytest
 
-# Tests in this file should pass for the following images
+pytestmark = pytest.mark.integration
+# Integration tests for the full-stack image.
+# Here we make sure we can install aiidalab-widgets-base and aiidalab-qe apps
 TESTED_TARGETS = "full-stack"
 
 
@@ -14,19 +16,25 @@ def skip_if_incompatible_target(target):
 
 @pytest.fixture(scope="function")
 def generate_aiidalab_install_output(aiidalab_exec, nb_user):
+    pkg = None
+
     def _generate_aiidalab_install_output(package_name):
+        nonlocal pkg
+        pkg = package_name
         cmd = f"aiidalab install --yes --pre {package_name}"
+
         output = aiidalab_exec(cmd, user=nb_user).strip()
-
         output += aiidalab_exec("pip check", user=nb_user).strip()
-
-        # Uninstall the package to make sure the test is repeatable
-        app_name = package_name.split("@")[0]
-        aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
-
         return output
 
-    return _generate_aiidalab_install_output
+    # Uninstall the package to make sure the test is repeatable.
+    # NOTE: This will only uninstall the package itself, not its dependencies!
+    # Since the dependencies are installed via pip, this is basically a pip limitation
+    # that would be hard to workaround here.
+    yield _generate_aiidalab_install_output
+    if pkg:
+        app_name = pkg.split("@")[0]
+        aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
 
 
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "quantum-espresso"])

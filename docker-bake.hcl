@@ -26,7 +26,6 @@ variable "ORGANIZATION" {
 }
 
 variable "REGISTRY" {
-  default = "docker.io/"
 }
 
 variable "PLATFORMS" {
@@ -40,8 +39,15 @@ variable "TARGETS" {
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:newly-build",
+    "${REGISTRY}${ORGANIZATION}/${image}${VERSION}",
   ]
+}
+
+# Get a Python version string without the patch version (e.g. "3.9.13" -> "3.9")
+# Used to construct paths to Python site-packages folder.
+function "get_python_minor_version" {
+  params = [python_version]
+  result = join(".", slice(split(".", "${python_version}"), 0, 2))
 }
 
 group "default" {
@@ -83,9 +89,6 @@ target "base-with-services" {
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
   }
 }
-# PYTHON_MINOR_VERSION is a Python version string
-# without the patch version (e.g. "3.9")
-# Used to construct paths to Python site-packages folder.
 target "lab" {
   inherits = ["lab-meta"]
   context = "stack/lab"
@@ -96,7 +99,7 @@ target "lab" {
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
-    "PYTHON_MINOR_VERSION" = join(".", slice(split(".", "${PYTHON_VERSION}"), 0, 2))
+    "PYTHON_MINOR_VERSION" = get_python_minor_version("${PYTHON_VERSION}")
   }
 }
 target "full-stack" {

@@ -46,7 +46,7 @@ _ORGANIZATION_PARAM = {
 _VERSION_PARAM = {
     "name": "version",
     "long": "version",
-    "type": "str",
+    "type": str,
     "default": VERSION,
     "help": (
         "Specify the version of the stack for building / testing. Defaults to a "
@@ -62,6 +62,15 @@ _ARCH_PARAM = {
     "help": "Specify the platform to build for. Examples: arm64, amd64.",
 }
 
+_TARGET_PARAM = {
+    "name": "targets",
+    "long": "targets",
+    "short": "t",
+    "type": list,
+    "default": [],
+    "help": "Specify the target to build.",
+}
+
 
 def task_build():
     """Build all docker images."""
@@ -70,18 +79,18 @@ def task_build():
         version, registry, targets, architecture, organization
     ):
         platforms = [f"linux/{architecture}"]
+        overrides = {
+            "VERSION": f":{version}",
+            "REGISTRY": registry,
+            "ORGANIZATION": organization,
+            "PLATFORMS": platforms,
+        }
+        # If no targets are specifies via cmdline, we'll build all images,
+        # as specified in docker-bake.hcl
+        if targets:
+            overrides["TARGETS"] = targets
 
-        Path("docker-bake.override.json").write_text(
-            json.dumps(
-                {
-                    "VERSION": version,
-                    "REGISTRY": registry,
-                    "TARGETS": targets,
-                    "ORGANIZATION": organization,
-                    "PLATFORMS": platforms,
-                }
-            )
-        )
+        Path("docker-bake.override.json").write_text(json.dumps(overrides))
 
     return {
         "actions": [
@@ -96,14 +105,7 @@ def task_build():
             _REGISTRY_PARAM,
             _VERSION_PARAM,
             _ARCH_PARAM,
-            {
-                "name": "targets",
-                "long": "targets",
-                "short": "t",
-                "type": list,
-                "default": [],
-                "help": "Specify the target to build.",
-            },
+            _TARGET_PARAM,
         ],
         "verbosity": 2,
     }
@@ -112,9 +114,11 @@ def task_build():
 def task_tests():
     """Run tests with pytest."""
 
+    # TODO: This currently does not work!
+    # https://github.com/aiidalab/aiidalab-docker-stack/issues/451
     return {
         "actions": ["REGISTRY=%(registry)s VERSION=:%(version)s pytest -v"],
-        "params": [_REGISTRY_PARAM, _VERSION_PARAM],
+        "params": [_REGISTRY_PARAM, _VERSION_PARAM, _TARGET_PARAM],
         "verbosity": 2,
     }
 

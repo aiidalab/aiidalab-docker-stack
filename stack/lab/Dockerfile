@@ -13,14 +13,6 @@ ENV DOCKER_STACKS_JUPYTER_CMD=notebook
 USER root
 WORKDIR /opt/
 
-# Install additional system packages
-RUN apt-get update --yes && \
-     apt-get install --yes --no-install-recommends \
-     curl \
-     povray \
-     && apt-get clean \
-     && rm -rf /var/lib/apt/lists/*
-
 # Install aiidalab package
 ARG AIIDALAB_VERSION
 RUN mamba install --yes \

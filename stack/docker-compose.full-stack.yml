@@ -4,7 +4,7 @@ version: '3.4'
 services:
 
     aiidalab:
-        image: ${REGISTRY:-}${FULL_STACK_IMAGE:-aiidalab/full-stack}:${VERSION:-newly-build}
+        image: ${REGISTRY:-}${FULL_STACK_IMAGE:-aiidalab/full-stack}${VERSION:-}
         environment:
             TZ: Europe/Zurich
             DOCKER_STACKS_JUPYTER_CMD: notebook

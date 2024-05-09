@@ -71,4 +71,5 @@ brew install docker
 brew install docker-compose
 brew install docker-buildx
 brew install colima
+brew install jq
 EOF
