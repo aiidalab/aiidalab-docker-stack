@@ -62,14 +62,19 @@ jobs:
             integration: false
 
     test-integration:
-        if: >-
-            startsWith(matrix.runner, 'ubuntu')
-            || github.ref_type == 'tag' || github.ref_name == 'main'
         needs: build
         strategy:
             fail-fast: false
+            # Trick to exclude arm64 tests from PRs
+            # https://github.com/orgs/community/discussions/26253
             matrix:
                 runner: [ubuntu-22.04, buildjet-4vcpu-ubuntu-2204-arm]
+                isPR:
+                    - ${{ github.event_name == 'pull_request' }}
+                exclude:
+                    - isPR: true
+                      runner: buildjet-4vcpu-ubuntu-2204-arm
+
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
