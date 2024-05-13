@@ -3,6 +3,14 @@ name: Docker
 
 on:
     pull_request:
+        paths-ignore:
+            - "**.md"
+            - ruff.toml
+            - bumpver.toml
+            - .pre-commit-config.yaml
+            # We use doit only for local builds
+            - dodo.py
+            - aarch64-runner/**
     push:
         branches:
             - main
@@ -47,8 +55,12 @@ jobs:
             runsOn: ubuntu-22.04
             platforms: linux/amd64,linux/arm64
 
-    # To save self-hosted runner resources, we're only testing full-stack image
+    # To save arm64 runner resources, we run the tests only on main
+    # and only for full-stack image (same for integration tests below).
     test-arm64:
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs: build
         uses: ./.github/workflows/test.yml
         with:
@@ -58,11 +70,20 @@ jobs:
             integration: false
 
     test-integration:
+        name: Integration tests
         needs: build
         strategy:
             fail-fast: false
+            # Trick to exclude arm64 tests from PRs
+            # https://github.com/orgs/community/discussions/26253
             matrix:
                 runner: [ubuntu-22.04, buildjet-4vcpu-ubuntu-2204-arm]
+                isPR:
+                    - ${{ github.event_name == 'pull_request' }}
+                exclude:
+                    - isPR: true
+                      runner: buildjet-4vcpu-ubuntu-2204-arm
+
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
@@ -71,7 +92,7 @@ jobs:
             integration: true
 
     publish-ghcr:
-        needs: [build, test-amd64, test-arm64]
+        needs: [build, test-amd64]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
@@ -83,7 +104,7 @@ jobs:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build, publish-ghcr]
+        needs: [build, test-amd64, test-arm64, publish-ghcr]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
