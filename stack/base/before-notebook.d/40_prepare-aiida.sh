@@ -1,15 +1,12 @@
 #!/bin/bash
 
 # This script is executed whenever the docker container is (re)started.
-
-# Debugging.
 set -x
 
-# Environment.
 export SHELL=/bin/bash
 
 # Check if user requested to set up AiiDA profile (and if it exists already)
-if [[ ${SETUP_DEFAULT_AIIDA_PROFILE} == true ]] && ! verdi profile show ${AIIDA_PROFILE_NAME} &> /dev/null; then
+if [[ ${SETUP_DEFAULT_AIIDA_PROFILE} == true ]] && ! verdi profile show ${AIIDA_PROFILE_NAME} 2> /dev/null; then
     NEED_SETUP_PROFILE=true;
 else
     NEED_SETUP_PROFILE=false;
@@ -48,7 +45,6 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
       exit 1
     fi
 
-    # TODO: Load config from YAML file
     verdi computer setup \
         --non-interactive                                               \
         --label "${computer_name}"                                      \
@@ -68,9 +64,7 @@ else
   # Migration will run for the default profile.
   verdi storage migrate --force
 
-  # Show the default profile
-  verdi profile show
 fi
 
 # Daemon will start only if the database exists and is migrated to the latest version.
-verdi daemon start || echo "AiiDA daemon is not running."
+verdi daemon start || echo "ERROR: AiiDA daemon is not running!"
