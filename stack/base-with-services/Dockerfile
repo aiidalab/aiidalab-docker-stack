@@ -58,4 +58,4 @@ USER ${NB_USER}
 WORKDIR "/home/${NB_USER}"
 
 # Initialize the database
-RUN mamba run -n aiida-core-services initdb -D aiida_db -U aiida
+RUN mamba run -n aiida-core-services initdb -D /home/${NB_USER}/.postgresql
