@@ -11,7 +11,7 @@ MAMBA_RUN="mamba run -n aiida-core-services"
 # make DB directory, if not existent
 if [ ! -d /home/${NB_USER}/.postgresql ]; then
    mkdir /home/${NB_USER}/.postgresql
-   ${MAMBA_RUN} initdb -D /home/${NB_USER}/.postgresql
+   ${MAMBA_RUN} initdb
    echo "unix_socket_directories = '/tmp'" >> /home/${NB_USER}/.postgresql/postgresql.conf
    ${MAMBA_RUN} ${PSQL_START_CMD}
 

@@ -9,6 +9,9 @@ WORKDIR /opt/
 ARG AIIDA_VERSION
 ARG PGSQL_VERSION
 ARG TARGETARCH
+# Location of the Postgresql DB
+# This variable is automatically picked up by initdb
+ARG ENV PGDATA=/home/${NB_USER}/.posgresql
 
 # Install RabbitMQ and PostgreSQL in a dedicated conda environment.
 #
@@ -58,4 +61,4 @@ USER ${NB_USER}
 WORKDIR "/home/${NB_USER}"
 
 # Initialize the database
-RUN mamba run -n aiida-core-services initdb -D /home/${NB_USER}/.postgresql
+RUN mamba run -n aiida-core-services initdb
