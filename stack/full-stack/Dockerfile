@@ -3,7 +3,7 @@ FROM base-with-services as base
 ARG PGDATA_FOLDER
 
 FROM lab
-ARG PGDATA_FOLDER
+
 ENV PGDATA=${PGDATA_FOLDER}
 
 USER root
