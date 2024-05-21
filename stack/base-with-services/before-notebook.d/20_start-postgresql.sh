@@ -18,7 +18,7 @@ if [ ! -d ${PGDATA} ]; then
 else
     # Fix problem with kubernetes cluster that adds rws permissions to the group
     # for more details see: https://github.com/materialscloud-org/aiidalab-z2jh-eosc/issues/5
-    chmod g-rwxs ${PGDATA} -R
+    chmod -R g-rwxs ${PGDATA}
 
     if ! ${MAMBA_RUN} ${PSQL_STATUS_CMD}; then
        # Cleaning up the mess if Postgresql was not shutdown properly.

@@ -11,7 +11,7 @@ ARG PGSQL_VERSION
 ARG TARGETARCH
 # Location of the Postgresql DB
 # This variable is automatically picked up by initdb
-ENV PGDATA=/home/${NB_USER}/.posgresql
+ENV PGDATA=/home/${NB_USER}/.postgresql
 
 # Install RabbitMQ and PostgreSQL in a dedicated conda environment.
 #
