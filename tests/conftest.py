@@ -32,11 +32,23 @@ def pytest_addoption(parser):
         help="target (image name) of the docker-compose file to use.",
         type=target_checker,
     )
+    parser.addoption(
+        "--compose-cmd",
+        action="store",
+        required=False,
+        default="docker compose",
+        help="Specify custom docker compose command (e.g. 'podman-compose').",
+    )
 
 
 @pytest.fixture(scope="session")
 def target(pytestconfig):
     return pytestconfig.getoption("target")
+
+
+@pytest.fixture(scope="session")
+def docker_compose_command(pytestconfig) -> str:
+    return pytestconfig.getoption("compose_cmd")
 
 
 @pytest.fixture(scope="session")
@@ -76,9 +88,12 @@ def aiidalab_exec(notebook_service, docker_compose):
     return execute
 
 
-@pytest.fixture
-def nb_user(aiidalab_exec):
-    return aiidalab_exec("bash -c 'echo \"${NB_USER}\"'").strip()
+@pytest.fixture(scope="session")
+def nb_user():
+    # Let's make this simpler and return a constant value to speed up the tests,
+    # otherwise we'd need to execute the following command for every test.
+    # return aiidalab_exec("bash -c 'echo \"${NB_USER}\"'").strip()
+    return "jovyan"
 
 
 @pytest.fixture
