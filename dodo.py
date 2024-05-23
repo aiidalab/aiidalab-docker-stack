@@ -15,15 +15,17 @@ VERSION = Version.from_git().serialize().replace("+", "_")
 
 _ARCH_MAPPING = {
     "x86_64": "amd64",
+    "amd64": "amd64",
     "aarch64": "arm64",
 }
 
 ARCH = _ARCH_MAPPING.get(_DOCKER_ARCHITECTURE)
 
 if ARCH is None:
-    raise RuntimeError(
-        f"Unsupported architecture {ARCH} on platform {platform.system()}."
+    print(
+        f"Unsupported architecture {_DOCKER_ARCHITECTURE} on platform {platform.system()}."
     )
+    exit(1)
 
 _REGISTRY_PARAM = {
     "name": "registry",
@@ -31,7 +33,7 @@ _REGISTRY_PARAM = {
     "long": "registry",
     "type": str,
     "default": "",
-    "help": "Specify the docker image registry.",
+    "help": "Specify the docker image registry (without the trailing slash).",
 }
 
 _ORGANIZATION_PARAM = {
@@ -63,12 +65,27 @@ _ARCH_PARAM = {
 }
 
 _TARGET_PARAM = {
-    "name": "targets",
-    "long": "targets",
+    "name": "target",
+    "long": "target",
     "short": "t",
-    "type": list,
-    "default": [],
+    "type": str,
+    "choices": (
+        ("base", ""),
+        ("base-with-services", ""),
+        ("lab", ""),
+        ("full-stack", ""),
+    ),
+    "default": "",
     "help": "Specify the target to build.",
+}
+
+_AIIDALAB_PORT_PARAM = {
+    "name": "port",
+    "short": "p",
+    "long": "port",
+    "type": int,
+    "default": 8888,
+    "help": "Specify the AiiDAlab host port.",
 }
 
 
@@ -81,7 +98,7 @@ def task_build():
         platforms = [f"linux/{architecture}"]
         overrides = {
             "VERSION": f":{version}",
-            "REGISTRY": registry,
+            "REGISTRY": f"{registry}/",
             "ORGANIZATION": organization,
             "PLATFORMS": platforms,
         }
@@ -114,35 +131,48 @@ def task_build():
 def task_tests():
     """Run tests with pytest."""
 
-    # TODO: This currently does not work!
-    # https://github.com/aiidalab/aiidalab-docker-stack/issues/451
+    def target_required(port, registry, version, target):  # noqa: ARG001
+        if not target:
+            print("ERROR: Target image must be with '--target' option for testing")
+            return False
+        return True
+
     return {
         "actions": [
-            "REGISTRY=%(registry)s VERSION=:%(version)s pytest -v --target %(target)s"
+            target_required,
+            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s/ VERSION=:%(version)s "
+            "pytest -sv --target %(target)s",
         ],
-        "params": [_REGISTRY_PARAM, _VERSION_PARAM, _TARGET_PARAM],
+        "params": [
+            _AIIDALAB_PORT_PARAM,
+            _REGISTRY_PARAM,
+            _VERSION_PARAM,
+            _TARGET_PARAM,
+        ],
         "verbosity": 2,
     }
 
 
 def task_up():
     """Start AiiDAlab server for testing."""
+
+    def target_required(port, registry, version, target):  # noqa: ARG001
+        if not target:
+            print("ERROR: Target image must be provided with '--target' option")
+            return False
+        return True
+
     return {
         "actions": [
-            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
-            "docker-compose up --detach"
+            target_required,
+            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s/ VERSION=:%(version)s "
+            "docker compose -f stack/docker-compose.%(target)s.yml up --detach",
         ],
         "params": [
-            {
-                "name": "port",
-                "short": "p",
-                "long": "port",
-                "type": int,
-                "default": 8888,
-                "help": "Specify the AiiDAlab host port.",
-            },
+            _AIIDALAB_PORT_PARAM,
             _REGISTRY_PARAM,
             _VERSION_PARAM,
+            _TARGET_PARAM,
         ],
         "verbosity": 2,
     }
