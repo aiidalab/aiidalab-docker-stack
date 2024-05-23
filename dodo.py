@@ -117,7 +117,9 @@ def task_tests():
     # TODO: This currently does not work!
     # https://github.com/aiidalab/aiidalab-docker-stack/issues/451
     return {
-        "actions": ["REGISTRY=%(registry)s VERSION=:%(version)s pytest -v"],
+        "actions": [
+            "REGISTRY=%(registry)s VERSION=:%(version)s pytest -v --target %(target)s"
+        ],
         "params": [_REGISTRY_PARAM, _VERSION_PARAM, _TARGET_PARAM],
         "verbosity": 2,
     }
