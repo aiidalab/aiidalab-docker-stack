@@ -33,7 +33,7 @@ _REGISTRY_PARAM = {
     "long": "registry",
     "type": str,
     "default": "",
-    "help": "Specify the docker image registry (without the trailing slash).",
+    "help": "Specify the docker image registry (including the trailing slash).",
 }
 
 _ORGANIZATION_PARAM = {
@@ -114,7 +114,7 @@ def task_build():
         platforms = [f"linux/{architecture}"]
         overrides = {
             "VERSION": f":{version}",
-            "REGISTRY": f"{registry}/",
+            "REGISTRY": registry,
             "ORGANIZATION": organization,
             "PLATFORMS": platforms,
         }
@@ -150,7 +150,7 @@ def task_tests():
     return {
         "actions": [
             target_required,
-            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s/ VERSION=:%(version)s "
+            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
             "pytest -s --target %(target)s --compose-cmd='%(compose-command)s' %(pytest-opts)s",
         ],
         "params": [
@@ -177,7 +177,7 @@ def task_up():
     return {
         "actions": [
             target_required,
-            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s/ VERSION=:%(version)s "
+            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
             "%(compose-command)s -f stack/docker-compose.%(target)s.yml up --detach",
         ],
         "params": [
