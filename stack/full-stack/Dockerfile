@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+ARG PGDATA_FOLDER
 FROM base-with-services as base
 ARG PGDATA_FOLDER
 
