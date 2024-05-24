@@ -54,22 +54,8 @@ group "default" {
   targets = "${TARGETS}"
 }
 
-target "base-meta" {
-  tags = tags("base")
-}
-target "base-with-services-meta" {
-  tags = tags("base-with-services")
-}
-target "lab-meta" {
-  tags = tags("lab")
-}
-
-target "full-stack-meta" {
-  tags = tags("full-stack")
-}
-
 target "base" {
-  inherits = ["base-meta"]
+  tags = tags("base")
   context = "stack/base"
   platforms = "${PLATFORMS}"
   args = {
@@ -78,7 +64,7 @@ target "base" {
   }
 }
 target "base-with-services" {
-  inherits = ["base-with-services-meta"]
+  tags = tags("base-with-services")
   context = "stack/base-with-services"
   contexts = {
     base = "target:base"
@@ -90,7 +76,7 @@ target "base-with-services" {
   }
 }
 target "lab" {
-  inherits = ["lab-meta"]
+  tags = tags("lab")
   context = "stack/lab"
   contexts = {
     base = "target:base"
@@ -103,7 +89,7 @@ target "lab" {
   }
 }
 target "full-stack" {
-  inherits = ["full-stack-meta"]
+  tags = tags("full-stack")
   context = "stack/full-stack"
   contexts = {
     base-with-services = "target:base-with-services"
