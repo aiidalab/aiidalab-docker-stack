@@ -75,6 +75,7 @@ _TARGET_PARAM = {
         ("lab", ""),
         ("full-stack", ""),
     ),
+    # If the target is not provided, all images will be build
     "default": "",
     "help": "Specify the target to build.",
 }
@@ -87,6 +88,21 @@ _AIIDALAB_PORT_PARAM = {
     "default": 8888,
     "help": "Specify the AiiDAlab host port.",
 }
+
+_COMPOSE_CMD_PARAM = {
+    "name": "compose-command",
+    "long": "compose-cmd",
+    "type": str,
+    "default": "docker compose",
+    "help": "Specify alternative docker compose command (e.g. podman-compose).",
+}
+
+
+def target_required(target: str) -> bool:
+    if not target:
+        print("ERROR: Target image must be provided with '-t/--target' option")
+        return False
+    return True
 
 
 def task_build():
@@ -131,48 +147,45 @@ def task_build():
 def task_tests():
     """Run tests with pytest."""
 
-    def target_required(port, registry, version, target):  # noqa: ARG001
-        if not target:
-            print("ERROR: Target image must be with '--target' option for testing")
-            return False
-        return True
-
     return {
         "actions": [
             target_required,
             "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s/ VERSION=:%(version)s "
-            "pytest -sv --target %(target)s",
+            "pytest -s --target %(target)s --compose-cmd='%(compose-command)s' %(pytest-opts)s",
         ],
         "params": [
+            _TARGET_PARAM,
             _AIIDALAB_PORT_PARAM,
             _REGISTRY_PARAM,
             _VERSION_PARAM,
-            _TARGET_PARAM,
+            {
+                "name": "pytest-opts",
+                "long": "pytest-opts",
+                "type": str,
+                "default": "",
+                "help": "Extra options to pytest command.",
+            },
+            _COMPOSE_CMD_PARAM,
         ],
         "verbosity": 2,
     }
 
 
 def task_up():
-    """Start AiiDAlab server for testing."""
-
-    def target_required(port, registry, version, target):  # noqa: ARG001
-        if not target:
-            print("ERROR: Target image must be provided with '--target' option")
-            return False
-        return True
+    """Start AiiDAlab server."""
 
     return {
         "actions": [
             target_required,
             "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s/ VERSION=:%(version)s "
-            "docker compose -f stack/docker-compose.%(target)s.yml up --detach",
+            "%(compose-command)s -f stack/docker-compose.%(target)s.yml up --detach",
         ],
         "params": [
+            _TARGET_PARAM,
             _AIIDALAB_PORT_PARAM,
             _REGISTRY_PARAM,
             _VERSION_PARAM,
-            _TARGET_PARAM,
+            _COMPOSE_CMD_PARAM,
         ],
         "verbosity": 2,
     }
@@ -180,4 +193,14 @@ def task_up():
 
 def task_down():
     """Stop AiiDAlab server."""
-    return {"actions": ["docker-compose down"], "verbosity": 2}
+    return {
+        "actions": [
+            target_required,
+            "%(compose-command)s -f stack/docker-compose.%(target)s.yml down",
+        ],
+        "params": [
+            _TARGET_PARAM,
+            _COMPOSE_CMD_PARAM,
+        ],
+        "verbosity": 2,
+    }
