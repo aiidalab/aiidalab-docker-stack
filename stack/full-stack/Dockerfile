@@ -15,7 +15,7 @@ COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook
 COPY --from=base ${PGDATA} ${PGDATA}
 
 RUN fix-permissions "${CONDA_DIR}"
-RUN fix-permissions "/home/${NB_USER}"
+RUN fix-permissions "/home/${NB_USER}/.aiida"
 
 USER ${NB_USER}
 
