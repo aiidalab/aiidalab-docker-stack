@@ -53,5 +53,7 @@ jobs:
                   pip freeze
 
             - name: Run tests
-              run: pytest -m "${{ inputs.integration && 'integration' || 'not integration' }}" --target ${{inputs.target}}
+              run: |
+                  doit tests -t ${{ inputs.target }} \
+                      --pytest-opts '-m "${{ inputs.integration && 'integration' || 'not integration' }}"'
               env: ${{ fromJSON(inputs.images) }}
