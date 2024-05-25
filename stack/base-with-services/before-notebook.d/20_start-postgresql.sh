@@ -20,7 +20,7 @@ else
 
     if ! ${MAMBA_RUN} ${PSQL_STATUS_CMD}; then
        # Cleaning up the mess if Postgresql was not shutdown properly.
-       mv ${PGDATA}/logfile ${PGDATA/logfile.1 && gzip ${PGDATA}/logfile.1
+       mv ${PGDATA}/logfile ${PGDATA}/logfile.1 && gzip ${PGDATA}/logfile.1
        rm -vf ${PGDATA}/postmaster.pid
        ${MAMBA_RUN} ${PSQL_START_CMD}
    fi
