@@ -5,18 +5,15 @@ FROM lab
 
 USER root
 
-# WARNING: If you change this, you have to change it in base-with-services as well
-ENV PGDATA="/home/${NB_USER}/.postgresql"
-
 COPY --from=base /opt/config-quick-setup.yaml /opt/
 COPY --from=base "${CONDA_DIR}/envs/aiida-core-services" "${CONDA_DIR}/envs/aiida-core-services"
 COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook.d
-COPY --from=base ${PGDATA} ${PGDATA}
 
 RUN fix-permissions "${CONDA_DIR}"
-RUN fix-permissions "/home/${NB_USER}/.aiida"
-RUN fix-permissions "/home/${NB_USER}/.postgresql"
 
 USER ${NB_USER}
+# WARNING: If you change this, you have to change it in base-with-services as well
+ENV PGDATA="/home/${NB_USER}/.postgresql"
+COPY --from=base ${PGDATA} ${PGDATA}
 
 WORKDIR "/home/${NB_USER}"
