@@ -74,6 +74,7 @@ jobs:
             - name: Set output variables
               id: bake_metadata
               run: |
-                  .github/workflows/extract-image-names.sh | tee -a "${GITHUB_OUTPUT}" | jq
+                  .github/workflows/extract-image-names.sh | tee -a "${GITHUB_OUTPUT}"
+                  echo $images | jq
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
