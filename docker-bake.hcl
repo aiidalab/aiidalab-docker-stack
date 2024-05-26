@@ -8,6 +8,9 @@ variable "PYTHON_VERSION" {
 variable "PGSQL_VERSION" {
 }
 
+variable "RMQ_VERSION" {
+}
+
 variable "AIIDA_VERSION" {
 }
 
@@ -73,6 +76,7 @@ target "base-with-services" {
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
+    "RMQ_VERSION" = "${RMQ_VERSION}"
   }
 }
 target "lab" {

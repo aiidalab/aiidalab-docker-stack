@@ -8,6 +8,7 @@ WORKDIR /opt/
 
 ARG AIIDA_VERSION
 ARG PGSQL_VERSION
+ARG RMQ_VERSION
 ARG TARGETARCH
 
 # Location of the Postgresql DB
@@ -29,36 +30,30 @@ ENV PGDATA=/home/${NB_USER}/.postgresql
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
      mamba create -p /opt/conda/envs/aiida-core-services --yes \
          postgresql=${PGSQL_VERSION} \
-         rabbitmq-server=3.8.14  && \
+         rabbitmq-server=${RMQ_VERSION} && \
      mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"; \
-elif [ "$TARGETARCH" = "arm64" ]; then \
+     fix-permissions "${CONDA_DIR}"; \
+  elif [ "$TARGETARCH" = "arm64" ]; then \
      mamba create -p /opt/conda/envs/aiida-core-services --yes \
          postgresql=${PGSQL_VERSION} && \
      mamba clean --all -f -y && \
-     export RMQ_VERSION=3.9.13 && \
      wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      tar -xf rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      rm rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
-     mv rabbitmq_server-${RMQ_VERSION} /opt/conda/envs/aiida-core-services/ && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"; \
-     ln -sf /opt/conda/envs/aiida-core-services/rabbitmq_server-${RMQ_VERSION}/sbin/* /opt/conda/envs/aiida-core-services/bin/; \
-fi
+     mv rabbitmq_server-${RMQ_VERSION} /opt/conda/envs/aiida-core-services/rabbitmq_server && \
+     ln -sf /opt/conda/envs/aiida-core-services/rabbitmq_server/sbin/* /opt/conda/envs/aiida-core-services/bin/ && \
+     fix-permissions "${CONDA_DIR}"; \
+  fi
 
 # Configure AiiDA profile.
 COPY config-quick-setup.yaml .
 COPY before-notebook.d/20_start-postgresql.sh /usr/local/bin/before-notebook.d/
-COPY before-notebook.d/30_start-rabbitmq-${TARGETARCH}.sh /usr/local/bin/before-notebook.d/
+COPY before-notebook.d/30_start-rabbitmq.sh /usr/local/bin/before-notebook.d/
 
 # Supress rabbitmq version warning from aiida-core.
-# This is needed for the arm64 build which uses RabbitMQ version >3.8, for which
+# AiiDA prints a warning for RabbitMQ versions >3.8, for which
 # we explicitly set consumer_timeout to 100 hours in /etc/rabbitmq/rabbitmq.conf
 COPY before-notebook.d/41_suppress-rabbitmq-version-warning.sh /usr/local/bin/before-notebook.d/
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-     rm /usr/local/bin/before-notebook.d/41_suppress-rabbitmq-version-warning.sh; \
-fi
 
 USER ${NB_USER}
 
