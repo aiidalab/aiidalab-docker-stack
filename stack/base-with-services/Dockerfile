@@ -9,10 +9,11 @@ WORKDIR /opt/
 ARG AIIDA_VERSION
 ARG PGSQL_VERSION
 ARG TARGETARCH
+
 # Location of the Postgresql DB
-# This variable is automatically picked up by initdb
-ARG PGDATA_FOLDER=/home/${NB_USER}/.postgresql
-ENV PGDATA=${PGDATA_FOLDER}
+# This variable is automatically picked up by initdb and pg_ctl
+# WARNING: If you change this, you have to change it in full-stack as well!
+ENV PGDATA=/home/${NB_USER}/.postgresql
 
 # Install RabbitMQ and PostgreSQL in a dedicated conda environment.
 #

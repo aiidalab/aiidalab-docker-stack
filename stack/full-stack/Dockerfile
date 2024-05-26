@@ -1,17 +1,17 @@
 # syntax=docker/dockerfile:1
-ARG PGDATA_FOLDER
 FROM base-with-services as base
-ARG PGDATA_FOLDER
-ENV PGDATA=${PGDATA_FOLDER}
 
 FROM lab
+
+# WARNING: If you change this, you have to change it in base-with-services as well
+ENV PGDATA="/home/${NB_USER}/.postgresql"
 
 USER root
 
 COPY --from=base /opt/config-quick-setup.yaml /opt/
 COPY --from=base "${CONDA_DIR}/envs/aiida-core-services" "${CONDA_DIR}/envs/aiida-core-services"
 COPY --from=base /usr/local/bin/before-notebook.d /usr/local/bin/before-notebook.d
-COPY --from=base ${PGDATA_FOLDER} ${PGDATA_FOLDER}
+COPY --from=base ${PGDATA} ${PGDATA}
 
 RUN fix-permissions "${CONDA_DIR}"
 RUN fix-permissions "/home/${NB_USER}/.aiida"
