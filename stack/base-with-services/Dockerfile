@@ -18,7 +18,7 @@ ENV PGDATA=/home/${NB_USER}/.postgresql
 
 # Install RabbitMQ and PostgreSQL in a dedicated conda environment.
 #
-# RabbitMQ is not available on conda-forge at the time being, see:
+# RabbitMQ is currently not available on conda-forge for arm64, see:
 # https://github.com/conda-forge/rabbitmq-server-feedstock/issues/67If
 # Instead we need install erlang via apt and RabbitMQ as a "Generic Unix Build", see:
 # https://www.rabbitmq.com/install-generic-unix.html
