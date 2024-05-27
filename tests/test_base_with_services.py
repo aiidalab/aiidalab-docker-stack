@@ -25,10 +25,13 @@ def test_pgsql_version(aiidalab_exec, pgsql_version):
 
 
 def test_rabbitmq_version(aiidalab_exec, rabbitmq_version):
-    cmd = "mamba list -n aiida-core-services --json --full-name rabbitmq-server"
-    info = json.loads(aiidalab_exec(cmd))[0]
-    assert info["name"] == "rabbitmq-server"
-    assert parse(info["version"]) == parse(rabbitmq_version)
+    cmd = "mamba run -n aiida-core-services rabbitmqctl version --formatter=json"
+    out = json.loads(aiidalab_exec(cmd))
+
+    assert out["result"] == "ok", out
+    assert out["node"] == "rabbit@localhost"
+    version = out["value"]["version"]
+    assert parse(version) == parse(rabbitmq_version)
 
 
 def test_rabbitmq_config_file(aiidalab_exec):
