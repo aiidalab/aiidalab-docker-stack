@@ -50,6 +50,10 @@ COPY config-quick-setup.yaml .
 COPY before-notebook.d/20_start-postgresql.sh /usr/local/bin/before-notebook.d/
 COPY before-notebook.d/30_start-rabbitmq.sh /usr/local/bin/before-notebook.d/
 
+# Configure RabbitMQ
+COPY configure_rabbitmq.sh .
+RUN ./configure_rabbitmq.sh
+
 # Supress rabbitmq version warning from aiida-core.
 # AiiDA prints a warning for RabbitMQ versions >3.8, for which
 # we explicitly set consumer_timeout to 100 hours in /etc/rabbitmq/rabbitmq.conf
