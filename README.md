@@ -55,21 +55,21 @@ The build system will attempt to detect the local architecture and automatically
 All commands `build`, `tests`, and `up` will use the locally detected platform and use a version tag based on the state of the local git repository.
 However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit build --arch=arm64 --version=my-version`.
 
-You can specify target image variants to build with `--target`, example: `doit build --target base --target lab`.
+By default, all image variants are build. You can specify a single target image variant to build with `-t/--target`, example: `doit build --target base`.
 
 ### Run automated tests
 
 To run tests, first build the images as described in the previous section.
-Then run the automated tests with `doit tests`.
+Then run the automated tests for a given image with `doit tests --target <base|base-with-services|lab|full-stack>`.
 
 Tip: The [continuous integration](#continuous-integration) workflow will build, release (at `ghcr.io/aiidalab/*:pr-###`), and test images for all pull requests into the default branch.
 
-For manual testing, you can start the images with `doit up`, however we recommend to use [aiidalab-launch](#deploy-aiidalab-with-aiidalab-launch) to setup a production-ready local deployment.
+For manual testing, you can start the images with `doit up --target full-stack`, however we recommend to use [aiidalab-launch](#deploy-aiidalab-with-aiidalab-launch) to setup a production-ready local deployment.
 
 ### Continuous integration
 
 Images are built for `linux/amd64` and `linux/arm64` during continuous integration for all pull requests into the default branch and pushed to the GitHub Container Registry (ghcr.io) with tags `ghcr.io/aiidalab/*:pr-###`.
-You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit up --registry=ghcr.io/ --version=pr-123`.
+You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit tests --registry=ghcr.io/ --version=pr-123`.
 
 ### Creating a release
 
