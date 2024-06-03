@@ -61,6 +61,24 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
     verdi computer configure core.local "${computer_name}" \
         --non-interactive                                               \
         --safe-interval 0.0
+
+
+    # Setup localhost with hq as scheduler
+    computer_name=localhost-hq
+
+    verdi computer show ${computer_name} || verdi computer setup \
+        --non-interactive                                               \
+        --label "${computer_name}"                                      \
+        --description "this computer"                                   \
+        --hostname "localhost"                                          \
+        --transport core.local                                          \
+        --scheduler hyperqueue                                          \
+        --work-dir /home/${NB_USER}/aiida_run/                          \
+        --mpirun-command "mpirun -np {num_cpus} --mem {memory_mb}"       \
+        --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
+    verdi computer configure core.local "${computer_name}"              \
+        --non-interactive                                               \
+        --safe-interval 5.0
 fi
 
 
