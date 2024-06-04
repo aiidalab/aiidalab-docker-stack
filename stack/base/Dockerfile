@@ -36,6 +36,8 @@ RUN echo "aiida-core==${AIIDA_VERSION}" > /opt/requirements.txt
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
      mamba-bash-completion \
+     # XXX: for test install QE here
+     qe=7.2 \
      --file /opt/requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
@@ -62,10 +64,10 @@ RUN git clone https://github.com/unkcpz/aiida-hyperqueue && \
      # TODO: change the branch name
      git checkout fea/mem-allocation && \
      pip install --no-user --quiet --no-cache-dir "./" && \
+     pip install aiida-quantumespresso && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
-
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
@@ -89,6 +91,9 @@ ENV AIIDA_USER_INSTITUTION Khedivial
 # https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
 # The startup of this script is configured in the before-notebook.d/20_setup-ssh.sh file.
 COPY load-singlesshagent.sh /opt/bin/
+
+# XXX: Remove me after, I am for test
+COPY test_script.py /opt/
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
