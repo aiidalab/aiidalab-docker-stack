@@ -36,6 +36,8 @@ RUN echo "aiida-core==${AIIDA_VERSION}" > /opt/requirements.txt
 RUN mamba install --yes \
      aiida-core=${AIIDA_VERSION} \
      mamba-bash-completion \
+     # XXX: for test install QE here
+     qe=7.2 \
      --file /opt/requirements.txt \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
@@ -50,6 +52,22 @@ RUN pip install --upgrade --no-cache-dir pip
 ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
 ENV PIP_USER 1
+
+# XXX: find the proper place for hq and aiida-hq installation, here only for proof of concept
+
+# Install the hq use the latest version 0.19 that include a bugfix to not raise failed setup
+RUN wget -qO- https://github.com/It4innovations/hyperqueue/releases/download/v0.19.0/hq-v0.19.0-linux-x64.tar.gz | tar xvz -C /usr/local/bin
+
+# Install the aiida-hq.
+RUN git clone https://github.com/unkcpz/aiida-hyperqueue && \
+     cd aiida-hyperqueue && \
+     # TODO: change the branch name
+     git checkout fea/mem-allocation && \
+     pip install --no-user --quiet --no-cache-dir "./" && \
+     pip install aiida-quantumespresso && \
+     fix-permissions "./" && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
@@ -73,6 +91,9 @@ ENV AIIDA_USER_INSTITUTION Khedivial
 # https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
 # The startup of this script is configured in the before-notebook.d/20_setup-ssh.sh file.
 COPY load-singlesshagent.sh /opt/bin/
+
+# XXX: Remove me after, I am for test
+COPY test_script.py /opt/
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
