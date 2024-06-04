@@ -95,8 +95,8 @@ ENV NOTEBOOK_ARGS \
      "--MappingKernelManager.cull_connected=True" \
      "--MappingKernelManager.cull_idle_timeout=64800" \
      "--MappingKernelManager.cull_interval=300" \
-     "--TerminalManager.cull_inactive_timeout=600" \
-     "--TerminalManager.cull_interval=60"
+     "--TerminalManager.cull_inactive_timeout=3600" \
+     "--TerminalManager.cull_interval=300"
 
 # Set up the logo of notebook interface
 ARG PYTHON_MINOR_VERSION
