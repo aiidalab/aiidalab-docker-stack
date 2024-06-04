@@ -13,7 +13,7 @@ services:
         volumes:
             - aiidalab-home-folder:/home/jovyan
         ports:
-            - "0.0.0.0:${AIIDALAB_PORT:-}:8888"
+            - "0.0.0.0:${AIIDALAB_PORT:-8888}:8888"
 
 volumes:
     aiidalab-home-folder:

@@ -15,15 +15,17 @@ VERSION = Version.from_git().serialize().replace("+", "_")
 
 _ARCH_MAPPING = {
     "x86_64": "amd64",
+    "amd64": "amd64",
     "aarch64": "arm64",
 }
 
 ARCH = _ARCH_MAPPING.get(_DOCKER_ARCHITECTURE)
 
 if ARCH is None:
-    raise RuntimeError(
-        f"Unsupported architecture {ARCH} on platform {platform.system()}."
+    print(
+        f"Unsupported architecture {_DOCKER_ARCHITECTURE} on platform {platform.system()}."
     )
+    exit(1)
 
 _REGISTRY_PARAM = {
     "name": "registry",
@@ -31,7 +33,7 @@ _REGISTRY_PARAM = {
     "long": "registry",
     "type": str,
     "default": "",
-    "help": "Specify the docker image registry.",
+    "help": "Specify the docker image registry (including the trailing slash).",
 }
 
 _ORGANIZATION_PARAM = {
@@ -63,13 +65,44 @@ _ARCH_PARAM = {
 }
 
 _TARGET_PARAM = {
-    "name": "targets",
-    "long": "targets",
+    "name": "target",
+    "long": "target",
     "short": "t",
-    "type": list,
-    "default": [],
+    "type": str,
+    "choices": (
+        ("base", ""),
+        ("base-with-services", ""),
+        ("lab", ""),
+        ("full-stack", ""),
+    ),
+    # If the target is not provided, all images will be build
+    "default": "",
     "help": "Specify the target to build.",
 }
+
+_AIIDALAB_PORT_PARAM = {
+    "name": "port",
+    "short": "p",
+    "long": "port",
+    "type": int,
+    "default": 8888,
+    "help": "Specify the AiiDAlab host port.",
+}
+
+_COMPOSE_CMD_PARAM = {
+    "name": "compose-command",
+    "long": "compose-cmd",
+    "type": str,
+    "default": "docker compose",
+    "help": "Specify alternative docker compose command (e.g. podman-compose).",
+}
+
+
+def target_required(target: str) -> bool:
+    if not target:
+        print("ERROR: Target image must be provided with '-t/--target' option")
+        return False
+    return True
 
 
 def task_build():
@@ -114,33 +147,45 @@ def task_build():
 def task_tests():
     """Run tests with pytest."""
 
-    # TODO: This currently does not work!
-    # https://github.com/aiidalab/aiidalab-docker-stack/issues/451
     return {
-        "actions": ["REGISTRY=%(registry)s VERSION=:%(version)s pytest -v"],
-        "params": [_REGISTRY_PARAM, _VERSION_PARAM, _TARGET_PARAM],
+        "actions": [
+            target_required,
+            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
+            "pytest -s --target %(target)s --compose-cmd='%(compose-command)s' %(pytest-opts)s",
+        ],
+        "params": [
+            _TARGET_PARAM,
+            _AIIDALAB_PORT_PARAM,
+            _REGISTRY_PARAM,
+            _VERSION_PARAM,
+            {
+                "name": "pytest-opts",
+                "long": "pytest-opts",
+                "type": str,
+                "default": "",
+                "help": "Extra options to pytest command.",
+            },
+            _COMPOSE_CMD_PARAM,
+        ],
         "verbosity": 2,
     }
 
 
 def task_up():
-    """Start AiiDAlab server for testing."""
+    """Start AiiDAlab server."""
+
     return {
         "actions": [
+            target_required,
             "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
-            "docker-compose up --detach"
+            "%(compose-command)s -f stack/docker-compose.%(target)s.yml up --detach",
         ],
         "params": [
-            {
-                "name": "port",
-                "short": "p",
-                "long": "port",
-                "type": int,
-                "default": 8888,
-                "help": "Specify the AiiDAlab host port.",
-            },
+            _TARGET_PARAM,
+            _AIIDALAB_PORT_PARAM,
             _REGISTRY_PARAM,
             _VERSION_PARAM,
+            _COMPOSE_CMD_PARAM,
         ],
         "verbosity": 2,
     }
@@ -148,4 +193,14 @@ def task_up():
 
 def task_down():
     """Stop AiiDAlab server."""
-    return {"actions": ["docker-compose down"], "verbosity": 2}
+    return {
+        "actions": [
+            target_required,
+            "%(compose-command)s -f stack/docker-compose.%(target)s.yml down",
+        ],
+        "params": [
+            _TARGET_PARAM,
+            _COMPOSE_CMD_PARAM,
+        ],
+        "verbosity": 2,
+    }

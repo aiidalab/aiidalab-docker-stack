@@ -4,7 +4,7 @@ version: '3.4'
 services:
 
     database:
-        image: postgres:12.3
+        image: docker.io/postgres:12.3
         environment:
             POSTGRES_USER: pguser
             POSTGRES_PASSWORD: password
@@ -17,7 +17,7 @@ services:
             retries: 10
 
     messaging:
-        image: rabbitmq:3.8.3-management
+        image: docker.io/rabbitmq:3.8.3-management
         environment:
             RABBITMQ_DEFAULT_USER: guest
             RABBITMQ_DEFAULT_PASS: guest
@@ -40,7 +40,7 @@ services:
             messaging:
                 condition: service_started
         ports:
-            - "0.0.0.0:${AIIDALAB_PORT:-}:8888"
+            - "0.0.0.0:${AIIDALAB_PORT:-8888}:8888"
 
 volumes:
     aiida-postgres-db:
