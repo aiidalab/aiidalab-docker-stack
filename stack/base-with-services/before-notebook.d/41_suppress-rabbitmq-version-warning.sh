@@ -1,5 +1,5 @@
 #!/bin/bash
-set -em
+set -emx
 
 # Supress rabbitmq version warning for arm64 since
 # it is built using latest version rabbitmq from apt install.
