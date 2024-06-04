@@ -74,7 +74,7 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --transport core.local                                          \
         --scheduler hyperqueue                                          \
         --work-dir /home/${NB_USER}/aiida_run/                          \
-        --mpirun-command "mpirun -np {num_cpus} --mem {memory_mb}"       \
+        --mpirun-command "mpirun -np {num_cpus}"       \
         --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
     verdi computer configure core.local "${computer_name}"              \
         --non-interactive                                               \
