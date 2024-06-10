@@ -15,15 +15,13 @@ ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential"
 # For ARM64 we need to install erlang as it is not available on conda-forge
 # (this is needed later as rabbitmq dependency in base-with-services image,
 # but we install it here so that we don't have to invoke apt multiple times.
-# the h5py==3.11.0 is required in arm64 arch to install smoothly aiidalab-qe-vibroscopy.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        EXTRA_APT_PACKAGES="erlang ${EXTRA_APT_PACKAGES}"; \
+        EXTRA_APT_PACKAGES="erlang libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    mamba install --yes h5py==3.11.0
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/
 
