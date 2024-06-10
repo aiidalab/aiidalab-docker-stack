@@ -55,9 +55,20 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --work-dir /home/${NB_USER}/aiida_run/                          \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"                \
         --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
-    verdi computer configure core.local "${computer_name}" \
+    verdi computer configure core.local "${computer_name}"              \
         --non-interactive                                               \
         --safe-interval 0.0
+
+    # We need to limit how often the daemon worker polls the job scheduler
+    # for job status. The poll interval is set to 0s by default, which results
+    # in verdi worker spinning at 100% CPU.
+    # We set this to 2.0 seconds which should limit the CPU utilization below 10%.
+    # https://aiida.readthedocs.io/projects/aiida-core/en/stable/howto/run_codes.html#mitigating-connection-overloads
+    python -c "
+        from aiida import load_profile;
+        from aiida.orm import load_computer;
+        load_profile();
+        load_computer(${computer_name}).set_minimum_job_poll_interval(2.0)"
 
 else
 
