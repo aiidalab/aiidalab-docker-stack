@@ -64,11 +64,12 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
     # in verdi worker spinning at 100% CPU.
     # We set this to 2.0 seconds which should limit the CPU utilization below 10%.
     # https://aiida.readthedocs.io/projects/aiida-core/en/stable/howto/run_codes.html#mitigating-connection-overloads
+    job_poll_interval="2.0"
     python -c "
-        from aiida import load_profile;
-        from aiida.orm import load_computer;
-        load_profile();
-        load_computer(${computer_name}).set_minimum_job_poll_interval(2.0)"
+from aiida import load_profile; from aiida.orm import load_computer;
+load_profile();
+load_computer('${computer_name}').set_minimum_job_poll_interval(${job_poll_interval})
+"
 
 else
 
