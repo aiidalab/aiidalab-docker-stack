@@ -73,9 +73,8 @@ def notebook_service(docker_ip, docker_services):
         )
     except Exception as e:
         print(docker_compose.execute("logs").decode().strip())
-        print(e)
         # Let's exit hard, otherwise pytest output is a huge mess.
-        exit(1)
+        pytest.exit(e)
     return url
 
 
