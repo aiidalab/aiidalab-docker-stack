@@ -17,7 +17,7 @@ ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential"
 # but we install it here so that we don't have to invoke apt multiple times.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        EXTRA_APT_PACKAGES="erlang ${EXTRA_APT_PACKAGES}"; \
+        EXTRA_APT_PACKAGES="erlang libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
