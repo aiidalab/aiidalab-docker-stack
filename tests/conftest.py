@@ -62,11 +62,19 @@ def docker_compose_file(pytestconfig):
 @pytest.fixture(scope="session")
 def notebook_service(docker_ip, docker_services):
     """Ensure that HTTP service is up and responsive."""
+
+    # using `docker_compose` fixture would trigger a separate container
+    docker_compose = docker_services._docker_compose
     port = docker_services.port_for("aiidalab", 8888)
     url = f"http://{docker_ip}:{port}"
-    docker_services.wait_until_responsive(
-        timeout=60.0, pause=0.1, check=lambda: is_responsive(url)
-    )
+    try:
+        docker_services.wait_until_responsive(
+            timeout=60.0, pause=0.1, check=lambda: is_responsive(url)
+        )
+    except Exception as e:
+        print(docker_compose.execute("logs").decode().strip())
+        # Let's exit hard, otherwise pytest output is a huge mess.
+        pytest.exit(e)
     return url
 
 
