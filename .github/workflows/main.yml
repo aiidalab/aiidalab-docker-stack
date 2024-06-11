@@ -60,6 +60,7 @@ jobs:
     test-arm64:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs: build
         uses: ./.github/workflows/test.yml
         with:
