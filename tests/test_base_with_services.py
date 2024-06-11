@@ -34,6 +34,13 @@ def test_rabbitmq_version(aiidalab_exec, rabbitmq_version):
     assert parse(version) == parse(rabbitmq_version)
 
 
+def test_rabbitmq_can_start(aiidalab_exec):
+    """Test rabbitmq-server startup, the output should be empty if
+    the command is successful."""
+    output = aiidalab_exec("mamba run -n aiida-core-services rabbitmq-server -detached")
+    assert output == ""
+
+
 def test_rabbitmq_config_file(aiidalab_exec):
     """Test that rabbitmq-server picks up the provided config file
     with consumer_timeout"""
