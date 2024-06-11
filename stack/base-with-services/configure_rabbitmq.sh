@@ -1,24 +1,28 @@
 #!/bin/bash
 set -emx
 
-RABBITMQ_DATA_DIR="/home/${NB_USER}/.rabbitmq"
+RMQ_ETC_DIR_ARM64="/opt/conda/envs/aiida-core-services/rabbitmq_server/etc/rabbitmq"
+RMQ_ETC_DIR_AMD64="/opt/conda/envs/aiida-core-services/etc/rabbitmq"
+if [[ -d $RMQ_ETC_DIR_ARM64 ]]; then
+    RMQ_ETC_DIR="$RMQ_ETC_DIR_ARM64"
+elif [[ -d $RMQ_ETC_DIR_AMD64 ]]; then
+    RMQ_ETC_DIR="$RMQ_ETC_DIR_AMD64"
+else
+    echo "ERROR: Could not find RabbitMQ etc directory"
+    exit 1
+fi
 
+RABBITMQ_DATA_DIR="/home/${NB_USER}/.rabbitmq"
 mkdir -p "${RABBITMQ_DATA_DIR}"
 fix-permissions "${RABBITMQ_DATA_DIR}"
 
-# Fix issue where the erlang cookie permissions are corrupted.
-chmod 400 "/home/${NB_USER}/.erlang.cookie" || echo "erlang cookie not created yet."
-
 # Set base directory for RabbitMQ to persist its data. This needs to be set to a folder in the system user's home
 # directory as that is the only folder that is persisted outside of the container.
-export RMQ_VERSION=3.9.13
-RMQ_ETC_DIR="/opt/conda/envs/aiida-core-services/rabbitmq_server-${RMQ_VERSION}/etc/rabbitmq"
 echo MNESIA_BASE="${RABBITMQ_DATA_DIR}" >> "${RMQ_ETC_DIR}/rabbitmq-env.conf"
 echo LOG_BASE="${RABBITMQ_DATA_DIR}/log" >> "${RMQ_ETC_DIR}/rabbitmq-env.conf"
 
 # RabbitMQ with versions >= 3.8.15 have reduced some default timeouts
-# baseimage phusion/baseimage:jammy-1.0.0 running ubuntu 22.04 will install higher version of rabbimq by apt.
-# using workaround from https://github.com/aiidateam/aiida-core/wiki/RabbitMQ-version-to-use
+# Using workaround from https://github.com/aiidateam/aiida-core/wiki/RabbitMQ-version-to-use
 # setting the consumer_timeout to undefined disables the timeout
 cat > "${RMQ_ETC_DIR}/advanced.config" <<EOF
 %% advanced.config
@@ -35,5 +39,3 @@ EOF
 # reason RabbitMQ is built this way is through this way it allows to run multiple nodes on a single machine each with
 # isolated mnesia directories. Since in the AiiDA setup we only need and run a single node, we can simply use localhost.
 echo NODENAME=rabbit@localhost >> "${RMQ_ETC_DIR}/rabbitmq-env.conf"
-
-mamba run -n aiida-core-services rabbitmq-server -detached

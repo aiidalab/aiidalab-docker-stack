@@ -25,7 +25,7 @@ def test_prevent_installation_of_aiida(
         )
 
 
-def test_correct_python_version_installed(aiidalab_exec, python_version):
+def test_python_version(aiidalab_exec, python_version):
     info = json.loads(aiidalab_exec("mamba list --json --full-name python"))[0]
     assert info["name"] == "python"
     assert parse(info["version"]) == parse(python_version)
@@ -39,7 +39,7 @@ def test_create_conda_environment(aiidalab_exec, nb_user):
     assert f"/home/{nb_user}/.conda/envs/tmp" in output
 
 
-def test_correct_aiida_version_installed(aiidalab_exec, aiida_version):
+def test_aiida_version(aiidalab_exec, aiida_version):
     cmd = "mamba list --json --full-name aiida-core"
     info = json.loads(aiidalab_exec(cmd))[0]
     assert info["name"] == "aiida-core"

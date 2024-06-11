@@ -6,6 +6,9 @@
     "PGSQL_VERSION": {
       "default": "15"
     },
+    "RMQ_VERSION": {
+      "default": "3.9.13"
+    },
     "AIIDA_VERSION": {
       "default": "2.5.1"
     },
