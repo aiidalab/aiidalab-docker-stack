@@ -14,4 +14,10 @@ RUN fix-permissions "/home/${NB_USER}/.aiida"
 
 USER ${NB_USER}
 
+# WARNING: If you change this, you have to change it in base-with-services as well
+ENV PGDATA="/home/${NB_USER}/.postgresql"
+
+# Initialize the database
+RUN mamba run -n aiida-core-services initdb
+
 WORKDIR "/home/${NB_USER}"

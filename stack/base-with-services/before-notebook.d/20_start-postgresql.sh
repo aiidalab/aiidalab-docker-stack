@@ -1,30 +1,32 @@
 #!/bin/bash
 set -x
 
+if [[ -z $PGDATA ]]; then
+   echo "ERROR: PGDATA variable not set, cannot start PostgreSQL!"
+   exit 1
+fi
+
+PSQL_LOGFILE="${PGDATA}/logfile"
 # -w waits until server is up
-PSQL_START_CMD="pg_ctl --timeout=180 -w -D /home/${NB_USER}/.postgresql -l /home/${NB_USER}/.postgresql/logfile start"
-PSQL_STOP_CMD="pg_ctl -w -D /home/${NB_USER}/.postgresql stop"
-PSQL_STATUS_CMD="pg_ctl -D /home/${NB_USER}/.postgresql status"
+PSQL_START_CMD="pg_ctl --timeout=180 -w -l ${PSQL_LOGFILE} start"
 
 MAMBA_RUN="mamba run -n aiida-core-services"
 
-# make DB directory, if not existent
-if [ ! -d /home/${NB_USER}/.postgresql ]; then
-   mkdir /home/${NB_USER}/.postgresql
-   ${MAMBA_RUN} initdb -D /home/${NB_USER}/.postgresql
-   echo "unix_socket_directories = '/tmp'" >> /home/${NB_USER}/.postgresql/postgresql.conf
-   ${MAMBA_RUN} ${PSQL_START_CMD}
-
+# Initialize DB directory if it does not exist
+if [[ ! -d ${PGDATA} ]]; then
+    mkdir "${PGDATA}"
+    ${MAMBA_RUN} initdb
+    echo "unix_socket_directories = '/tmp'" >> "${PGDATA}/postgresql.conf"
 else
     # Fix problem with kubernetes cluster that adds rws permissions to the group
-    # for more details see: https://github.com/materialscloud-org/aiidalab-z2jh-eosc/issues/5
-    chmod g-rwxs /home/${NB_USER}/.postgresql -R
+    chmod -R g-rwxs "${PGDATA}"
 
-    if ! ${MAMBA_RUN} ${PSQL_STATUS_CMD}; then
-       # Cleaning up the mess if Postgresql was not shutdown properly.
-       # TODO: Rotate logfile
-       echo "" > /home/${NB_USER}/.postgresql/logfile
-       rm -vf /home/${NB_USER}/.postgresql/postmaster.pid
-       ${MAMBA_RUN} ${PSQL_START_CMD}
-   fi
+    if [[ -f ${PGDATA}/logfile ]]; then
+         mv "${PSQL_LOGFILE}" "${PSQL_LOGFILE}.1" && gzip "${PSQL_LOGFILE}.1"
+    fi
+    # Cleaning up the mess if PostgreSQL was not shutdown properly.
+    rm -vf "${PGDATA}/postmaster.pid"
 fi
+
+# Start the server
+${MAMBA_RUN} ${PSQL_START_CMD}

@@ -10,6 +10,11 @@ ARG AIIDA_VERSION
 ARG PGSQL_VERSION
 ARG TARGETARCH
 
+# Location of the Postgresql DB
+# This variable is automatically picked up by initdb and pg_ctl
+# WARNING: If you change this, you have to change it in full-stack as well!
+ENV PGDATA=/home/${NB_USER}/.postgresql
+
 # Install RabbitMQ and PostgreSQL in a dedicated conda environment.
 #
 # RabbitMQ is not available on conda-forge at the time being, see:
@@ -17,6 +22,8 @@ ARG TARGETARCH
 # Instead we need install erlang via apt and RabbitMQ as a "Generic Unix Build", see:
 # https://www.rabbitmq.com/install-generic-unix.html
 # Note that this version must be compatible with system's erlang version.
+# Currently installed Erlang version is 23.3, so the latest supported RMQ version is 3.9.21
+# https://www.rabbitmq.com/docs/which-erlang#old-timers
 # Note that system erlang from arm64 is already installed in the base image,
 # together with other APT dependencies to save build time.
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
@@ -58,4 +65,4 @@ USER ${NB_USER}
 WORKDIR "/home/${NB_USER}"
 
 # Initialize the database
-RUN mamba run -n aiida-core-services initdb -D aiida_db -U aiida
+RUN mamba run -n aiida-core-services initdb
