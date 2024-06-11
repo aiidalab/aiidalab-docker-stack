@@ -32,9 +32,8 @@ ARG AIIDA_VERSION
 # induce DB migration or break shared dependencies of AiiDAlab Apps.
 RUN echo "aiida-core==${AIIDA_VERSION}" > /opt/requirements.txt
 
-# Install the shared requirements.
+# Install aiida-core and other shared requirements.
 RUN mamba install --yes \
-     aiida-core=${AIIDA_VERSION} \
      mamba-bash-completion \
      --file /opt/requirements.txt \
      && mamba clean --all -f -y && \
