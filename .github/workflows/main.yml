@@ -111,3 +111,16 @@ jobs:
             images: ${{ needs.build.outputs.images }}
             registry: docker.io
         secrets: inherit
+
+    make-release:
+        runs-on: ubuntu-22.04
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && github.ref_type == 'tag'
+        needs: [publish-dockerhub]
+
+        steps:
+            - uses: softprops/action-gh-release@v0.1.15
+              name: Create release
+              with:
+                  generate_release_notes: true
