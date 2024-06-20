@@ -25,10 +25,32 @@ def test_prevent_installation_of_aiida(
         )
 
 
+@pytest.mark.parametrize("pkg_manager", ["pip", "mamba"])
+def test_prevent_notebook_upgrade(aiidalab_exec, nb_user, pkg_manager):
+    """jupyter-notebook is pinned to the exact version in the container,
+    test that both pip and mamba refuse to update to v7 of the notebook."""
+
+    incompatible_version = "7"
+    with pytest.raises(Exception):
+        aiidalab_exec(
+            f"{pkg_manager} install notebook=={incompatible_version}",
+            user=nb_user,
+        )
+
+
 def test_python_version(aiidalab_exec, python_version):
     info = json.loads(aiidalab_exec("mamba list --json --full-name python"))[0]
     assert info["name"] == "python"
     assert parse(info["version"]) == parse(python_version)
+
+
+def test_pip_version(aiidalab_exec):
+    """We update pip to latest version when building the image,
+    test that we're not using and old pip version"""
+
+    info = json.loads(aiidalab_exec("mamba list --json --full-name pip"))[0]
+    assert info["name"] == "pip"
+    assert parse(info["version"]) >= parse("24.0")
 
 
 def test_create_conda_environment(aiidalab_exec, nb_user):
