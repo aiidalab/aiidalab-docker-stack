@@ -26,29 +26,34 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
 WORKDIR /opt/
 
 ARG AIIDA_VERSION
-# Pin shared requirements in the base environment.
-# We pin aiida-core to the exact installed version,
-# to prevent accidental upgrade or downgrade, that might
+
+# Pin certain shared requirements in the base environment
+# so that user cannot change their version and accidently break themselves.
+# Pin aiida-core to the exact installed version
+# to prevent accidental upgrade or downgrade that might
 # induce DB migration or break shared dependencies of AiiDAlab Apps.
 RUN echo "aiida-core==${AIIDA_VERSION}" > /opt/requirements.txt
 
-# Install aiida-core and other shared requirements.
-RUN mamba install --yes \
-     mamba-bash-completion \
-     --file /opt/requirements.txt \
-     && mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
+# Pin jupyter-notebook to prevent downgrades or upgrades to v7
+RUN echo "notebook==$(jupyter-notebook --version)" >> /opt/requirements.txt
 
-# Pin shared requirements in the conda base environment.
 RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
-# Upgrade pip to latest
-RUN pip install --upgrade --no-cache-dir pip
-# Configure pip to use requirements file as constraints file.
+# Configure pip to use the same requirements file as constraints file.
 ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
 ENV PIP_USER 1
+
+# Upgrade pip to latest
+RUN mamba update -y pip && mamba clean --all -f -y
+
+# Install aiida-core and other shared requirements.
+RUN mamba install --yes \
+     aiida-core==${AIIDA_VERSION} \
+     mamba-bash-completion \
+     && mamba clean --all -f -y && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
