@@ -15,7 +15,7 @@ WORKDIR /opt/
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION
-RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab.git
+RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab
 #RUN mamba install --yes \
 #     aiidalab=${AIIDALAB_VERSION} \
 #     && mamba clean --all -f -y && \
