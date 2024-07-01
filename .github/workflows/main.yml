@@ -120,7 +120,7 @@ jobs:
         needs: [publish-dockerhub]
 
         steps:
-            - uses: softprops/action-gh-release@v0.1.15
+            - uses: softprops/action-gh-release@v2.0.6
               name: Create release
               with:
                   generate_release_notes: true
