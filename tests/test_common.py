@@ -10,8 +10,11 @@ def test_notebook_service_available(notebook_service):
 
 def test_verdi_status(aiidalab_exec, nb_user):
     output = aiidalab_exec("verdi status", user=nb_user).strip()
-    assert "Connected to RabbitMQ" in output
+    for status in ("version", "config", "profile", "storage", "broker", "daemon"):
+        assert f"✔ {status}" in output
+    assert "/home/jovyan/.aiida" in output
     assert "Daemon is running" in output
+    assert "Unable to connect to broker" not in output
 
 
 def test_ssh_agent_is_running(aiidalab_exec, nb_user):
