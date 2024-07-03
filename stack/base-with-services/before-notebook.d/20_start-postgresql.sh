@@ -22,7 +22,7 @@ else
     chmod -R g-rwxs "${PGDATA}"
 
     if [[ -f ${PGDATA}/logfile ]]; then
-        rm -f "${PSQL_LOGFILE}.1.gz" 
+        rm -f "${PSQL_LOGFILE}.1.gz"
         mv "${PSQL_LOGFILE}" "${PSQL_LOGFILE}.1" && gzip "${PSQL_LOGFILE}.1"
     fi
     # Cleaning up the mess if PostgreSQL was not shutdown properly.
