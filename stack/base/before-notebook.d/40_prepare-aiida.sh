@@ -74,6 +74,8 @@ load_computer('${computer_name}').set_minimum_job_poll_interval(${job_poll_inter
 else
 
   # Migration will run for the default profile.
+  ## We need to stop the daemon before. 
+  verdi daemon stop
   verdi storage migrate --force
 
 fi
