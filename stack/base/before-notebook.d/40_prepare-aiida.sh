@@ -75,7 +75,7 @@ else
 
   # Migration will run for the default profile.
   ## clean up stale PID-files -> .aiida/daemon/circus-{profile-name}.pid
-  rm -f "/home/${NB_USER}/.aiida/daemon/circus-${AIIDA_PROFILE_NAME}.pid"
+  rm -f "/home/${NB_USER}/.aiida/daemon/circus-*.pid"
   verdi storage migrate --force
 
 fi
