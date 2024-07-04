@@ -74,8 +74,8 @@ load_computer('${computer_name}').set_minimum_job_poll_interval(${job_poll_inter
 else
 
   # Migration will run for the default profile.
-  ## We need to stop the daemon before.
-  verdi daemon stop
+  ## clean up stale PID-files -> .aiida/daemon/circus-{profile-name}.pid
+  rm -f "/home/${NB_USER}/.aiida/daemon/circus-${AIIDA_PROFILE_NAME}.pid"
   verdi storage migrate --force
 
 fi
