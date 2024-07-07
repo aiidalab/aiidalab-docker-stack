@@ -15,12 +15,11 @@ WORKDIR /opt/
 
 # Install aiidalab package
 ARG AIIDALAB_VERSION
-RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab
-#RUN mamba install --yes \
-#     aiidalab=${AIIDALAB_VERSION} \
-#     && mamba clean --all -f -y && \
-#     fix-permissions "${CONDA_DIR}" && \
-#     fix-permissions "/home/${NB_USER}"
+RUN mamba install --yes \
+     aiidalab=${AIIDALAB_VERSION} \
+     && mamba clean --all -f -y && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
 
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
