@@ -13,12 +13,11 @@ USER root
 # bc: needed to compute the resources for computer setup
 ENV EXTRA_APT_PACKAGES="curl povray rsync build-essential bc"
 
-# For ARM64 we need to install erlang as it is not available on conda-forge
-# (this is needed later as rabbitmq dependency in base-with-services image,
-# but we install it here so that we don't have to invoke apt multiple times.
+# For ARM64 we also install few more packages for compiling from source,
+# which is more often needed on ARM64.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        EXTRA_APT_PACKAGES="erlang libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
+        EXTRA_APT_PACKAGES="libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
