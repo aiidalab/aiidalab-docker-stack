@@ -35,6 +35,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
      fix-permissions "${CONDA_DIR}"; \
   elif [ "$TARGETARCH" = "arm64" ]; then \
      mamba create -p /opt/conda/envs/aiida-core-services --yes \
+         erlang=26.2.5 \
          postgresql=${PGSQL_VERSION} && \
      mamba clean --all -f -y && \
      wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
