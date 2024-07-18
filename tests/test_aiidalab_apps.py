@@ -35,6 +35,11 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     if pkg:
         app_name = pkg.split("@")[0]
         aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
+        # TODO: Remove this after solving https://github.com/aiidalab/aiidalab/issues/405
+        pkg_name = app_name
+        if app_name.lower() == "quantum-espresso":
+            pkg_name = "aiidalab-qe"
+        aiidalab_exec(f"pip uninstall --yes {pkg_name}", user=nb_user)
 
 
 @pytest.mark.parametrize("package_name", ["aiidalab-widgets-base", "quantum-espresso"])
