@@ -58,9 +58,9 @@ jobs:
     # To save arm64 runner resources, we run the tests only on main
     # and only for full-stack image (same for integration tests below).
     test-arm64:
-        if: >-
-            github.repository == 'aiidalab/aiidalab-docker-stack'
-            && (github.ref_type == 'tag' || github.ref_name == 'main')
+        #if: >-
+        #    github.repository == 'aiidalab/aiidalab-docker-stack'
+        #    && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs: build
         uses: ./.github/workflows/test.yml
         with:
@@ -80,9 +80,9 @@ jobs:
                 runner: [ubuntu-22.04, buildjet-4vcpu-ubuntu-2204-arm]
                 isPR:
                     - ${{ github.event_name == 'pull_request' }}
-                exclude:
-                    - isPR: true
-                      runner: buildjet-4vcpu-ubuntu-2204-arm
+                #exclude:
+                    #    - isPR: true
+                    #  runner: buildjet-4vcpu-ubuntu-2204-arm
 
         uses: ./.github/workflows/test.yml
         with:
