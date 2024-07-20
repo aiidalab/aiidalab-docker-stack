@@ -15,6 +15,9 @@
     "AIIDALAB_VERSION": {
       "default": "26.06.0"
     },
+    "AWB_VERSION": {
+      "default": "3.0.0a2"
+    },
     "AIIDALAB_HOME_TAG": {
       "default": "v26.06.0"
     }
