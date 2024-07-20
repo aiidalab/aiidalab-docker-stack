@@ -11,11 +11,11 @@ ENV DOCKER_STACKS_JUPYTER_CMD=nbclassic
 USER root
 WORKDIR /opt/
 
-# Install aiidalab package
 ARG AIIDALAB_VERSION
+ARG AWB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
-     appmode=1.1.0 \
+     aiidalab-widgets-base=${AWB_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
