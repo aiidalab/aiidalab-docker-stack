@@ -46,7 +46,7 @@ ENV PIP_USER 1
 
 # Upgrade pip and mamba to latest
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
+RUN mamba update -y pip zstandard && \
      mamba install --yes \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \

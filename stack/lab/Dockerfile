@@ -4,11 +4,9 @@ FROM base
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
 # By default, Jupyter Docker image launches the JupyterLab interface.
-# Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
-# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
-# but the `nbclassic` is not supported because of appmode.
-# see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
-ENV DOCKER_STACKS_JUPYTER_CMD=notebook
+# Here, we change it to the nbclassic Jupyter Notebook which is used by AiiDAlab.
+# https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
+ENV DOCKER_STACKS_JUPYTER_CMD=nbclassic
 
 USER root
 WORKDIR /opt/
@@ -17,6 +15,7 @@ WORKDIR /opt/
 ARG AIIDALAB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
+     appmode=1.0.0 \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
@@ -38,14 +37,9 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# Install and enable appmode, turning Jupyter notebooks to Apps
-RUN pip install appmode==0.8.0 --no-cache-dir --no-user
-# Enable appmode extension
-RUN jupyter nbextension enable --py --sys-prefix appmode && \
-     jupyter serverextension enable --py --sys-prefix appmode
-
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
-COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
+# TODO: What is the correct directory for nbclassic?
+#COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
@@ -75,7 +69,8 @@ USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
 
-RUN  mkdir -p /home/${NB_USER}/apps
+RUN mkdir -p /home/${NB_USER}/apps
+RUN mkdir -p /home/${NB_USER}/.tmp_notebooks
 
 # When a Jupyter notebook server looses a connection to the frontend,
 # it keeps the messages in a buffer. If there is a background thread running
@@ -89,7 +84,7 @@ RUN  mkdir -p /home/${NB_USER}/apps
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     "--ContentsManager.allow_hidden=True" \
+     "--Appmode.temp_dir=/home/${NB_USER}/.tmp_notebooks" \
      "--MappingKernelManager.buffer_offline_messages=True" \
      "--MappingKernelManager.cull_busy=True" \
      "--MappingKernelManager.cull_connected=True" \
