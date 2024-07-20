@@ -17,6 +17,9 @@ variable "AIIDA_VERSION" {
 variable "AIIDALAB_VERSION" {
 }
 
+variable "AWB_VERSION" {
+}
+
 variable "AIIDALAB_HOME_TAG" {
 }
 
@@ -88,6 +91,7 @@ target "lab" {
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_TAG" = "${AIIDALAB_HOME_TAG}"
+    "AWB_VERSION"      = "${AWB_VERSION}"
     "PYTHON_MINOR_VERSION" = get_python_minor_version("${PYTHON_VERSION}")
   }
 }
