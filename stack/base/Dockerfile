@@ -41,10 +41,11 @@ ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
 ENV PIP_USER 1
 
-# Upgrade pip and mamba to latest
+# Upgrade pip to latest
+RUN mamba update -y pip && mamba clean --all -f -y
+
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
-     mamba install --yes \
+RUN mamba install --yes \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \
      && mamba clean --all -f -y && \
