@@ -10,14 +10,14 @@ USER root
 # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
 # rsync: needed to support the new AiiDA backup command
 # povray: rendering engine used in aiidalab-widgets-base
-ENV EXTRA_APT_PACKAGES "curl rsync build-essential"
+ENV EXTRA_APT_PACKAGES "curl rsync"
 
 # For ARM64 we need to install erlang as it is not available on conda-forge
 # (this is needed later as rabbitmq dependency in base-with-services image,
 # but we install it here so that we don't have to invoke apt multiple times.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        EXTRA_APT_PACKAGES="erlang libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
+        EXTRA_APT_PACKAGES="erlang build-essentials libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
@@ -48,7 +48,7 @@ ENV PIP_USER 1
 # Install aiida-core and other shared requirements.
 RUN mamba update -y pip zstandard && \
      mamba install --yes \
-     aiida-core==${AIIDA_VERSION} \
+     aiida-core.atomic_tools==${AIIDA_VERSION} \
      mamba-bash-completion \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
