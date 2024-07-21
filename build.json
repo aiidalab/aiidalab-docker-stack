@@ -10,10 +10,13 @@
       "default": "3.9.13"
     },
     "AIIDA_VERSION": {
-      "default": "2.5.1"
+      "default": "2.6.1"
     },
     "AIIDALAB_VERSION": {
       "default": "24.07.0"
+    },
+    "AWB_VERSION": {
+      "default": "2.3.0a1"
     },
     "AIIDALAB_HOME_VERSION": {
       "default": "23.03.1"
