@@ -12,12 +12,9 @@ USER root
 # povray: rendering engine used in aiidalab-widgets-base
 ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential"
 
-# For ARM64 we need to install erlang as it is not available on conda-forge
-# (this is needed later as rabbitmq dependency in base-with-services image,
-# but we install it here so that we don't have to invoke apt multiple times.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        EXTRA_APT_PACKAGES="erlang libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
+        EXTRA_APT_PACKAGES="libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
@@ -44,10 +41,11 @@ ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
 COPY pip.conf /etc/pip.conf
 
-# Upgrade pip and mamba to latest
+# Upgrade pip to latest
+RUN mamba update -y pip && mamba clean --all -f -y
+
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
-     mamba install --yes \
+RUN mamba install --yes \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \
      && mamba clean --all -f -y && \
