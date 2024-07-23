@@ -42,7 +42,7 @@ RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_pa
 # Configure pip to use the same requirements file as constraints file.
 ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
-ENV PIP_USER 1
+COPY pip.conf /etc/pip.conf
 
 # Upgrade pip and mamba to latest
 # Install aiida-core and other shared requirements.
