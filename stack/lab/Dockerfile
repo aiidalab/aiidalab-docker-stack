@@ -1,52 +1,43 @@
 # syntax=docker/dockerfile:1
 FROM base
+ARG AIIDALAB_VERSION
+ARG AIIDALAB_HOME_VERSION
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
+
+USER root
+WORKDIR /opt/
+# Install the aiidalab-home app.
+RUN git clone https://github.com/aiidalab/aiidalab-home -b "v${AIIDALAB_HOME_VERSION}" && \
+     fix-permissions "./aiidalab-home"
+
+# Copy start-up scripts for AiiDAlab.
+COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
+
 USER ${NB_USER}
 
-# By default, Jupyter Docker image launches the JupyterLab interface.
-# Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
-# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
-# but the `nbclassic` is not supported because of appmode.
-# see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
-ENV DOCKER_STACKS_JUPYTER_CMD=notebook
-
 # Install aiidalab package
-ARG AIIDALAB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
      && mamba clean --all -f -y
 
-USER root
-WORKDIR /opt/
-
 # Pin aiidalab version.
-RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
+RUN echo "aiidalab==${AIIDALAB_VERSION}" >> $PIP_CONSTRAINT
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
 # Enable aiidalab autocompletion
 RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
 
-# Install the aiidalab-home app.
-ARG AIIDALAB_HOME_VERSION
-RUN git clone https://github.com/aiidalab/aiidalab-home && \
-     cd aiidalab-home && \
-     git checkout v"${AIIDALAB_HOME_VERSION}" && \
-     pip install --no-user --quiet --no-cache-dir "./" && \
-     fix-permissions "./" && \
-     fix-permissions "${CONDA_DIR}"
+# Install Python dependencies for aiidalab-home app
+RUN pip install --no-user --quiet --no-cache-dir /opt/aiidalab-home
 
 # Install and enable appmode, turning Jupyter notebooks to Apps
 RUN pip install appmode==0.8.0 --no-cache-dir --no-user
-# Enable appmode extension
 RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
 COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
-
-# Copy start-up scripts for AiiDAlab.
-COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 # Configure AiiDAlab environment.
 ENV AIIDALAB_HOME /home/${NB_USER}
@@ -69,11 +60,16 @@ ENV AIIDALAB_DEFAULT_APPS ""
 # Specify default factory reset (not set):
 ENV AIIDALAB_FACTORY_RESET ""
 
-USER ${NB_USER}
-
 WORKDIR "/home/${NB_USER}"
 
-RUN  mkdir -p /home/${NB_USER}/apps
+RUN mkdir -p /home/${NB_USER}/apps
+
+# By default, Jupyter Docker image launches the JupyterLab interface.
+# Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
+# In the future, we might want to switch to other options such as `nbclassic` or `retro`,
+# but the `nbclassic` is not supported because of appmode.
+# see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
+ENV DOCKER_STACKS_JUPYTER_CMD=notebook
 
 # When a Jupyter notebook server looses a connection to the frontend,
 # it keeps the messages in a buffer. If there is a background thread running
