@@ -57,10 +57,10 @@ USER ${NB_USER}
 
 # Upgrade pip and mamba to latest
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
-     mamba install --yes aiida-core==${AIIDA_VERSION} mamba-bash-completion && \
-     mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}"
+# Temporary workaround to avoid `pip check` failures
+# RUN mamba update -y pip && \
+RUN mamba install --yes pip==24.1.2 aiida-core==${AIIDA_VERSION} mamba-bash-completion && \
+     mamba clean --all -f -y
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
