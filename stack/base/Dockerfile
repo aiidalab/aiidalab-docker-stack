@@ -27,7 +27,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure pip to use the same requirements file as constraints file.
-ENV PIP_CONSTRAINT /opt/requirements.txt
+ENV PIP_CONSTRAINT /opt/python_contraints.txt
 
 # Pin certain shared requirements in the base environment
 # so that user cannot change their version and accidently break themselves.
@@ -38,6 +38,7 @@ RUN echo "aiida-core==${AIIDA_VERSION}" > $PIP_CONSTRAINT
 
 # Pin jupyter-notebook to prevent downgrades or upgrades to v7
 RUN echo "notebook==$(jupyter-notebook --version)" >> $PIP_CONSTRAINT
+RUN fix-permissions $PIP_CONSTRAINT
 
 RUN cat $PIP_CONSTRAINT | xargs -I{} conda config --system --add pinned_packages {}
 
