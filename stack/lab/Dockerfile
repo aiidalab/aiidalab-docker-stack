@@ -2,6 +2,7 @@
 FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
+USER ${NB_USER}
 
 # By default, Jupyter Docker image launches the JupyterLab interface.
 # Here, we change it to the classic Jupyter Notebook which is used by AiiDAlab.
@@ -10,16 +11,14 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 # see: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#switching-back-to-the-classic-notebook-or-using-a-different-startup-command
 ENV DOCKER_STACKS_JUPYTER_CMD=notebook
 
-USER root
-WORKDIR /opt/
-
 # Install aiidalab package
 ARG AIIDALAB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
-     && mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
+     && mamba clean --all -f -y
+
+USER root
+WORKDIR /opt/
 
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
@@ -35,8 +34,7 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
      pip install --no-user --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
+     fix-permissions "${CONDA_DIR}"
 
 # Install and enable appmode, turning Jupyter notebooks to Apps
 RUN pip install appmode==0.8.0 --no-cache-dir --no-user

@@ -3,6 +3,29 @@ FROM ${BASE}
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
+USER ${NB_USER}
+
+ARG AIIDA_VERSION
+# Upgrade pip and mamba to latest
+# Install aiida-core and other shared requirements.
+RUN mamba update -y pip && \
+     mamba install --yes \
+     aiida-core==${AIIDA_VERSION} \
+     mamba-bash-completion \
+     && mamba clean --all -f -y
+
+# Enable verdi autocompletion.
+RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
+     echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
+     chmod +x "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
+
+# Add conda envs_dirs in home directory,
+# which will persist between container invocation
+# NOTE: The order here is important!
+# We want conda to create environments in ~/.conda/ by default
+RUN conda config --system --add envs_dirs /opt/conda
+RUN conda config --system --add envs_dirs "~/.conda/envs"
+
 USER root
 
 # build-essential: includes GCC compilers that are needed when building
@@ -25,8 +48,6 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
 
 WORKDIR /opt/
 
-ARG AIIDA_VERSION
-
 # Pin certain shared requirements in the base environment
 # so that user cannot change their version and accidently break themselves.
 # Pin aiida-core to the exact installed version
@@ -43,22 +64,6 @@ RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_pa
 ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
 COPY pip.conf /etc/pip.conf
-
-# Upgrade pip and mamba to latest
-# Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
-     mamba install --yes \
-     aiida-core==${AIIDA_VERSION} \
-     mamba-bash-completion \
-     && mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
-
-# Enable verdi autocompletion.
-RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
-     echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     chmod +x "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
-     fix-permissions "${CONDA_DIR}"
 
 # Configure AiiDA profile.
 COPY config-quick-setup.yaml .
@@ -79,13 +84,6 @@ COPY load-singlesshagent.sh /opt/bin/
 
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
-
-# Add conda envs_dirs in home directory,
-# which will persist between container invocation
-# NOTE: The order here is important!
-# We want conda to create environments in ~/.conda/ by default
-RUN conda config --system --add envs_dirs /opt/conda
-RUN conda config --system --add envs_dirs "~/.conda/envs"
 
 USER ${NB_USER}
 
