@@ -48,10 +48,8 @@ set -euo pipefail
 # (e.g. BASE_IMAGE=ghcr.io/aiidalab/base@sha256:8e57a52b...)
 # and these are in turn read in the docker-compose.<target>.yml files for tests.
 
-if [[ -z ${BAKE_METADATA-} ]];then
-    echo "ERROR: Environment variable BAKE_METADATA is not set!"
-    exit 1
-fi
-
-images=$(echo "${BAKE_METADATA}" | jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
+# NOTE: BAKE_METADATA has gotten too large and cannot be passed directly as cmdline argument to avoid
+# "Argument list too long" BASH error, see: https://github.com/aiidalab/aiidalab-docker-stack/issues/491
+# Therefore we first need to parse the output from `env` command and pass it to jq via piped stdin
+images=$(env | grep -E "^BAKE_METADATA=" | tr -d 'BAKE_METADATA=' | jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries')
 echo "images=$images"
