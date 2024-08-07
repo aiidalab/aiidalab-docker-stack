@@ -49,5 +49,4 @@ set -euo pipefail
 # and these are in turn read in the docker-compose.<target>.yml files for tests.
 
 metadata_file=$1
-images=$(jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries' $metadata_file)
-echo "images=$images"
+jq -c '. as $base |[to_entries[] |{"key": (.key|ascii_upcase|sub("-"; "_"; "g") + "_IMAGE"), "value": [(.value."image.name"|split(",")[0]),.value."containerimage.digest"]|join("@")}] |from_entries' $metadata_file

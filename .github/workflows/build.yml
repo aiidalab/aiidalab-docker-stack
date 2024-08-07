@@ -79,4 +79,7 @@ jobs:
                   cat << EOF > bake_metadata.json
                   ${{ steps.build-upload.outputs.metadata }}
                   EOF
-                  .github/workflows/extract-image-names.sh bake_metadata.json | tee -a "${GITHUB_OUTPUT}" | tr -d 'images=' | jq
+                  images=$(.github/workflows/extract-image-names.sh bake_metadata.json)
+                  echo "images=${images}" >> "${GITHUB_OUTPUT}"
+                  # Pretty-print for GHA logs
+                  echo "$images" | jq
