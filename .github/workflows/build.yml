@@ -71,9 +71,12 @@ jobs:
                       build.json
                       .github/workflows/env.hcl
 
-            - name: Set output variables
+            - name: Set output image names
               id: bake_metadata
+              # bake-action metadata output has gotten too big, so we first write it
+              # to a file. See https://github.com/aiidalab/aiidalab-docker-stack/issues/491
               run: |
-                  .github/workflows/extract-image-names.sh | tee -a "${GITHUB_OUTPUT}" | awk -F'=' '{print $2}' | jq
-              env:
-                  BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
+                  cat << EOF
+                  ${{ steps.build-upload.outputs.metadata }}
+                  EOF > bake_metadata.json
+                  .github/workflows/extract-image-names.sh bake_metadata.json | tee -a "${GITHUB_OUTPUT}" | tr -d 'images=' | jq
