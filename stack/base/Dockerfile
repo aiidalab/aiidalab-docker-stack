@@ -45,14 +45,15 @@ ENV PIP_CONSTRAINT /opt/requirements.txt
 COPY pip.conf /etc/pip.conf
 
 # Upgrade pip and mamba to latest
+# Update async_generator, certipy to satisfy `pip check`
+# https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
+RUN mamba update -y pip async_generator certipy && \
      mamba install --yes \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \
      && mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
+     fix-permissions "${CONDA_DIR}"
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
