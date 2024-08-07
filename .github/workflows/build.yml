@@ -55,7 +55,9 @@ jobs:
 
             - name: Build and upload to ghcr.io 📤
               id: build-upload
-              uses: docker/bake-action@v5
+              # We need to pin exact version here, since updates can break
+              # the extract-image-names.sh script
+              uses: docker/bake-action@v5.5.0
               with:
                   push: true
                   # Using provenance to disable default attestation so it will build only desired images:
@@ -71,9 +73,15 @@ jobs:
                       build.json
                       .github/workflows/env.hcl
 
-            - name: Set output variables
+            - name: Set output image names
               id: bake_metadata
+              # bake-action metadata output has gotten too big, so we first write it
+              # to a file. See https://github.com/aiidalab/aiidalab-docker-stack/issues/491
               run: |
-                  .github/workflows/extract-image-names.sh | tee -a "${GITHUB_OUTPUT}" | awk -F'=' '{print $2}' | jq
-              env:
-                  BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
+                  cat << EOF > bake_metadata.json
+                  ${{ steps.build-upload.outputs.metadata }}
+                  EOF
+                  images=$(.github/workflows/extract-image-names.sh bake_metadata.json)
+                  echo "images=${images}" >> "${GITHUB_OUTPUT}"
+                  # Pretty-print for GHA logs
+                  echo "$images" | jq
