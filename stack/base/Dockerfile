@@ -27,7 +27,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure pip to use the same requirements file as constraints file.
-ENV PIP_CONSTRAINT /opt/python_contraints.txt
+ENV PIP_CONSTRAINT=/opt/requirements.txt
 
 # Pin certain shared requirements in the base environment
 # so that user cannot change their version and accidently break themselves.
