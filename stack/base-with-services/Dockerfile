@@ -3,7 +3,7 @@ FROM base
 
 LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 
-USER root
+USER $NB_USER
 WORKDIR /opt/
 
 ARG AIIDA_VERSION
@@ -30,20 +30,19 @@ ENV PGDATA=/home/${NB_USER}/.postgresql
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
      mamba create -p /opt/conda/envs/aiida-core-services --yes \
          postgresql=${PGSQL_VERSION} \
-         rabbitmq-server=${RMQ_VERSION} && \
-     mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}"; \
+         rabbitmq-server=${RMQ_VERSION}; \
   elif [ "$TARGETARCH" = "arm64" ]; then \
      mamba create -p /opt/conda/envs/aiida-core-services --yes \
          postgresql=${PGSQL_VERSION} && \
-     mamba clean --all -f -y && \
-     wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
+     cd /tmp/ && wget -c https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RMQ_VERSION}/rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      tar -xf rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      rm rabbitmq-server-generic-unix-${RMQ_VERSION}.tar.xz && \
      mv rabbitmq_server-${RMQ_VERSION} /opt/conda/envs/aiida-core-services/rabbitmq_server && \
-     ln -sf /opt/conda/envs/aiida-core-services/rabbitmq_server/sbin/* /opt/conda/envs/aiida-core-services/bin/ && \
-     fix-permissions "${CONDA_DIR}"; \
-  fi
+     ln -sf /opt/conda/envs/aiida-core-services/rabbitmq_server/sbin/* /opt/conda/envs/aiida-core-services/bin/; \
+  fi; \
+  mamba clean --all -f -y
+
+USER root
 
 # Configure AiiDA profile.
 COPY config-quick-setup.yaml .
