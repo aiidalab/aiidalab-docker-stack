@@ -76,7 +76,7 @@ jobs:
               # bake-action metadata output has gotten too big, so we first write it
               # to a file. See https://github.com/aiidalab/aiidalab-docker-stack/issues/491
               run: |
-                  cat << EOF
+                  cat << 'EOF'
                   ${{ steps.build-upload.outputs.metadata }}
                   EOF > bake_metadata.json
                   .github/workflows/extract-image-names.sh bake_metadata.json | tee -a "${GITHUB_OUTPUT}" | tr -d 'images=' | jq
