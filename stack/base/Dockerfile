@@ -57,10 +57,11 @@ COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 USER ${NB_USER}
 
 # Upgrade pip and mamba to latest
+# Update async_generator, certipy to satisfy `pip check`, see:
+# https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Install aiida-core and other shared requirements.
-# Temporary workaround to avoid `pip check` failures
-# RUN mamba update -y pip && \
-RUN mamba install --yes pip==24.1.2 aiida-core==${AIIDA_VERSION} mamba-bash-completion && \
+RUN mamba update -y pip async_generator certipy && \
+     mamba install --yes pip==24.1.2 aiida-core==${AIIDA_VERSION} mamba-bash-completion && \
      mamba clean --all -f -y
 
 # Enable verdi autocompletion.
