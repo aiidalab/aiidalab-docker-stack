@@ -1,15 +1,12 @@
 #!/bin/bash
 
 # This script is executed whenever the docker container is (re)started.
-
-# Debugging.
 set -x
 
-# Environment.
 export SHELL=/bin/bash
 
 # Check if user requested to set up AiiDA profile (and if it exists already)
-if [[ ${SETUP_DEFAULT_AIIDA_PROFILE} == true ]] && ! verdi profile show ${AIIDA_PROFILE_NAME} &> /dev/null; then
+if [[ ${SETUP_DEFAULT_AIIDA_PROFILE} == true ]] && ! verdi profile show ${AIIDA_PROFILE_NAME} 2> /dev/null; then
     NEED_SETUP_PROFILE=true;
 else
     NEED_SETUP_PROFILE=false;
@@ -48,7 +45,7 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
       exit 1
     fi
 
-    verdi computer show ${computer_name} || verdi computer setup \
+    verdi computer setup \
         --non-interactive                                               \
         --label "${computer_name}"                                      \
         --description "this computer"                                   \
@@ -58,20 +55,31 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --work-dir /home/${NB_USER}/aiida_run/                          \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"                \
         --mpiprocs-per-machine ${LOCALHOST_MPI_PROCS_PER_MACHINE} &&    \
-    verdi computer configure core.local "${computer_name}" \
+    verdi computer configure core.local "${computer_name}"              \
         --non-interactive                                               \
         --safe-interval 0.0
+
+    # We need to limit how often the daemon worker polls the job scheduler
+    # for job status. The poll interval is set to 0s by default, which results
+    # in verdi worker spinning at 100% CPU.
+    # We set this to 2.0 seconds which should limit the CPU utilization below 10%.
+    # https://aiida.readthedocs.io/projects/aiida-core/en/stable/howto/run_codes.html#mitigating-connection-overloads
+    job_poll_interval="2.0"
+    python -c "
+from aiida import load_profile; from aiida.orm import load_computer;
+load_profile();
+load_computer('${computer_name}').set_minimum_job_poll_interval(${job_poll_interval})
+"
+
+else
+
+  # Migration will run for the default profile.
+  pgrep -af 'verdi.* daemon' && echo "ERROR: AiiDA daemon is already running!" && exit 1
+  ## clean up stale PID-files -> .aiida/daemon/circus-{profile-name}.pid
+  rm -f /home/${NB_USER}/.aiida/daemon/circus-*.pid
+  verdi storage migrate --force
+
 fi
 
-
-# Show the default profile
-verdi profile show || echo "The default profile is not set."
-
-# Make sure that the daemon is not running, otherwise the migration will abort.
-verdi daemon stop
-
-# Migration will run for the default profile.
-verdi storage migrate --force
-
 # Daemon will start only if the database exists and is migrated to the latest version.
-verdi daemon start || echo "AiiDA daemon is not running."
+verdi daemon start || echo "ERROR: AiiDA daemon is not running!"

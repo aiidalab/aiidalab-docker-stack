@@ -8,6 +8,9 @@ variable "PYTHON_VERSION" {
 variable "PGSQL_VERSION" {
 }
 
+variable "RMQ_VERSION" {
+}
+
 variable "AIIDA_VERSION" {
 }
 
@@ -26,11 +29,10 @@ variable "ORGANIZATION" {
 }
 
 variable "REGISTRY" {
-  default = "docker.io/"
 }
 
 variable "PLATFORMS" {
-  default = ["linux/amd64", "linux/arm64"]
+  default = ["linux/amd64"]
 }
 
 variable "TARGETS" {
@@ -40,33 +42,23 @@ variable "TARGETS" {
 function "tags" {
   params = [image]
   result = [
-    "${REGISTRY}${ORGANIZATION}/${image}:${VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:python-${PYTHON_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:postgresql-${PGSQL_VERSION}",
-    "${REGISTRY}${ORGANIZATION}/${image}:aiida-${AIIDA_VERSION}",
+    "${REGISTRY}${ORGANIZATION}/${image}${VERSION}",
   ]
+}
+
+# Get a Python version string without the patch version (e.g. "3.9.13" -> "3.9")
+# Used to construct paths to Python site-packages folder.
+function "get_python_minor_version" {
+  params = [python_version]
+  result = join(".", slice(split(".", "${python_version}"), 0, 2))
 }
 
 group "default" {
   targets = "${TARGETS}"
 }
 
-target "base-meta" {
-  tags = tags("base")
-}
-target "base-with-services-meta" {
-  tags = tags("base-with-services")
-}
-target "lab-meta" {
-  tags = tags("lab")
-}
-
-target "full-stack-meta" {
-  tags = tags("full-stack")
-}
-
 target "base" {
-  inherits = ["base-meta"]
+  tags = tags("base")
   context = "stack/base"
   platforms = "${PLATFORMS}"
   args = {
@@ -75,7 +67,7 @@ target "base" {
   }
 }
 target "base-with-services" {
-  inherits = ["base-with-services-meta"]
+  tags = tags("base-with-services")
   context = "stack/base-with-services"
   contexts = {
     base = "target:base"
@@ -84,10 +76,11 @@ target "base-with-services" {
   args = {
     "AIIDA_VERSION" = "${AIIDA_VERSION}"
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
+    "RMQ_VERSION" = "${RMQ_VERSION}"
   }
 }
 target "lab" {
-  inherits = ["lab-meta"]
+  tags = tags("lab")
   context = "stack/lab"
   contexts = {
     base = "target:base"
@@ -96,10 +89,11 @@ target "lab" {
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
     "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
+    "PYTHON_MINOR_VERSION" = get_python_minor_version("${PYTHON_VERSION}")
   }
 }
 target "full-stack" {
-  inherits = ["full-stack-meta"]
+  tags = tags("full-stack")
   context = "stack/full-stack"
   contexts = {
     base-with-services = "target:base-with-services"

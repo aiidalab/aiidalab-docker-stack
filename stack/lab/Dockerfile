@@ -13,14 +13,6 @@ ENV DOCKER_STACKS_JUPYTER_CMD=notebook
 USER root
 WORKDIR /opt/
 
-# Install additional system packages
-RUN apt-get update --yes && \
-     apt-get install --yes --no-install-recommends \
-     curl \
-     povray \
-     && apt-get clean \
-     && rm -rf /var/lib/apt/lists/*
-
 # Install aiidalab package
 ARG AIIDALAB_VERSION
 RUN mamba install --yes \
@@ -33,24 +25,27 @@ RUN mamba install --yes \
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
+# Enable aiidalab autocompletion
+RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
+
 # Install the aiidalab-home app.
 ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout v"${AIIDALAB_HOME_VERSION}" && \
-     pip install --quiet --no-cache-dir "./" && \
+     pip install --no-user --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# Install and enable appmode.
-RUN git clone https://github.com/oschuett/appmode.git && \
-     cd appmode && \
-     git checkout v0.8.0
-COPY gears.svg ./appmode/appmode/static/gears.svg
-RUN pip install ./appmode --no-cache-dir && \
-     jupyter nbextension enable --py --sys-prefix appmode && \
+# Install and enable appmode, turning Jupyter notebooks to Apps
+RUN pip install appmode==0.8.0 --no-cache-dir --no-user
+# Enable appmode extension
+RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
+
+# Swap appmode icon for AiiDAlab gears icon, shown during app load
+COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
@@ -82,6 +77,27 @@ WORKDIR "/home/${NB_USER}"
 
 RUN  mkdir -p /home/${NB_USER}/apps
 
+# When a Jupyter notebook server looses a connection to the frontend,
+# it keeps the messages in a buffer. If there is a background thread running
+# and trying to update the frontend, the buffer grows indefinitely,
+# eventually consuming all available RAM.
+# See https://github.com/aiidalab/issues/issues/13 for detailed analysis.
+# Moreover, it will leave the python kernel running indefinitely which needlessly consumes resources.
+# We could turn this behaviour off by setting "buffer_offline_messages=False",
+# but that may come with other problems for people with flaky internet connections.
+# Instead, here we configure Jupyter to kill all kernels that have been alive for
+# more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     "--ContentsManager.allow_hidden=True"
+     "--ContentsManager.allow_hidden=True" \
+     "--MappingKernelManager.buffer_offline_messages=True" \
+     "--MappingKernelManager.cull_busy=True" \
+     "--MappingKernelManager.cull_connected=True" \
+     "--MappingKernelManager.cull_idle_timeout=64800" \
+     "--MappingKernelManager.cull_interval=300" \
+     "--TerminalManager.cull_inactive_timeout=3600" \
+     "--TerminalManager.cull_interval=300"
+
+# Set up the logo of notebook interface
+ARG PYTHON_MINOR_VERSION
+COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/base/images/logo.png

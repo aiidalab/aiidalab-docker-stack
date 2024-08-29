@@ -6,11 +6,14 @@
     "PGSQL_VERSION": {
       "default": "15"
     },
+    "RMQ_VERSION": {
+      "default": "3.9.13"
+    },
     "AIIDA_VERSION": {
-      "default": "2.3.1"
+      "default": "2.6.2"
     },
     "AIIDALAB_VERSION": {
-      "default": "23.03.0"
+      "default": "24.07.0"
     },
     "AIIDALAB_HOME_VERSION": {
       "default": "23.03.1"

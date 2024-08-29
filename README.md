@@ -1,6 +1,6 @@
 # Docker Stack for AiiDAlab
 
-This repository contains the Dockerfiles for the official AiiDAlab docker image stack.
+This repository contains the Dockerfiles for the official [AiiDAlab](https://www.aiidalab.net/) docker image stack.
 All images are based on the [jupyter/minimal-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook).
 
 Image variants:
@@ -11,13 +11,13 @@ Image variants:
 
 Supported tags (released on [Docker Hub](https://hub.docker.com/r/aiidalab)):
 
-- `edge` – the latest commit on the default branch
+- `edge` – the latest commit on the default branch (`main`)
 - `latest` – the latest _regular_ release
 - `aiida-$AIIDA_VERSION` – the _latest_ regular release with that AiiDA version (ex. `aiida-2.0.0`)
-- `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.2`)
+- `python-$PYTHON_VERSION` – the _latest_ regular release with that Python version (ex. `python-3.9.13`)
 - `$version` – the version of a specific release (ex. `2022.1001`)
 
-In addition, `edge`, `latest`, and `$version` are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
+In addition, images are also released _internally_ on the [GitHub Container registry (ghcr.io)](https://github.com/orgs/aiidalab/packages?ecosystem=container).
 Pull requests into the default branch are further released on ghcr.io with the `pr-###` tag to simplify the testing of development versions.
 
 ## Quickstart
@@ -41,15 +41,10 @@ _Note: On recent versions of Mac OS-X you will have to select a different port, 
 
 The repository uses the [doit automation tool](https://pydoit.org/) to automate tasks related to this repository, including _building_, _testing_, and _locally deploying_ Docker images with docker-compose.
 
-To use this system, setup a build end testing environment with [conda](https://docs.conda.io/en/latest/miniconda.html) (or [mamba](https://mamba.readthedocs.io/en/latest/installation.html)):
+To use this system, setup a build end testing environment and install the dependencies with:
 
 ```console
-conda env create -f environment.yml
-```
-
-Then activate the environment with
-```console
-conda activate aiidalab-docker-stack
+pip install -r requirements.txt
 ```
 
 ### Build images locally
@@ -58,49 +53,44 @@ To build the images, run `doit build` (tested with *docker buildx* version v0.8.
 
 The build system will attempt to detect the local architecture and automatically build images for it (tested with amd64 and arm64).
 All commands `build`, `tests`, and `up` will use the locally detected platform and use a version tag based on the state of the local git repository.
-However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit build --platform=linux/amd64 --version=my-version`.
+However, you can also specify a custom platform or version with the `--platform` and `--version` parameters, example: `doit build --arch=arm64 --version=my-version`.
 
-You can specify target stacks to build with `--target`, example: `doit build --target base --target full-stack`.
+By default, all image variants are build. You can specify a single target image variant to build with `-t/--target`, example: `doit build --target base`.
 
 ### Run automated tests
 
 To run tests, first build the images as described in the previous section.
-Then run the automated tests with `doit tests`.
+Then run the automated tests for a given image with `doit tests --target <base|base-with-services|lab|full-stack>`.
 
 Tip: The [continuous integration](#continuous-integration) workflow will build, release (at `ghcr.io/aiidalab/*:pr-###`), and test images for all pull requests into the default branch.
 
-For manual testing, you can start the images with `doit up`, however we recommend to use [aiidalab-launch](#deploy-aiidalab-with-aiidalab-launch) to setup a production-ready local deployment.
+For manual testing, you can start the images with `doit up --target full-stack`, however we recommend to use [aiidalab-launch](#deploy-aiidalab-with-aiidalab-launch) to setup a production-ready local deployment.
 
 ### Continuous integration
 
 Images are built for `linux/amd64` and `linux/arm64` during continuous integration for all pull requests into the default branch and pushed to the GitHub Container Registry (ghcr.io) with tags `ghcr.io/aiidalab/*:pr-###`.
-You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit up --registry=ghcr.io/ --version=pr-123`.
-Note: You may have to [log into the registry first](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
+You can run automated or manual tests against those images by specifying the registry and version for both the `up` and `tests` commands, example: `doit tests --registry=ghcr.io/ --version=pr-123`.
 
 ### Creating a release
 
-We distinguish between _regular_ releases and _special_ releases, where the former follow the standard versioning scheme (`v2022.1001`) and the latter would be specific to a certain use case, e.g., a workshop with dedicated requirements.
-To create a regular release, set up a development environment, and then use `bumpver`:
+We use a calendar versioning scheme (e.g. `v2022.1001`), and we automate the release with `bumpver`. To create a release, make sure your are on an up-to-date main branch and run:
 ```console
 bumpver update
 ```
-This will update the README.md file, make a commit, tag it, and then push both to the repository to kick off the build and release flow.
+This will update the version in bumpver.toml, make a commit, tag it, and then push both to the repository to kick off the build and release flow.
 
-To create a _special_ release, simply tag it with a tag name of your choice with the exception that it cannot start with the character `v`.
+## Deploy AiiDAlab with aiidalab-launch
 
-## Deploy AiiDAlab with AiiDAlab Launch
-
-The `aiidalab-launch` tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
-To use it, simply install it via pip
+The [aiidalab-launch](https://github.com/aiidalab/aiidalab-launch) tool provides a convenient and robust method of both launching and managing one or multiple AiiDAlab instances on your computer.
+To use it, simply install it via pipx
 ```console
-pip install aiidalab-launch
+pipx install aiidalab-launch
 ```
-and then start AiiDAlab with
+and then start AiiDAlab container with
 ```console
 aiidalab-launch start
 ```
-Note: AiiDAlab will keep running until you explicitly stop it or shutdown/restart your computer.
-In that case, you will have to run the `aiidalab-launch start` command again to restart AiiDAlab.
+Note: AiiDAlab will keep running until you explicitly stop it with `aiidalab-launch stop` or shutdown/restart your computer.
 
 Please see `aiidalab-launch --help` for a full list of available commands and options.
 
@@ -117,9 +107,9 @@ A. V. Yakutovich et al., Comp. Mat. Sci. 188, 110165 (2021).
 
 ## Acknowledgements
 
-This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
-funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX
-European Centre of Excellence](<http://www.max-centre.eu/>) funded by the Horizon 2020 EINFRA-5 program,
+This work is supported by the [MARVEL National Centre for Competency in Research](<https://nccr-marvel.ch>)
+funded by the [Swiss National Science Foundation](<https://www.snf.ch/en>), as well as by the [MaX
+European Centre of Excellence](<https://www.max-centre.eu/>) funded by the Horizon 2020 EINFRA-5 program,
 Grant No. 676598.
 
 ![MARVEL](miscellaneous/logos/MARVEL.png)

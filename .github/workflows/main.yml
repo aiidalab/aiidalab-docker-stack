@@ -1,0 +1,126 @@
+---
+name: Docker
+
+on:
+    pull_request:
+        paths-ignore:
+            - "**.md"
+            - ruff.toml
+            - bumpver.toml
+            - .pre-commit-config.yaml
+            # We use doit only for local builds
+            - dodo.py
+            - aarch64-runner/**
+    push:
+        branches:
+            - main
+        tags:
+            - "v*"
+    workflow_dispatch:
+
+# https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency:
+    # only cancel in-progress jobs or runs for the current workflow - matches against branch & tags
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    FORCE_COLOR: 1
+
+jobs:
+
+    build-amd64:
+        uses: ./.github/workflows/build.yml
+        with:
+            runsOn: ubuntu-22.04
+            platforms: linux/amd64
+
+    test-amd64:
+        needs: build-amd64
+        strategy:
+            fail-fast: false
+            matrix:
+                target: ["base", "lab", "base-with-services", "full-stack"]
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ubuntu-22.04
+            images: ${{ needs.build-amd64.outputs.images }}
+            target: ${{ matrix.target }}
+            integration: false
+
+    build:
+        needs: test-amd64
+        uses: ./.github/workflows/build.yml
+        with:
+            runsOn: ubuntu-22.04
+            platforms: linux/amd64,linux/arm64
+
+    # To save arm64 runner resources, we run the tests only on main
+    # and only for full-stack image (same for integration tests below).
+    test-arm64:
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
+        needs: build
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: buildjet-4vcpu-ubuntu-2204-arm
+            images: ${{ needs.build.outputs.images }}
+            target: full-stack
+            integration: false
+
+    test-integration:
+        name: Integration tests
+        needs: build
+        strategy:
+            fail-fast: false
+            # Trick to exclude arm64 tests from PRs
+            # https://github.com/orgs/community/discussions/26253
+            matrix:
+                runner: [ubuntu-22.04, buildjet-4vcpu-ubuntu-2204-arm]
+                isPR:
+                    - ${{ github.event_name == 'pull_request' }}
+                exclude:
+                    - isPR: true
+                      runner: buildjet-4vcpu-ubuntu-2204-arm
+
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ${{ matrix.runner }}
+            images: ${{ needs.build.outputs.images }}
+            target: full-stack
+            integration: true
+
+    publish-ghcr:
+        needs: [build, test-amd64]
+        uses: ./.github/workflows/publish.yml
+        with:
+            runsOn: ubuntu-22.04
+            images: ${{ needs.build.outputs.images }}
+            registry: ghcr.io
+        secrets: inherit
+
+    publish-dockerhub:
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && (github.ref_type == 'tag' || github.ref_name == 'main')
+        needs: [build, test-amd64, test-arm64, publish-ghcr]
+        uses: ./.github/workflows/publish.yml
+        with:
+            runsOn: ubuntu-22.04
+            images: ${{ needs.build.outputs.images }}
+            registry: docker.io
+        secrets: inherit
+
+    make-release:
+        runs-on: ubuntu-22.04
+        if: >-
+            github.repository == 'aiidalab/aiidalab-docker-stack'
+            && github.ref_type == 'tag'
+        needs: [publish-dockerhub]
+
+        steps:
+            - uses: softprops/action-gh-release@v2
+              name: Create release
+              with:
+                  generate_release_notes: true
