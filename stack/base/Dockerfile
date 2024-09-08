@@ -9,14 +9,11 @@ USER root
 # povray: rendering engine used in aiidalab-widgets-base
 ENV EXTRA_APT_PACKAGES "curl povray rsync"
 
-# For ARM64 we need to install erlang as it is not available on conda-forge
-# (this is needed later as rabbitmq dependency in base-with-services image,
-# but we install it here so that we don't have to invoke apt multiple times.
-# We also install build-essential, which includes GCC compilers that are needed when building
-# pip packages from sources, which is more often needed on ARM64
+# For ARM64 we also install build-essential, which includes GCC compilers that are needed when building
+# pip packages from sources, which is more often needed on ARM64.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        EXTRA_APT_PACKAGES="erlang build-essential libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
+        EXTRA_APT_PACKAGES="build-essential libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \

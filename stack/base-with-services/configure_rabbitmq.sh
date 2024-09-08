@@ -1,14 +1,9 @@
 #!/bin/bash
 set -emx
 
-RMQ_ETC_DIR_ARM64="/opt/conda/envs/aiida-core-services/rabbitmq_server/etc/rabbitmq"
-RMQ_ETC_DIR_AMD64="/opt/conda/envs/aiida-core-services/etc/rabbitmq"
-if [[ -d $RMQ_ETC_DIR_ARM64 ]]; then
-    RMQ_ETC_DIR="$RMQ_ETC_DIR_ARM64"
-elif [[ -d $RMQ_ETC_DIR_AMD64 ]]; then
-    RMQ_ETC_DIR="$RMQ_ETC_DIR_AMD64"
-else
-    echo "ERROR: Could not find RabbitMQ etc directory"
+RMQ_ETC_DIR="/opt/conda/envs/aiida-core-services/etc/rabbitmq"
+if [[ ! -d $RMQ_ETC_DIR ]]; then
+    echo "ERROR: directory '$RMQ_ETC_DIR' does not exist!"
     exit 1
 fi
 
