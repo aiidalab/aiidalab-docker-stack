@@ -10,7 +10,8 @@ USER root
 # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
 # rsync: needed to support the new AiiDA backup command
 # povray: rendering engine used in aiidalab-widgets-base
-ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential"
+# bc: needed to compute the resources for computer setup
+ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential bc"
 
 # For ARM64 we need to install erlang as it is not available on conda-forge
 # (this is needed later as rabbitmq dependency in base-with-services image,
