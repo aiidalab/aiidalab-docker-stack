@@ -50,8 +50,9 @@ COPY pip.conf /etc/pip.conf
 # https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Update zstandard, without this the `mamba install` command fails for unknown reason.
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip mamba zstandard async_generator certipy && \
+RUN mamba update -y pip zstandard async_generator certipy && \
      mamba install --yes \
+     mamba=1.5 \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \
      && mamba clean --all -f -y && \
