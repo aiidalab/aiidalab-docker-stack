@@ -43,7 +43,8 @@ RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_pa
 # Configure pip to use the same requirements file as constraints file.
 ENV PIP_CONSTRAINT /opt/requirements.txt
 # Ensure that pip installs packages to ~/.local by default
-COPY pip.conf /etc/pip.conf
+RUN mkdir -p "${NB_USER}/.config/pip"
+COPY pip.conf "${NB_USER}/.config/pip/pip.conf"
 
 # Upgrade pip and mamba to latest
 # Update async_generator, certipy to satisfy `pip check`
