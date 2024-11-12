@@ -1,9 +1,17 @@
 """This module contains tests for the base image, which are AiiDA and package management related tests."""
 
+import email
 import json
 
 import pytest
 from packaging.version import parse
+
+
+@pytest.fixture
+def venv(tmp_path, aiidalab_exec):
+    venv_path = tmp_path / ".venv"
+    aiidalab_exec(f"python -m venv {venv_path}")
+    return venv_path
 
 
 @pytest.mark.parametrize("pkg_manager", ["pip", "mamba"])
@@ -76,13 +84,24 @@ def test_path_local_pip(aiidalab_exec, nb_user):
 
 def test_pip_user_install(aiidalab_exec, pip_install, nb_user):
     """Test that pip installs packages to ~/.local/ by default"""
-    import email
-
     # We use 'tuna' as an example of python-only package without dependencies
     pkg = "tuna"
-    pip_install(pkg, user=nb_user)
+    pip_install(pkg)
     output = aiidalab_exec(f"pip show {pkg}")
 
     # `pip show` output is in the RFC-compliant email header format
     msg = email.message_from_string(output)
     assert msg.get("Location").startswith(f"/home/{nb_user}/.local/")
+
+
+def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
+    """Test that pip installs packages to an activated venv"""
+
+    pkg = "tuna"
+    pip = venv / "bin/pip"
+
+    aiidalab_exec(f"{pip} install {pkg}")
+
+    output = aiidalab_exec(f"{pip} show {pkg}")
+    msg = email.message_from_string(output)
+    assert msg.get("Location").startswith(f"{venv}/lib")
