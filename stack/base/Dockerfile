@@ -42,9 +42,19 @@ RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_pa
 
 # Configure pip to use the same requirements file as constraints file.
 ENV PIP_CONSTRAINT /opt/requirements.txt
-# Ensure that pip installs packages to ~/.local by default
-RUN mkdir -p "${NB_USER}/.config/pip"
-COPY pip.conf "${NB_USER}/.config/pip/pip.conf"
+# Ensure that pip installs packages to '~/.local/lib/python3.X/site-packages/' by default
+# by implicitly passing the '--user' option to 'pip install'
+# Otherwise, pip would install into /opt/conda and such packages would be lost
+# when the container exits.
+# NOTE: We specifically chose the location '/opt/conda/pip.conf'
+# which represents the 'site' config file when VIRTUAL_ENV is not set, per:
+# https://pip.pypa.io/en/stable/topics/configuration/#configuration-files
+# Other locations such as '~/.config/pip/pip.conf' or '/etc/pip.conf' would interfere with virtual environments,
+# for example those used by pre-commit.
+# We can't use the PIP_USER env variable for the same reason.
+# To better understand this, try running `pip config debug` and see
+# https://github.com/aiidalab/aiidalab-docker-stack/issues/501
+COPY pip.conf "${CONDA_DIR}/pip.conf"
 
 # Upgrade pip and mamba to latest
 # Update async_generator, certipy to satisfy `pip check`
