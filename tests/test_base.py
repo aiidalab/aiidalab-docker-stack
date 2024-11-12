@@ -80,7 +80,7 @@ def test_pip_user_install(aiidalab_exec, pip_install, nb_user):
 
     # We use 'tuna' as an example of python-only package without dependencies
     pkg = "tuna"
-    pip_install(pkg)
+    pip_install(pkg, user=nb_user)
     output = aiidalab_exec(f"pip show {pkg}")
 
     # `pip show` output is in the RFC-compliant email header format
