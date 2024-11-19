@@ -30,9 +30,8 @@ RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/et
 
 # Install the aiidalab-home app.
 ARG AIIDALAB_HOME_VERSION
-RUN git clone https://github.com/aiidalab/aiidalab-home && \
+RUN git clone --branch fix/single_app_crash https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
-     git checkout v"${AIIDALAB_HOME_VERSION}" && \
      pip install --no-user --quiet --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
