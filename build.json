@@ -7,7 +7,7 @@
       "default": "15"
     },
     "RMQ_VERSION": {
-      "default": "3.10.25"
+      "default": "3.10.8"
     },
     "AIIDA_VERSION": {
       "default": "2.6.3"
