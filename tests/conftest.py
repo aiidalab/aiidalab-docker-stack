@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError  # noqa: A004
 
 TARGETS = ("base", "lab", "base-with-services", "full-stack")
 
