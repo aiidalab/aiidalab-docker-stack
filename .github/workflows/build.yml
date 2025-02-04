@@ -77,8 +77,8 @@ jobs:
               id: set-output
               uses: actions/github-script@v7
               with:
-                  # We need to produce the following JSON string as output,
-                  # which is then used in follow-up steps to uniquelly identified the built
+                  # We need to produce the following JSON string from the bake action output,
+                  # which is then used in follow-up steps to uniquelly identify the built
                   # images by their digests, and not by their tags. See e.g. test.yml
                   # {
                   #   "BASE_IMAGE": "ghcr.io/aiidalab/base@sha256:bc53c...",
