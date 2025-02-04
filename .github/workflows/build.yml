@@ -96,4 +96,4 @@ jobs:
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
 
-            - run: echo "images=${{ steps.set-output.outputs.result }}" >> $GITHUB_ENV
+            - run: echo "images=${{ steps.set-output.outputs.result }}" >> "$GITHUB_OUTPUT"
