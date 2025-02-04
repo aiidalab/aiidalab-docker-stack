@@ -55,16 +55,11 @@ jobs:
             runsOn: ubuntu-22.04
             platforms: linux/amd64,linux/arm64
 
-    # To save arm64 runner resources, we run the tests only on main
-    # and only for full-stack image (same for integration tests below).
     test-arm64:
-        #if: >-
-        #    github.repository == 'aiidalab/aiidalab-docker-stack'
-        #    && (github.ref_type == 'tag' || github.ref_name == 'main')
         needs: build
         uses: ./.github/workflows/test.yml
         with:
-            runsOn: buildjet-4vcpu-ubuntu-2204-arm
+            runsOn: ubuntu-22.04-arm
             images: ${{ needs.build.outputs.images }}
             target: full-stack
             integration: false
@@ -74,16 +69,8 @@ jobs:
         needs: build
         strategy:
             fail-fast: false
-            # Trick to exclude arm64 tests from PRs
-            # https://github.com/orgs/community/discussions/26253
             matrix:
-                runner: [ubuntu-22.04, buildjet-4vcpu-ubuntu-2204-arm]
-                isPR:
-                    - ${{ github.event_name == 'pull_request' }}
-                #exclude:
-                    #    - isPR: true
-                    #  runner: buildjet-4vcpu-ubuntu-2204-arm
-
+                runner: [ubuntu-22.04, ubuntu-22.04-arm]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ${{ matrix.runner }}
