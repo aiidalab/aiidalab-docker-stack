@@ -102,7 +102,3 @@ jobs:
                       return images;
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
-
-            - name: Set workflow output
-              id: set-job-output
-              run: echo images="'"'${{ steps.set-output.outputs.result }}'"'" >> "${GITHUB_OUTPUT}"
