@@ -77,13 +77,20 @@ jobs:
               id: set-output
               uses: actions/github-script@v7
               with:
+                  # We need to produce the following JSON string as output,
+                  # which is then used in follow-up steps to uniquelly identified the built
+                  # images by their digests, and not by their tags. See e.g. test.yml
+                  # {
+                  #   "BASE_IMAGE": "ghcr.io/aiidalab/base@sha256:bc53c...",
+                  #   "BASE_WITH_SERVICES_IMAGE":"ghcr.io/aiidalab/base-with-services@sha256:0df1...",
+                  #   "FULL_STACK_IMAGE":"ghcr.io/aiidalab/full-stack@sha256:dd04...",
+                  #   "LAB_IMAGE":"ghcr.io/aiidalab/lab@sha256:e8c7b3a662660ad20fef7...",
+                  # }
                   script: |
                       const bake_output = JSON.parse(process.env.BAKE_METADATA, 'utf-8');
                       images = {};
                       for (const key in bake_output) {
                           const image = bake_output[key];
-                          console.log(key);
-                          console.log(image);
                           // turn e.g. 'full-stack' to 'FULL_STACK_IMAGE' key
                           const image_envvar = `${key.toUpperCase().replace(/-/g, "_")}_IMAGE`;
                           // create full canonical path to the image using its digest, i.e.
