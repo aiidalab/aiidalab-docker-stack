@@ -27,7 +27,7 @@ jobs:
         timeout-minutes: 120
 
         outputs:
-            images: ${{ steps.bake_metadata.outputs.images }}
+            images: ${{ steps.set-output.outputs.result }}
 
         # Make sure we fail if any command in a piped command sequence fails
         defaults:
@@ -104,4 +104,5 @@ jobs:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
 
             - name: Set workflow output
+              id: set-job-output
               run: echo images="'"'${{ steps.set-output.outputs.result }}'"'" >> "${GITHUB_OUTPUT}"
