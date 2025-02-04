@@ -87,9 +87,7 @@ jobs:
                   #   "LAB_IMAGE":"ghcr.io/aiidalab/lab@sha256:e8c7b3a662660ad20fef7...",
                   # }
                   script: |
-                      //const bake_output = JSON.parse(process.env.BAKE_METADATA, 'utf-8');
-                      console.log(context);
-                      const bake_output = JSON.parse(context.workflow.steps.build-upload.outputs.metadata, 'utf-8');
+                      const bake_output = JSON.parse('${{ steps.build-upload.outputs.metadata }}', 'utf-8');
                       images = {};
                       for (const key in bake_output) {
                           const image = bake_output[key];
