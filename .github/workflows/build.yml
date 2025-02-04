@@ -18,7 +18,7 @@ on:
         outputs:
             images:
                 description: Images identified by digests
-                value: ${{ jobs.build.steps.set-output.outputs.result }}
+                value: ${{ jobs.build.outputs.images }}
 
 jobs:
     build:
@@ -95,4 +95,5 @@ jobs:
                       return images;
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
-            #- run: echo "images=${{steps.set-output.outputs.result}}" >> $GITHUB_ENV
+
+            - run: echo "images=${{ steps.set-output.outputs.result }}" >> $GITHUB_ENV
