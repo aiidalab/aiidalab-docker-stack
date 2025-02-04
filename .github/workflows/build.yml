@@ -18,7 +18,7 @@ on:
         outputs:
             images:
                 description: Images identified by digests
-                value: ${{ jobs.build.outputs.images }}
+                value: ${{ jobs.build.steps.set-output.outputs.result }}
 
 jobs:
     build:
@@ -74,15 +74,24 @@ jobs:
                       .github/workflows/env.hcl
 
             - name: Set output variables
+              id: set-output
               uses: actions/github-script@v7
               with:
                   script: |
-                      const data = JSON.parse(process.env.BAKE_METADATA,'utf-8')
-                      for (const key in JSON.parse(process.env.BAKE_METADATA || '{}', 'utf-8')) {
-                        if (data.hasOwnProperty(key)) {
-                          const entry = data[key];
-                          core.setOutput(`${key.toUpperCase().replace(/-/g, "_")}_IMAGE`, `${entry["image.name"]}@${entry["containerimage.digest"]}`);
-                        }
+                      const bake_output = JSON.parse(process.env.BAKE_METADATA,'utf-8')
+                      images = {}
+                      for (const key in bake_output)) {
+                          const image = bake_output[key];
+                          console.log(key, image);
+                          // turn e.g. 'full-stack' to 'FULL_STACK_IMAGE' key
+                          const image_envvar = `${key.toUpperCase().replace(/-/g, "_")}_IMAGE`;
+                          // create full canonical path to the image using its digest, i.e.
+                          // ghcr.io/aiidalab/base@sha256:cdad93278a...
+                          const image_digest = `${image["image.name"]}@${image["containerimage.digest"]}`;
+                          images[image_envvar] = image_digest;
                       }
+                      console.log(images);
+                      return images;
               env:
                   BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
+            #- run: echo "images=${{steps.set-output.outputs.result}}" >> $GITHUB_ENV
