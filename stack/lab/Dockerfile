@@ -88,15 +88,15 @@ RUN  mkdir -p /home/${NB_USER}/apps
 # Instead, here we configure Jupyter to kill all kernels that have been alive for
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS=\
-     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     "--ContentsManager.allow_hidden=True" \
-     "--MappingKernelManager.buffer_offline_messages=True" \
-     "--MappingKernelManager.cull_busy=True" \
-     "--MappingKernelManager.cull_connected=True" \
-     "--MappingKernelManager.cull_idle_timeout=64800" \
-     "--MappingKernelManager.cull_interval=300" \
-     "--TerminalManager.cull_inactive_timeout=3600" \
-     "--TerminalManager.cull_interval=300"
+"--NotebookApp.default_url=/apps/apps/home/start.ipynb "\
+"--ContentsManager.allow_hidden=True "\
+"--MappingKernelManager.buffer_offline_messages=True "\
+"--MappingKernelManager.cull_busy=True "\
+"--MappingKernelManager.cull_connected=True "\
+"--MappingKernelManager.cull_idle_timeout=64800 "\
+"--MappingKernelManager.cull_interval=300 "\
+"--TerminalManager.cull_inactive_timeout=3600 "\
+"--TerminalManager.cull_interval=300"
 
 # Set up the logo of notebook interface
 ARG PYTHON_MINOR_VERSION
