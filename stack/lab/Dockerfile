@@ -51,9 +51,9 @@ COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensio
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 # Configure AiiDAlab environment.
-ENV AIIDALAB_HOME /home/${NB_USER}
-ENV AIIDALAB_APPS ${AIIDALAB_HOME}/apps
-ENV AIIDALAB_DEFAULT_GIT_BRANCH master
+ENV AIIDALAB_HOME=/home/${NB_USER}
+ENV AIIDALAB_APPS=${AIIDALAB_HOME}/apps
+ENV AIIDALAB_DEFAULT_GIT_BRANCH=master
 
 # Specify which apps to install in addition to the home app. The
 # AIIDALAB_DEFAULT_APPS variable should be a whitespace-delimited variable
@@ -66,10 +66,10 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH master
 # Please note that multiple entries must be whitespace delimited.
 # Please see `aiidalab install --help` for more information.
 # ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.0"
-ENV AIIDALAB_DEFAULT_APPS ""
+ENV AIIDALAB_DEFAULT_APPS=""
 
 # Specify default factory reset (not set):
-ENV AIIDALAB_FACTORY_RESET ""
+ENV AIIDALAB_FACTORY_RESET=""
 
 USER ${NB_USER}
 
@@ -87,7 +87,7 @@ RUN  mkdir -p /home/${NB_USER}/apps
 # but that may come with other problems for people with flaky internet connections.
 # Instead, here we configure Jupyter to kill all kernels that have been alive for
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
-ENV NOTEBOOK_ARGS \
+ENV NOTEBOOK_ARGS=\
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
      "--ContentsManager.allow_hidden=True" \
      "--MappingKernelManager.buffer_offline_messages=True" \
