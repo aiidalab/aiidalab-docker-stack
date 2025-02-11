@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError  # noqa: A004
 
 TARGETS = ("base", "lab", "base-with-services", "full-stack")
 
@@ -112,11 +112,11 @@ def pip_install(aiidalab_exec, nb_user):
     def _pip_install(pkg, **args):
         nonlocal package
         package = pkg
-        return aiidalab_exec(f"pip install {pkg}", **args)
+        return aiidalab_exec(f"pip install {pkg}", user=nb_user, **args)
 
     yield _pip_install
     if package:
-        aiidalab_exec(f"pip uninstall --yes {package}")
+        aiidalab_exec(f"pip uninstall --yes {package}", user=nb_user)
 
 
 @pytest.fixture(scope="session")

@@ -10,7 +10,8 @@ USER root
 # https://pymatgen.org/installation.html#installation-tips-for-optional-libraries
 # rsync: needed to support the new AiiDA backup command
 # povray: rendering engine used in aiidalab-widgets-base
-ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential"
+# bc: needed to compute the resources for computer setup
+ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential bc"
 
 # For ARM64 we need to install erlang as it is not available on conda-forge
 # (this is needed later as rabbitmq dependency in base-with-services image,
@@ -41,18 +42,31 @@ RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_pa
 
 # Configure pip to use the same requirements file as constraints file.
 ENV PIP_CONSTRAINT /opt/requirements.txt
-# Ensure that pip installs packages to ~/.local by default
-ENV PIP_USER 1
+# Ensure that pip installs packages to '~/.local/lib/python3.X/site-packages/' by default
+# by implicitly passing the '--user' option to 'pip install'
+# Otherwise, pip would install into /opt/conda and such packages would be lost
+# when the container exits.
+# NOTE: We specifically chose the location '/opt/conda/pip.conf'
+# which represents the 'site' config file when VIRTUAL_ENV is not set, per:
+# https://pip.pypa.io/en/stable/topics/configuration/#configuration-files
+# Other locations such as '~/.config/pip/pip.conf' or '/etc/pip.conf' would interfere with virtual environments,
+# for example those used by pre-commit.
+# We can't use the PIP_USER env variable for the same reason.
+# To better understand this, try running `pip config debug` and see
+# https://github.com/aiidalab/aiidalab-docker-stack/issues/501
+COPY pip.conf "${CONDA_DIR}/pip.conf"
 
 # Upgrade pip and mamba to latest
+# Update async_generator, certipy to satisfy `pip check`
+# https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip zstandard && \
+RUN mamba update -y pip zstandard async_generator certipy && \
      mamba install --yes \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \
+     traitlets=5.9.0 \
      && mamba clean --all -f -y && \
-     fix-permissions "${CONDA_DIR}" && \
-     fix-permissions "/home/${NB_USER}"
+     fix-permissions "${CONDA_DIR}"
 
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
