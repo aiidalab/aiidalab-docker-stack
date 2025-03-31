@@ -1,0 +1,33 @@
+#culling-countdown {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #0078d4;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 9999;
+}
+
+#shutdown-warning,
+#save-info {
+  display: none;
+}
+
+#shutdown-warning {
+  font-size: 20px;
+}
+
+#save-info {
+  font-size: 16px;
+  text-align: center;
+  font-weight: normal;
+  font-size: 18px;
+}
+
+#culling-timer {
+  margin-left: 5px;
+}

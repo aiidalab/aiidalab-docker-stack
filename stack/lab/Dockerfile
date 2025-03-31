@@ -47,6 +47,11 @@ RUN jupyter nbextension enable --py --sys-prefix appmode && \
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
 COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
+# Set up opt-in countdown feature
+ARG PYTHON_MINOR_VERSION
+ENV PYTHON_MINOR_VERSION=${PYTHON_MINOR_VERSION}
+COPY --chown=${NB_UID}:${NB_GID} countdown/ ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/custom/
+
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
@@ -99,5 +104,4 @@ ENV NOTEBOOK_ARGS=\
 "--TerminalManager.cull_interval=300"
 
 # Set up the logo of notebook interface
-ARG PYTHON_MINOR_VERSION
 COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/base/images/logo.png
