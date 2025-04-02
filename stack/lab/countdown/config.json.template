@@ -1,4 +1,0 @@
-{
-  "ephemeral": ${EPHEMERAL},
-  "expiry": "${EXPIRY}"
-}

@@ -1,11 +1,18 @@
 require(["base/js/namespace", "base/js/events"], (Jupyter, events) => {
   const parseLifetimeToMs = (str) => {
-    const parts = str.split(":").map(Number);
-    if (parts.length !== 3 || parts.some(isNaN)) {
+    // Supports MM:SS, HH:MM:SS, or D-HH:MM:SS formats
+    const regex = /^(?:(\d+)-)?(?:(\d+):)?(\d+):(\d+)$/;
+    const match = regex.exec(str.trim());
+
+    if (!match) {
+      console.warn("Invalid lifetime format:", str);
       return null;
     }
-    const [h, m, s] = parts;
-    return ((h * 60 + m) * 60 + s) * 1000;
+
+    const [_, days, hours, minutes, seconds] = match.map((v) => Number(v) || 0);
+
+    const totalSeconds = days * 86400 + hours * 3600 + minutes * 60 + seconds;
+    return totalSeconds * 1000;
   };
 
   const insertCountdown = (remainingMs) => {
@@ -37,18 +44,19 @@ require(["base/js/namespace", "base/js/events"], (Jupyter, events) => {
     `;
     banner.appendChild(saveInfo);
 
-    const endTime = new Date(Date.now() + remainingMs);
+    const startTime = Date.now();
+    const endTime = startTime + remainingMs;
 
     const formatTime = (seconds) => {
       const hrs = `${Math.floor(seconds / 3600)}`.padStart(2, "0");
       const mins = `${Math.floor((seconds % 3600) / 60)}`.padStart(2, "0");
       const secs = `${Math.floor(seconds % 60)}`.padStart(2, "0");
+      // Format as HH:MM:SS, even if > 1 day (for now - rare?)
       return `${hrs}:${mins}:${secs}`;
     };
 
     const updateTimer = () => {
-      const now = new Date();
-      const timeLeft = (endTime - now) / 1000;
+      const timeLeft = (endTime - Date.now()) / 1000;
       if (timeLeft < 0) {
         clearInterval(interval);
         return;
@@ -74,23 +82,28 @@ require(["base/js/namespace", "base/js/events"], (Jupyter, events) => {
     }
   };
 
-  loadCountdown = async () => {
+  const loadCountdown = async () => {
     try {
-      const response = await fetch("/static/custom/config.json");
-      const config = await response.json();
+      const [configResponse, uptimeResponse] = await Promise.all([
+        fetch("/static/custom/config.json"),
+        fetch("/uptime"),
+      ]);
 
-      // Opt-in point for deployments
+      const config = await configResponse.json();
+      const uptimeData = await uptimeResponse.json();
+
       if (!config.ephemeral) {
         return;
       }
 
-      if (!config.expiry) {
-        console.warn("Missing `expiry` in config file");
+      if (!config.lifetime) {
+        console.warn("Missing `lifetime` in config file");
         return;
       }
 
-      const expiry = new Date(config.expiry).getTime();
-      const remaining = expiry - Date.now();
+      const lifetimeMs = parseLifetimeToMs(config.lifetime);
+      const uptimeMs = uptimeData.uptime * 1000;
+      const remaining = lifetimeMs - uptimeMs;
 
       insertCountdown(Math.max(0, remaining));
     } catch (err) {

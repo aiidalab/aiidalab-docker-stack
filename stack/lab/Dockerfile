@@ -45,14 +45,25 @@ RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
 
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
-COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
+COPY gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
-# Set up opt-in countdown feature
 ARG PYTHON_MINOR_VERSION
-ENV PYTHON_MINOR_VERSION=${PYTHON_MINOR_VERSION}
-COPY --chown=${NB_UID}:${NB_GID} countdown/ ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/custom/
+
+# Set up the logo of notebook interface
+COPY aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/base/images/logo.png
+
+# Copy custom CSS and JS files for AiiDAlab container countdown feature
+COPY countdown/ ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/custom/
+
+# Add endpoint to fetch container uptime
+COPY aiidalab_uptime.py ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/
+COPY aiidalab_uptime.json ${CONDA_DIR}/etc/jupyter/jupyter_notebook_config.d/
 
 # Copy start-up scripts for AiiDAlab.
+# We expose PYTHON_MINOR_VERSION in the container, as it is used by the
+# before-notebook.d/70_prepare_countdown_config.sh script to write the
+# environment-variable-dependent (opt-in) configuration file.
+ENV PYTHON_MINOR_VERSION=${PYTHON_MINOR_VERSION}
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 # Configure AiiDAlab environment.
@@ -76,12 +87,6 @@ ENV AIIDALAB_DEFAULT_APPS=""
 # Specify default factory reset (not set):
 ENV AIIDALAB_FACTORY_RESET=""
 
-USER ${NB_USER}
-
-WORKDIR "/home/${NB_USER}"
-
-RUN  mkdir -p /home/${NB_USER}/apps
-
 # When a Jupyter notebook server looses a connection to the frontend,
 # it keeps the messages in a buffer. If there is a background thread running
 # and trying to update the frontend, the buffer grows indefinitely,
@@ -103,5 +108,8 @@ ENV NOTEBOOK_ARGS=\
 "--TerminalManager.cull_inactive_timeout=3600 "\
 "--TerminalManager.cull_interval=300"
 
-# Set up the logo of notebook interface
-COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/base/images/logo.png
+USER ${NB_USER}
+
+WORKDIR "/home/${NB_USER}"
+
+RUN  mkdir -p /home/${NB_USER}/apps
