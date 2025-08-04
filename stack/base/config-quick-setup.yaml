@@ -1,5 +1,4 @@
 ---
-db_engine: postgresql_psycopg2
 db_backend: core.psql_dos
 db_host: database
 db_port: 5432
