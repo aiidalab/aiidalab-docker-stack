@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM base-with-services as base
+FROM base-with-services AS base
 
 FROM lab
 

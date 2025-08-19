@@ -11,7 +11,7 @@ USER root
 # rsync: needed to support the new AiiDA backup command
 # povray: rendering engine used in aiidalab-widgets-base
 # bc: needed to compute the resources for computer setup
-ENV EXTRA_APT_PACKAGES "curl povray rsync build-essential bc"
+ENV EXTRA_APT_PACKAGES="curl povray rsync build-essential bc"
 
 # For ARM64 we need to install erlang as it is not available on conda-forge
 # (this is needed later as rabbitmq dependency in base-with-services image,
@@ -41,7 +41,7 @@ RUN echo "notebook==$(jupyter-notebook --version)" >> /opt/requirements.txt
 RUN cat /opt/requirements.txt | xargs -I{} conda config --system --add pinned_packages {}
 
 # Configure pip to use the same requirements file as constraints file.
-ENV PIP_CONSTRAINT /opt/requirements.txt
+ENV PIP_CONSTRAINT=/opt/requirements.txt
 # Ensure that pip installs packages to '~/.local/lib/python3.X/site-packages/' by default
 # by implicitly passing the '--user' option to 'pip install'
 # Otherwise, pip would install into /opt/conda and such packages would be lost
@@ -80,12 +80,12 @@ COPY config-quick-setup.yaml .
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
 
 # Configure AiiDA.
-ENV SETUP_DEFAULT_AIIDA_PROFILE true
-ENV AIIDA_PROFILE_NAME default
-ENV AIIDA_USER_EMAIL aiida@localhost
-ENV AIIDA_USER_FIRST_NAME Giuseppe
-ENV AIIDA_USER_LAST_NAME Verdi
-ENV AIIDA_USER_INSTITUTION Khedivial
+ENV SETUP_DEFAULT_AIIDA_PROFILE=true
+ENV AIIDA_PROFILE_NAME=default
+ENV AIIDA_USER_EMAIL=aiida@localhost
+ENV AIIDA_USER_FIRST_NAME=Giuseppe
+ENV AIIDA_USER_LAST_NAME=Verdi
+ENV AIIDA_USER_INSTITUTION=Khedivial
 
 # Install the load-singlesshagent.sh script as described here:
 # https://aiida.readthedocs.io/projects/aiida-core/en/v2.0.0/howto/ssh.html#starting-the-ssh-agent
