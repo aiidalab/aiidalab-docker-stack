@@ -10,13 +10,13 @@
       "default": "3.9.13"
     },
     "AIIDA_VERSION": {
-      "default": "2.6.3"
+      "default": "2.7.1"
     },
     "AIIDALAB_VERSION": {
       "default": "24.09.0"
     },
     "AIIDALAB_HOME_VERSION": {
-      "default": "25.01.0"
+      "default": "25.02.0"
     }
   }
 }

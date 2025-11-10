@@ -27,7 +27,7 @@ jobs:
         timeout-minutes: 120
 
         outputs:
-            images: ${{ steps.bake_metadata.outputs.images }}
+            images: ${{ steps.set-output.outputs.result }}
 
         # Make sure we fail if any command in a piped command sequence fails
         defaults:
@@ -42,6 +42,10 @@ jobs:
             - name: Set up QEMU
               if: ${{ inputs.platforms != 'linux/amd64' }}
               uses: docker/setup-qemu-action@v3
+              with:
+                  # Workaround for https://github.com/tonistiigi/binfmt/issues/215
+                  image: tonistiigi/binfmt:qemu-v7.0.0-28
+                  cache-image: true
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -73,15 +77,32 @@ jobs:
                       build.json
                       .github/workflows/env.hcl
 
-            - name: Set output image names
-              id: bake_metadata
-              # bake-action metadata output has gotten too big, so we first write it
-              # to a file. See https://github.com/aiidalab/aiidalab-docker-stack/issues/491
-              run: |
-                  cat << EOF > bake_metadata.json
-                  ${{ steps.build-upload.outputs.metadata }}
-                  EOF
-                  images=$(.github/workflows/extract-image-names.sh bake_metadata.json)
-                  echo "images=${images}" >> "${GITHUB_OUTPUT}"
-                  # Pretty-print for GHA logs
-                  echo "$images" | jq
+            - name: Set output variables
+              id: set-output
+              uses: actions/github-script@v7
+              with:
+                  # We need to produce the following JSON string from the bake action output,
+                  # which is then used in follow-up steps to uniquelly identify the built
+                  # images by their digests, and not by their tags. See e.g. test.yml
+                  # {
+                  #   "BASE_IMAGE": "ghcr.io/aiidalab/base@sha256:bc53c...",
+                  #   "BASE_WITH_SERVICES_IMAGE":"ghcr.io/aiidalab/base-with-services@sha256:0df1...",
+                  #   "FULL_STACK_IMAGE":"ghcr.io/aiidalab/full-stack@sha256:dd04...",
+                  #   "LAB_IMAGE":"ghcr.io/aiidalab/lab@sha256:e8c7b3a662660ad20fef7...",
+                  # }
+                  script: |
+                      const bake_output = JSON.parse(process.env.BAKE_METADATA, 'utf-8');
+                      images = {};
+                      for (const key in bake_output) {
+                          const image = bake_output[key];
+                          // turn e.g. 'full-stack' to 'FULL_STACK_IMAGE' key
+                          const image_envvar = `${key.toUpperCase().replace(/-/g, "_")}_IMAGE`;
+                          // create full canonical path to the image using its digest, i.e.
+                          // ghcr.io/aiidalab/base@sha256:cdad93278a...
+                          const image_digest = `${image["image.name"]}@${image["containerimage.digest"]}`;
+                          images[image_envvar] = image_digest;
+                      }
+                      console.log(images);
+                      return images;
+              env:
+                  BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
