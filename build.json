@@ -16,7 +16,7 @@
       "default": "24.09.0"
     },
     "AIIDALAB_HOME_VERSION": {
-      "default": "25.02.0"
+      "default": "update/support-ipw-8.x"
     }
   }
 }
