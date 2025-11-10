@@ -32,7 +32,7 @@ ARG AIIDALAB_HOME_VERSION
 RUN git clone https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      git checkout "${AIIDALAB_HOME_VERSION}" && \
-     pip install --no-user --quiet --no-cache-dir "./" && \
+     pip install --no-user --no-cache-dir "./" && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
