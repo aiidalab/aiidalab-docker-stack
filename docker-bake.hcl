@@ -21,7 +21,7 @@ variable "AIIDALAB_HOME_VERSION" {
 }
 
 variable "JUPYTER_BASE_IMAGE" {
-  default = "jupyter/minimal-notebook:python-${PYTHON_VERSION}"
+  default = "quay.io/jupyter/minimal-notebook:python-${PYTHON_VERSION}"
 }
 
 variable "ORGANIZATION" {
