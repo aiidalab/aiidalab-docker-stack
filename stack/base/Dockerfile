@@ -60,7 +60,7 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # Update async_generator, certipy to satisfy `pip check`
 # https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip async_generator certipy && \
+RUN mamba update -y pip zstandard async_generator certipy && \
      mamba install --yes \
      aiida-core==${AIIDA_VERSION} \
      mamba-bash-completion \
