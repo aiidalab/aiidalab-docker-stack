@@ -1,3 +1,4 @@
+import email
 import json
 
 import pytest
@@ -31,8 +32,6 @@ def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_ve
 
 def test_appmode_installed(aiidalab_exec):
     """Test that appmode pip package is installed in correct location"""
-    import email
-
     output = aiidalab_exec("pip show appmode")
 
     # `pip show` output is in the RFC-compliant email header format
