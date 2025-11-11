@@ -84,7 +84,6 @@ RUN mkdir -p /home/${NB_USER}/.tmp_notebooks
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
-     "--Appmode.temp_dir=/home/${NB_USER}/.tmp_notebooks" \
      "--MappingKernelManager.buffer_offline_messages=True" \
      "--MappingKernelManager.cull_busy=True" \
      "--MappingKernelManager.cull_connected=True" \
