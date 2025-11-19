@@ -37,7 +37,7 @@ jobs:
         steps:
 
             - name: Checkout Repo ⚡️
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Set up QEMU
               if: ${{ inputs.platforms != 'linux/amd64' }}
@@ -61,7 +61,7 @@ jobs:
               id: build-upload
               # We need to pin exact version here, since updates can break
               # the extract-image-names.sh script
-              uses: docker/bake-action@v5.5.0
+              uses: docker/bake-action@v6.9.0
               with:
                   push: true
                   # Using provenance to disable default attestation so it will build only desired images:
@@ -79,7 +79,7 @@ jobs:
 
             - name: Set output variables
               id: set-output
-              uses: actions/github-script@v7
+              uses: actions/github-script@v8
               with:
                   # We need to produce the following JSON string from the bake action output,
                   # which is then used in follow-up steps to uniquelly identify the built
