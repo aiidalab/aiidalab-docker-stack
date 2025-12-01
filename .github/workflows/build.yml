@@ -37,7 +37,7 @@ jobs:
         steps:
 
             - name: Checkout Repo ⚡️
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Set up QEMU
               if: ${{ inputs.platforms != 'linux/amd64' }}
@@ -61,7 +61,7 @@ jobs:
               id: build-upload
               # We need to pin exact version here, since updates can break
               # the extract-image-names.sh script
-              uses: docker/bake-action@v6.9.0
+              uses: docker/bake-action@v6.10.0
               with:
                   push: true
                   # Using provenance to disable default attestation so it will build only desired images:
