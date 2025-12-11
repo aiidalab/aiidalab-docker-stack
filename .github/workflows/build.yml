@@ -61,9 +61,6 @@ jobs:
 
             - name: Build and upload to ghcr.io 📤
               id: build-upload
-              # We need to pin exact version here, since updates can break
-              # the next set-output step:
-              # https://github.com/aiidalab/aiidalab-docker-stack/issues/493
               uses: docker/bake-action@v6.10.0
               with:
                   push: true
@@ -80,6 +77,8 @@ jobs:
                       build.json
                       .github/workflows/env.hcl
 
+            # The metadata output is huge so we need to first write it to file
+            # https://github.com/aiidalab/aiidalab-docker-stack/issues/493
             - name: Write metadata output to a json file
               run: |
                   cat << EOF > bake_metadata.json
@@ -114,5 +113,3 @@ jobs:
                       }
                       console.log(images);
                       return images;
-              env:
-                  BAKE_METADATA: ${{ steps.build-upload.outputs.metadata }}
