@@ -64,12 +64,13 @@ jobs:
               # We need to pin exact version here, since updates can break
               # the next set-output step:
               # https://github.com/aiidalab/aiidalab-docker-stack/issues/493
-              uses: docker/bake-action@v5.12.0
+              uses: docker/bake-action@v6.10.0
               with:
                   push: true
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
+                  sbom: false
                   set: |
                       *.platform=${{ inputs.platforms }}
                       *.output=type=registry,push-by-digest=true,name-canonical=true
