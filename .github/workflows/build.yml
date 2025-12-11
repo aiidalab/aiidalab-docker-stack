@@ -82,6 +82,12 @@ jobs:
                       build.json
                       .github/workflows/env.hcl
 
+            - name: Write metadata output to a json file
+              run: |
+                  cat << EOF > bake_metadata.json
+                  ${{ steps.build-upload.outputs.metadata }}
+                  EOF
+
             - name: Set output variables
               id: set-output
               uses: actions/github-script@v8
@@ -96,7 +102,8 @@ jobs:
                   #   "LAB_IMAGE":"ghcr.io/aiidalab/lab@sha256:e8c7b3a662660ad20fef7...",
                   # }
                   script: |
-                      const bake_output = JSON.parse(process.env.BAKE_METADATA, 'utf-8');
+                      const fs = require('fs');
+                      const bake_output = JSON.parse(fs.readFileSync('bake_metadata.json', 'utf8'));
                       images = {};
                       for (const key in bake_output) {
                           const image = bake_output[key];
