@@ -70,7 +70,6 @@ jobs:
                   # Using provenance to disable default attestation so it will build only desired images:
                   # https://github.com/orgs/community/discussions/45969
                   provenance: false
-                  sbom: false
                   set: |
                       *.platform=${{ inputs.platforms }}
                       *.output=type=registry,push-by-digest=true,name-canonical=true
