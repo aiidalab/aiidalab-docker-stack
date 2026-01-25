@@ -75,7 +75,7 @@ jobs:
                       build.json
                       .github/workflows/env.hcl
 
-            # The metadata output is huge so we need to first write it to file
+            # The metadata output is huge so we need to first write it to a file
             # https://github.com/aiidalab/aiidalab-docker-stack/issues/493
             - name: Write metadata output to a json file
               run: |
@@ -99,7 +99,7 @@ jobs:
                   script: |
                       const fs = require('fs');
                       const bake_output = JSON.parse(fs.readFileSync('bake_metadata.json', 'utf8'));
-                      images = {};
+                      const images = {};
                       for (const key in bake_output) {
                           const image = bake_output[key];
                           // turn e.g. 'full-stack' to 'FULL_STACK_IMAGE' key
