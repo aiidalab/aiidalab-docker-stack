@@ -10,12 +10,12 @@ PSQL_LOGFILE="${PGDATA}/logfile"
 # -w waits until server is up
 PSQL_START_CMD="pg_ctl --timeout=180 -w -l ${PSQL_LOGFILE} start"
 
-MAMBA_RUN="mamba run -n aiida-core-services"
+CONDA_RUN="conda run -n aiida-core-services"
 
 # Initialize DB directory if it does not exist
 if [[ ! -d ${PGDATA} ]]; then
     mkdir "${PGDATA}"
-    ${MAMBA_RUN} initdb
+    ${CONDA_RUN} initdb
     echo "unix_socket_directories = '/tmp'" >> "${PGDATA}/postgresql.conf"
 else
     # Fix problem with kubernetes cluster that adds rws permissions to the group
@@ -30,4 +30,4 @@ else
 fi
 
 # Start the server
-${MAMBA_RUN} ${PSQL_START_CMD}
+${CONDA_RUN} ${PSQL_START_CMD}
