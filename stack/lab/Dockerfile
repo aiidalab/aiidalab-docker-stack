@@ -24,6 +24,11 @@ RUN mamba install --yes \
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
+# Pin major ipywidget version, upgrading / downgrading major ipywidgets version
+# very likely leads to breakage.
+RUN ipywidgets_major=$(mamba list -f ipywidgets | tail -1 | awk '{print $2}' | cut -d'.' -f1); \
+     echo "ipywidgets~=${ipywidgets_major}.0" >> /opt/requirements.txt && \
+     conda config --system --add pinned_packages "ipywidgets=${ipywidgets_major}"
 
 # Enable aiidalab autocompletion
 RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
