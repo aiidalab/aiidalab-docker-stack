@@ -28,7 +28,7 @@ RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 # Pin major ipywidget version since upgrading / downgrading would likely lead to breakage.
 RUN mamba list -ef ipywidgets | tail -1 | sed -E 's/=([0-9]+).*/~=\1.0/' >> /opt/requirements.txt
 # TODO: Fix this
-RUN tail -f /opt/requirements.txt | tr '~' | xargs -I{} conda config --system --add pinned_packages {}
+# RUN tail -f /opt/requirements.txt | tr '~' | xargs -I{} conda config --system --add pinned_packages {}
 
 # Enable aiidalab autocompletion
 RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
