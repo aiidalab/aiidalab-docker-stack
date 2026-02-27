@@ -25,10 +25,6 @@ RUN mamba install --yes \
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
 
-# Pin major ipywidgets version since upgrading / downgrading would likely lead to breakage.
-RUN mamba list -ef ipywidgets | tail -1 | sed -E 's/=([0-9]+).*/~=\1.0/' >> /opt/requirements.txt
-RUN mamba list -ef ipywidgets | tail -1 | sed -E 's/=([0-9]+).*/=\1/' | xargs -I{} conda config --system --add pinned_packages {}
-
 # Enable aiidalab autocompletion
 RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh"
 
@@ -41,6 +37,10 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
+
+# Pin major ipywidgets version since upgrading / downgrading would likely lead to breakage.
+RUN mamba list -ef ipywidgets | tail -1 | sed -E 's/=([0-9]+).*/~=\1.0/' >> /opt/requirements.txt
+RUN mamba list -ef ipywidgets | tail -1 | sed -E 's/=([0-9]+).*/=\1/' | xargs -I{} conda config --system --add pinned_packages {}
 
 # Install and enable appmode, turning Jupyter notebooks to Apps
 RUN pip install appmode==0.8.0 --no-cache-dir --no-user
