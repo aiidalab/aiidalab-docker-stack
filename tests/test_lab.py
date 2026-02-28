@@ -39,14 +39,15 @@ def test_appmode_installed(aiidalab_exec):
     assert msg.get("Location").startswith("/opt/conda/lib/python")
 
 
-@pytest.mark.parametrize("incompatible_version", ["22.7.1"])
-def test_prevent_pip_install_of_incompatible_aiidalab_version(
+@pytest.mark.parametrize(
+    "incompatible_package", ["aiidalab==22.7.1", "ipywidgets==8.0.0"]
+)
+@pytest.mark.parametrize("package_manager", ["pip", "mamba"])
+def test_prevent_install_of_incompatible_packages(
     aiidalab_exec,
     nb_user,
-    incompatible_version,
+    package_manager,
+    incompatible_package,
 ):
-    package_manager = "pip"
     with pytest.raises(Exception):
-        aiidalab_exec(
-            f"{package_manager} install aiidalab=={incompatible_version}", user=nb_user
-        )
+        aiidalab_exec(f"{package_manager} install {incompatible_package}", user=nb_user)
