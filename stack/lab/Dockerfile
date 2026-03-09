@@ -37,6 +37,17 @@ RUN git clone https://github.com/aiidalab/aiidalab-home && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
+# Pin major ipywidgets version since upgrading / downgrading would likely lead to breakage.
+RUN ipywidgets_major=$(mamba list -f ipywidgets | tail -1 | awk '{print $2}' | cut -d'.' -f1); \
+     echo "ipywidgets~=${ipywidgets_major}.0" >> /opt/requirements.txt && \
+     conda config --system --add pinned_packages "ipywidgets=${ipywidgets_major}"
+
+# Install and enable appmode, turning Jupyter notebooks to Apps
+RUN pip install appmode==0.8.0 --no-cache-dir --no-user
+# Enable appmode extension
+RUN jupyter nbextension enable --py --sys-prefix appmode && \
+     jupyter serverextension enable --py --sys-prefix appmode
+
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
 # TODO: What is the correct directory for nbclassic?
 #COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
