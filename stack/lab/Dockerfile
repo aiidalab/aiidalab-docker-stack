@@ -15,7 +15,7 @@ WORKDIR /opt/
 ARG AIIDALAB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
-     appmode=1.0.0 \
+     appmode=1.1.0 \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
@@ -43,7 +43,7 @@ RUN ipywidgets_major=$(mamba list -f ipywidgets | tail -1 | awk '{print $2}' | c
      conda config --system --add pinned_packages "ipywidgets=${ipywidgets_major}"
 
 # Install and enable appmode, turning Jupyter notebooks to Apps
-RUN pip install appmode==0.8.0 --no-cache-dir --no-user
+RUN pip install appmode==1.1.0 --no-cache-dir --no-user
 # Enable appmode extension
 RUN jupyter nbextension enable --py --sys-prefix appmode && \
      jupyter serverextension enable --py --sys-prefix appmode
