@@ -44,9 +44,6 @@ RUN ipywidgets_major=$(mamba list -f ipywidgets | tail -1 | awk '{print $2}' | c
 
 # Install and enable appmode, turning Jupyter notebooks to Apps
 RUN pip install appmode==1.1.0 --no-cache-dir --no-user
-# Enable appmode extension
-RUN jupyter nbextension enable --py --sys-prefix appmode && \
-     jupyter serverextension enable --py --sys-prefix appmode
 
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
 # TODO: What is the correct directory for nbclassic?
