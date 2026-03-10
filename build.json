@@ -16,7 +16,7 @@
       "default": "26.02.0"
     },
     "AIIDALAB_HOME_VERSION": {
-      "default": "update/notebook-7"
+      "default": "update/switch-to-nbclassic"
     }
   }
 }
