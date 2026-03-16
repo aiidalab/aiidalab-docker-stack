@@ -46,8 +46,8 @@ RUN ipywidgets_major=$(mamba list -f ipywidgets | tail -1 | awk '{print $2}' | c
 RUN pip install appmode==1.1.0 --no-cache-dir --no-user
 
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
-# TODO: What is the correct directory for nbclassic?
-#COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
+ARG PYTHON_MINOR_VERSION
+COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
 
 # Copy start-up scripts for AiiDAlab.
 COPY before-notebook.d/* /usr/local/bin/before-notebook.d/
@@ -101,5 +101,4 @@ ENV NOTEBOOK_ARGS \
      "--TerminalManager.cull_interval=300"
 
 # Set up the logo of notebook interface
-ARG PYTHON_MINOR_VERSION
-COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/notebook/static/base/images/logo.png
+COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/nbclassic/static/base/images/logo.png
