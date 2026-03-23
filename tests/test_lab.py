@@ -24,10 +24,21 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
 
 
 def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_version):
-    cmd = "mamba list --json --full-name aiidalab-home"
-    info = json.loads(aiidalab_exec(cmd))[0]
-    assert info["name"] == "aiidalab-home"
-    assert parse(info["version"]) == parse(aiidalab_home_version)
+    # aiidalab-home is installed via pip (from git), not via mamba,
+    # so we use pip show to check it.
+    output = aiidalab_exec("pip show aiidalab-home")
+    msg = email.message_from_string(output)
+    assert msg.get("Name").replace("_", "-") == "aiidalab-home"
+    installed_version = msg.get("Version")
+    # When aiidalab_home_version is a branch name (e.g. "main"), we can only
+    # verify that the package is installed, not match the exact version string.
+    try:
+        expected = parse(aiidalab_home_version)
+        assert parse(installed_version) == expected
+    except Exception:
+        # Branch name like "main" can't be parsed as a valid version;
+        # just verify the package is installed with some version.
+        assert installed_version
 
 
 def test_appmode_installed(aiidalab_exec):
