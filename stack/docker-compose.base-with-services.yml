@@ -10,6 +10,12 @@ services:
             AIIDALAB_DEFAULT_APPS: ''
         volumes:
             - aiidalab-home-folder:/home/jovyan
+        healthcheck:
+            test: ["CMD-SHELL", "/etc/jupyter/docker_healthcheck.py || exit 1"]
+            interval: 5s
+            timeout: 5s
+            retries: 30
+            start_period: 30s
         ports:
             - "0.0.0.0:${AIIDALAB_PORT:-8888}:8888"
 
