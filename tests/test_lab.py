@@ -51,7 +51,7 @@ def test_appmode_installed(aiidalab_exec):
 
 
 @pytest.mark.parametrize(
-    "incompatible_package", ["aiidalab==22.7.1", "ipywidgets==8.0.0"]
+    "incompatible_package", ["aiidalab==22.7.1", "ipywidgets==7.7.4"]
 )
 @pytest.mark.parametrize("package_manager", ["pip", "mamba"])
 def test_prevent_install_of_incompatible_packages(
