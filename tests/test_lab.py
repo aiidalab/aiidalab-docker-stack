@@ -1,5 +1,6 @@
 import email
 import json
+import re
 
 import pytest
 from packaging.version import parse
@@ -29,11 +30,9 @@ def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_ve
     assert info["name"] == "aiidalab-home"
     # For debugging, aiidalab_home_version can point to a branch or a commit,
     # in which case we cannot easily compare the versions.
-    # We only try the comparison if the version starts with "v",
-    # (obviously, this is not super-robust heuristic,
-    # since it cannot distinguish from branch names starting with "v",
-    # but let's not over-engineer this for now.
-    if aiidalab_home_version.startswith("v"):
+    # We only try the comparison if the version starts with "v[0-9][0-9]",
+    # at which point it's likely we're dealing with a version git tag.
+    if re.match("v[0-9][0-9]", aiidalab_home_version):
         assert parse(info["version"]) == parse(aiidalab_home_version.removeprefix("v"))
 
 
