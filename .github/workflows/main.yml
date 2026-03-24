@@ -35,6 +35,12 @@ jobs:
             runsOn: ubuntu-22.04
             platforms: linux/amd64
 
+    build-arm64:
+        uses: ./.github/workflows/build.yml
+        with:
+            runsOn: ubuntu-22.04-arm
+            platforms: linux/arm64
+
     test-amd64:
         needs: build-amd64
         strategy:
@@ -48,21 +54,25 @@ jobs:
             target: ${{ matrix.target }}
             integration: false
 
+    test-arm64:
+        needs: build-arm64
+        strategy:
+            fail-fast: false
+            matrix:
+                target: ["base", "lab", "base-with-services", "full-stack"]
+        uses: ./.github/workflows/test.yml
+        with:
+            runsOn: ubuntu-22.04-arm
+            images: ${{ needs.build-arm64.outputs.images }}
+            target: ${{ matrix.target }}
+            integration: false
+
     build:
-        needs: test-amd64
+        needs: [test-amd64, test-arm64]
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-22.04
             platforms: linux/amd64,linux/arm64
-
-    test-arm64:
-        needs: build
-        uses: ./.github/workflows/test.yml
-        with:
-            runsOn: ubuntu-22.04-arm
-            images: ${{ needs.build.outputs.images }}
-            target: full-stack
-            integration: false
 
     test-integration:
         name: Integration tests
