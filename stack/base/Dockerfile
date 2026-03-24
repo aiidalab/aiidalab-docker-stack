@@ -64,7 +64,7 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # https://github.com/aiidalab/aiidalab-widgets-base/issues/733
 RUN mamba update -y pip async_generator certipy && \
      mamba install --yes \
-     aiida-core=${AIIDA_VERSION} \
+     aiida-core.atomic_tools==${AIIDA_VERSION} \
      numpy=1.* \
      mamba-bash-completion \
      traitlets=5.9.0 \
