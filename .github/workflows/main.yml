@@ -56,11 +56,15 @@ jobs:
 
     test-arm64:
         needs: build-arm64
+        strategy:
+            fail-fast: false
+            matrix:
+                target: ["base", "lab", "base-with-services", "full-stack"]
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ubuntu-22.04-arm
             images: ${{ needs.build-arm64.outputs.images }}
-            target: ["base", "lab", "base-with-services", "full-stack"]
+            target: ${{ matrix.target }}
             integration: false
 
     build:
