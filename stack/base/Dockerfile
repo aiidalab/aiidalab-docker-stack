@@ -94,12 +94,11 @@ COPY load-singlesshagent.sh /opt/bin/
 # Add ~/.local/bin to PATH where the dependencies get installed via pip
 ENV PATH=${PATH}:/home/${NB_USER}/.local/bin
 
-# Add conda envs_dirs in home directory,
-# which will persist between container invocation
-# NOTE: The order here is important!
-# We want conda to create environments in ~/.conda/ by default
-RUN conda config --system --add envs_dirs /opt/conda
+# User-created conda environments go to ~/.conda/envs/ (persists across
+# container restarts via volume mount). Build-time environments like
+# aiida-core-services stay in /opt/conda/envs/ (updated with the image).
 RUN conda config --system --add envs_dirs "~/.conda/envs"
+RUN mkdir -p "/home/${NB_USER}/.conda/envs" && fix-permissions "/home/${NB_USER}/.conda"
 
 USER ${NB_USER}
 
