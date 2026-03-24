@@ -6,7 +6,6 @@ LABEL maintainer="AiiDAlab Team <aiidalab@materialscloud.org>"
 USER root
 WORKDIR /opt/
 
-ARG AIIDA_VERSION
 ARG PGSQL_VERSION
 ARG RMQ_VERSION
 ARG TARGETARCH
