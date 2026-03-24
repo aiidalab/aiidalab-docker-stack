@@ -38,7 +38,7 @@ jobs:
     build-arm64:
         uses: ./.github/workflows/build.yml
         with:
-            runsOn: ubuntu-22.04
+            runsOn: ubuntu-22.04-arm
             platforms: linux/arm64
 
     test-amd64:
@@ -60,7 +60,7 @@ jobs:
         with:
             runsOn: ubuntu-22.04-arm
             images: ${{ needs.build-arm64.outputs.images }}
-            target: full-stack
+            target: ["base", "lab", "base-with-services", "full-stack"]
             integration: false
 
     build:
