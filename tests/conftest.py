@@ -150,5 +150,5 @@ def aiidalab_version(_build_config):
 
 
 @pytest.fixture(scope="session")
-def aiidalab_home_version(_build_config):
+def aiidalab_home_tag(_build_config):
     return _build_config["AIIDALAB_HOME_TAG"]["default"]

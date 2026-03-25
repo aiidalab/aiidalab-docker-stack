@@ -24,16 +24,16 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
     assert parse(info["version"]) == parse(aiidalab_version)
 
 
-def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_version):
+def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_tag):
     cmd = "mamba list --json --full-name aiidalab-home"
     info = json.loads(aiidalab_exec(cmd))[0]
     assert info["name"] == "aiidalab-home"
-    # For debugging, aiidalab_home_version can point to a branch or a commit,
+    # For debugging, aiidalab_home_tag can point to a branch or a commit,
     # in which case we cannot easily compare the versions.
     # We only try the comparison if the version starts with "v[0-9][0-9]",
     # at which point it's likely we're dealing with a version git tag.
-    if re.match("v[0-9][0-9]", aiidalab_home_version):
-        assert parse(info["version"]) == parse(aiidalab_home_version.removeprefix("v"))
+    if re.match("v[0-9][0-9]", aiidalab_home_tag):
+        assert parse(info["version"]) == parse(aiidalab_home_tag.removeprefix("v"))
 
 
 def test_appmode_installed(aiidalab_exec):
