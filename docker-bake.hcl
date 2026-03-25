@@ -74,7 +74,6 @@ target "base-with-services" {
   }
   platforms = "${PLATFORMS}"
   args = {
-    "AIIDA_VERSION" = "${AIIDA_VERSION}"
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
     "RMQ_VERSION" = "${RMQ_VERSION}"
   }
