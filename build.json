@@ -15,8 +15,8 @@
     "AIIDALAB_VERSION": {
       "default": "26.02.0"
     },
-    "AIIDALAB_HOME_VERSION": {
-      "default": "25.02.0"
+    "AIIDALAB_HOME_TAG": {
+      "default": "v25.02.0"
     }
   }
 }
