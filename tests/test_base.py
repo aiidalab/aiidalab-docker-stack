@@ -54,7 +54,9 @@ def test_pip_version(package_info):
     """We update pip to latest version when building the image,
     test that we're not using and old pip version"""
     info = package_info("pip")
-    assert parse(info["version"]) >= parse("26.0")
+    # pip==25.2 is the last version on conda-forge that supports python 3.9
+    # We should bump the asserted minimum version to 26.0 once we upgrade the image to python 3.12
+    assert parse(info["version"]) >= parse("25.2")
 
 
 def test_create_conda_environment(aiidalab_exec, nb_user):
