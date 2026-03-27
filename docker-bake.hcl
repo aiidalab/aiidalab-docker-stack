@@ -17,7 +17,7 @@ variable "AIIDA_VERSION" {
 variable "AIIDALAB_VERSION" {
 }
 
-variable "AIIDALAB_HOME_VERSION" {
+variable "AIIDALAB_HOME_TAG" {
 }
 
 variable "JUPYTER_BASE_IMAGE" {
@@ -74,7 +74,6 @@ target "base-with-services" {
   }
   platforms = "${PLATFORMS}"
   args = {
-    "AIIDA_VERSION" = "${AIIDA_VERSION}"
     "PGSQL_VERSION" = "${PGSQL_VERSION}"
     "RMQ_VERSION" = "${RMQ_VERSION}"
   }
@@ -88,7 +87,7 @@ target "lab" {
   platforms = "${PLATFORMS}"
   args = {
     "AIIDALAB_VERSION"      = "${AIIDALAB_VERSION}"
-    "AIIDALAB_HOME_VERSION" = "${AIIDALAB_HOME_VERSION}"
+    "AIIDALAB_HOME_TAG" = "${AIIDALAB_HOME_TAG}"
     "PYTHON_MINOR_VERSION" = get_python_minor_version("${PYTHON_VERSION}")
   }
 }
