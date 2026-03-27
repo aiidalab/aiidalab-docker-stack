@@ -105,6 +105,18 @@ def nb_user():
 
 
 @pytest.fixture
+def package_info(aiidalab_exec):
+    def _get_package_info(pkg):
+        cmd = f"mamba list --json --full-name {pkg}"
+        pkg_info = json.loads(aiidalab_exec(cmd))
+        assert len(pkg_info) == 1, f"More than one package matched '{pkg}'"
+        assert pkg_info[0]["name"] == pkg
+        return pkg_info[0]
+
+    return _get_package_info
+
+
+@pytest.fixture
 def pip_install(aiidalab_exec, nb_user):
     """Temporarily install package via pip"""
     package = None
