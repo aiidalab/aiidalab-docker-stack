@@ -25,9 +25,9 @@ def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
 
 
 def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_tag):
-    cmd = "mamba list --json --full-name aiidalab-home"
+    cmd = "mamba list --json --full-name aiidalab_home"
     info = json.loads(aiidalab_exec(cmd))[0]
-    assert info["name"] == "aiidalab-home"
+    assert info["name"] == "aiidalab_home"
     # For debugging, aiidalab_home_tag can point to a branch or a commit,
     # in which case we cannot easily compare the versions.
     # We only try the comparison if the version starts with "v[0-9][0-9]",
