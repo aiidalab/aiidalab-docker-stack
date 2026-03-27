@@ -1,7 +1,6 @@
 """This module contains tests for the base image, which are AiiDA and package management related tests."""
 
 import email
-import json
 
 import pytest
 from packaging.version import parse
@@ -46,19 +45,16 @@ def test_prevent_notebook_upgrade(aiidalab_exec, nb_user, pkg_manager):
         )
 
 
-def test_python_version(aiidalab_exec, python_version):
-    info = json.loads(aiidalab_exec("mamba list --json --full-name python"))[0]
-    assert info["name"] == "python"
+def test_python_version(package_info, python_version):
+    info = package_info("python")
     assert parse(info["version"]) == parse(python_version)
 
 
-def test_pip_version(aiidalab_exec):
+def test_pip_version(package_info):
     """We update pip to latest version when building the image,
     test that we're not using and old pip version"""
-
-    info = json.loads(aiidalab_exec("mamba list --json --full-name pip"))[0]
-    assert info["name"] == "pip"
-    assert parse(info["version"]) >= parse("24.0")
+    info = package_info("pip")
+    assert parse(info["version"]) >= parse("26.0")
 
 
 def test_create_conda_environment(aiidalab_exec, nb_user):
@@ -69,10 +65,8 @@ def test_create_conda_environment(aiidalab_exec, nb_user):
     assert f"/home/{nb_user}/.conda/envs/tmp" in output
 
 
-def test_aiida_version(aiidalab_exec, aiida_version):
-    cmd = "mamba list --json --full-name aiida-core"
-    info = json.loads(aiidalab_exec(cmd))[0]
-    assert info["name"] == "aiida-core"
+def test_aiida_version(package_info, aiida_version):
+    info = package_info("aiida-core")
     assert parse(info["version"]) == parse(aiida_version)
 
 
