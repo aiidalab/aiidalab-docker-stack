@@ -1,5 +1,4 @@
 import email
-import json
 import re
 
 import pytest
@@ -17,17 +16,13 @@ def skip_if_incompatible_target(target):
         pytest.skip()
 
 
-def test_correct_aiidalab_version_installed(aiidalab_exec, aiidalab_version):
-    cmd = "mamba list --json --full-name aiidalab"
-    info = json.loads(aiidalab_exec(cmd))[0]
-    assert info["name"] == "aiidalab"
+def test_correct_aiidalab_version_installed(package_info, aiidalab_version):
+    info = package_info("aiidalab")
     assert parse(info["version"]) == parse(aiidalab_version)
 
 
-def test_correct_aiidalab_home_version_installed(aiidalab_exec, aiidalab_home_tag):
-    cmd = "mamba list --json --full-name aiidalab_home"
-    info = json.loads(aiidalab_exec(cmd))[0]
-    assert info["name"] == "aiidalab_home"
+def test_correct_aiidalab_home_version_installed(package_info, aiidalab_home_tag):
+    info = package_info("aiidalab_home")
     # For debugging, aiidalab_home_tag can point to a branch or a commit,
     # in which case we cannot easily compare the versions.
     # We only try the comparison if the version starts with "v[0-9][0-9]",
