@@ -74,7 +74,6 @@ USER ${NB_USER}
 WORKDIR "/home/${NB_USER}"
 
 RUN mkdir -p /home/${NB_USER}/apps
-RUN mkdir -p /home/${NB_USER}/.tmp_notebooks
 
 # When a Jupyter notebook server looses a connection to the frontend,
 # it keeps the messages in a buffer. If there is a background thread running
