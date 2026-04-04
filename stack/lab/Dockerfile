@@ -41,9 +41,6 @@ RUN ipywidgets_major=$(mamba list -f ipywidgets | tail -1 | awk '{print $2}' | c
      echo "ipywidgets~=${ipywidgets_major}.0" >> /opt/requirements.txt && \
      conda config --system --add pinned_packages "ipywidgets=${ipywidgets_major}"
 
-# Install and enable appmode, turning Jupyter notebooks to Apps
-RUN pip install appmode==1.1.0 --no-cache-dir --no-user
-
 # Swap appmode icon for AiiDAlab gears icon, shown during app load
 ARG PYTHON_MINOR_VERSION
 COPY --chown=${NB_UID}:${NB_GID} gears.svg ${CONDA_DIR}/share/jupyter/nbextensions/appmode/gears.svg
