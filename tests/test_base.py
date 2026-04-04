@@ -7,11 +7,10 @@ from packaging.version import parse
 
 
 @pytest.fixture
-def venv(aiidalab_exec, nb_user):
-    venv_path = f"/home/{nb_user}/.tmp_test_venv"
-    aiidalab_exec(f"python -m venv {venv_path}", user=nb_user)
-    yield venv_path
-    aiidalab_exec(f"rm -rf {venv_path}", user=nb_user)
+def venv(tmp_path, aiidalab_exec):
+    venv_path = tmp_path / ".venv"
+    aiidalab_exec(f"python -m venv {venv_path}")
+    return venv_path
 
 
 @pytest.mark.parametrize("pkg_manager", ["pip", "mamba"])
@@ -95,7 +94,7 @@ def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
     """Test that pip installs packages to an activated venv"""
 
     pkg = "tuna"
-    pip = f"{venv}/bin/pip"
+    pip = venv / "bin/pip"
 
     aiidalab_exec(f"{pip} install {pkg}")
 
