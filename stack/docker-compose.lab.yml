@@ -27,9 +27,7 @@ services:
         environment:
             RMQHOST: messaging
             TZ: Europe/Zurich
-            DOCKER_STACKS_JUPYTER_CMD: nbclassic
             SETUP_DEFAULT_AIIDA_PROFILE: 'true'
-            AIIDALAB_DEFAULT_APPS: ''
         volumes:
             - aiidalab-home-folder:/home/jovyan
         depends_on:
