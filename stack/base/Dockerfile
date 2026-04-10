@@ -67,7 +67,6 @@ RUN mamba update -y pip async_generator certipy && \
      aiida-core=${AIIDA_VERSION} \
      numpy=1.* \
      mamba-bash-completion \
-     traitlets=5.9.0 \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 
