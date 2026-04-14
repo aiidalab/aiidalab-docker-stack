@@ -10,13 +10,11 @@ on:
             - .pre-commit-config.yaml
             # We use doit only for local builds
             - dodo.py
-            - aarch64-runner/**
     push:
         branches:
             - main
         tags:
             - "v*"
-    workflow_dispatch:
 
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
 concurrency:
@@ -29,20 +27,20 @@ env:
 
 jobs:
 
-    build-amd64:
+    build-x86:
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-22.04
             platforms: linux/amd64
 
-    build-arm64:
+    build-arm:
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-22.04-arm
             platforms: linux/arm64
 
-    test-amd64:
-        needs: build-amd64
+    test-x86:
+        needs: build-x86
         strategy:
             fail-fast: false
             matrix:
@@ -50,12 +48,12 @@ jobs:
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ubuntu-22.04
-            images: ${{ needs.build-amd64.outputs.images }}
+            images: ${{ needs.build-x86.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
 
-    test-arm64:
-        needs: build-arm64
+    test-arm:
+        needs: build-arm
         strategy:
             fail-fast: false
             matrix:
@@ -63,12 +61,12 @@ jobs:
         uses: ./.github/workflows/test.yml
         with:
             runsOn: ubuntu-22.04-arm
-            images: ${{ needs.build-arm64.outputs.images }}
+            images: ${{ needs.build-arm.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
 
     build:
-        needs: [test-amd64, test-arm64]
+        needs: [test-x86, test-arm]
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-22.04
@@ -89,7 +87,7 @@ jobs:
             integration: true
 
     publish-ghcr:
-        needs: [build, test-amd64]
+        needs: [build]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
@@ -101,7 +99,7 @@ jobs:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build, test-amd64, test-arm64, publish-ghcr]
+        needs: [build, test-x86, test-arm, publish-ghcr]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
