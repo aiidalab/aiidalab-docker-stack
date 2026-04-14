@@ -21,7 +21,7 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     def _generate_aiidalab_install_output(package_name):
         nonlocal pkg
         pkg = package_name
-        cmd = f"aiidalab install --yes --pre {package_name}"
+        cmd = f"aiidalab install --yes {package_name}"
 
         output = aiidalab_exec(cmd, user=nb_user).strip()
         output += aiidalab_exec("pip check", user=nb_user).strip()
