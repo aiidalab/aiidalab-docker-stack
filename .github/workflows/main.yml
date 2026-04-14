@@ -39,34 +39,22 @@ jobs:
             runsOn: ubuntu-22.04-arm
             platforms: linux/arm64
 
-    test-x86:
-        needs: build-x86
+    test:
+        needs: [build-x86, build-arm]
         strategy:
             fail-fast: false
             matrix:
                 target: ["base", "lab", "base-with-services", "full-stack"]
+                arch: ["x86", "arm"]
         uses: ./.github/workflows/test.yml
         with:
-            runsOn: ubuntu-22.04
-            images: ${{ needs.build-x86.outputs.images }}
-            target: ${{ matrix.target }}
-            integration: false
-
-    test-arm:
-        needs: build-arm
-        strategy:
-            fail-fast: false
-            matrix:
-                target: ["base", "lab", "base-with-services", "full-stack"]
-        uses: ./.github/workflows/test.yml
-        with:
-            runsOn: ubuntu-22.04-arm
-            images: ${{ needs.build-arm.outputs.images }}
+            runsOn: ubuntu-22.04${{ matrix.arch == 'arm' && '-arm' || ''}}
+            images: ${{ matrix.arch == 'arm' && needs.build-arm.outputs.images || needs.build-x86.outputs.images }}
             target: ${{ matrix.target }}
             integration: false
 
     build:
-        needs: [test-x86, test-arm]
+        needs: test
         uses: ./.github/workflows/build.yml
         with:
             runsOn: ubuntu-22.04
@@ -99,7 +87,7 @@ jobs:
         if: >-
             github.repository == 'aiidalab/aiidalab-docker-stack'
             && (github.ref_type == 'tag' || github.ref_name == 'main')
-        needs: [build, test-x86, test-arm, publish-ghcr]
+        needs: [build, test, publish-ghcr]
         uses: ./.github/workflows/publish.yml
         with:
             runsOn: ubuntu-22.04
