@@ -1,13 +1,13 @@
 {
   "variable": {
     "PYTHON_VERSION": {
-      "default": "3.9.13"
+      "default": "3.12.11"
     },
     "PGSQL_VERSION": {
       "default": "15"
     },
     "RMQ_VERSION": {
-      "default": "3.9.13"
+      "default": "3.11.22"
     },
     "AIIDA_VERSION": {
       "default": "2.8.0"
@@ -16,7 +16,7 @@
       "default": "26.02.0"
     },
     "AIIDALAB_HOME_TAG": {
-      "default": "v25.02.0"
+      "default": "main"
     }
   }
 }
