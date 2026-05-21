@@ -94,9 +94,10 @@ def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
     """Test that pip installs packages to an activated venv"""
 
     pkg = "tuna"
+    pip = venv / "bin/pip"
 
-    aiidalab_exec(f"VIRTUAL_ENV={venv} pip install {pkg}")
+    aiidalab_exec(f"{pip} install {pkg}")
 
-    output = aiidalab_exec(f"VIRTUAL_ENV={venv} pip show {pkg}")
+    output = aiidalab_exec(f"{pip} show {pkg}")
     msg = email.message_from_string(output)
     assert msg.get("Location").startswith(f"{venv}/lib")
