@@ -59,7 +59,7 @@ jobs:
 
             - name: Build and upload to ghcr.io 📤
               id: build-upload
-              uses: docker/bake-action@v7.0.0
+              uses: docker/bake-action@v7.1.0
               env:
                   # https://github.com/docker/bake-action/issues/239#issuecomment-3828170326
                   BUILDX_METADATA_PROVENANCE: disabled
@@ -88,7 +88,7 @@ jobs:
 
             - name: Set output variables
               id: set-output
-              uses: actions/github-script@v8
+              uses: actions/github-script@v9
               with:
                   # We need to produce the following JSON string from the bake action output,
                   # which is then used in follow-up steps to uniquelly identify the built
