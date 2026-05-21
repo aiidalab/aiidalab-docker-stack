@@ -10,7 +10,6 @@ from packaging.version import parse
 def venv(tmp_path, aiidalab_exec):
     venv_path = tmp_path / ".venv"
     aiidalab_exec(f"python -m venv {venv_path}")
-    aiidalab_exec(f"{venv_path}/bin/python -m pip install -U pip")
     return venv_path
 
 
