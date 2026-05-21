@@ -69,6 +69,10 @@ RUN mamba update -y pip async_generator certipy && \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 
+# Get rid of pip deprecation warning
+# (this line must be here after pip is updated by mamba above)
+ENV PIP_USE_FEATURE="build-constraint"
+
 # Enable verdi autocompletion.
 RUN mkdir -p "${CONDA_DIR}/etc/conda/activate.d" && \
      echo 'eval "$(_VERDI_COMPLETE=bash_source verdi)"' >> "${CONDA_DIR}/etc/conda/activate.d/activate_aiida_autocompletion.sh" && \
