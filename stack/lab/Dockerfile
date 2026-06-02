@@ -21,6 +21,9 @@ RUN mamba install --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
+# TO-BE-REMOVED: TEST FEATURE BRANCH
+RUN pip install --no-user aiidalab@git@https://github.com/danielhollas/aiidalab@pip-uninstall
+
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
 RUN conda config --system --add pinned_packages "aiidalab=${AIIDALAB_VERSION}"
