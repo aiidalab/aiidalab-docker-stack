@@ -59,7 +59,7 @@ jobs:
 
             - name: Build and upload to ghcr.io 📤
               id: build-upload
-              uses: docker/bake-action@v7.1.0
+              uses: docker/bake-action@v7.2.0
               env:
                   # https://github.com/docker/bake-action/issues/239#issuecomment-3828170326
                   BUILDX_METADATA_PROVENANCE: disabled
