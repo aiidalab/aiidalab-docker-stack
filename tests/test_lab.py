@@ -22,7 +22,7 @@ def test_correct_aiidalab_version_installed(package_info, aiidalab_version):
 
 
 def test_correct_aiidalab_home_version_installed(package_info, aiidalab_home_tag):
-    info = package_info("aiidalab-home")
+    info = package_info("aiidalab_home")
     # For debugging, aiidalab_home_tag can point to a branch or a commit,
     # in which case we cannot easily compare the versions.
     # We only try the comparison if the version starts with "v[0-9][0-9]",
@@ -41,7 +41,7 @@ def test_appmode_installed(aiidalab_exec):
 
 
 @pytest.mark.parametrize(
-    "incompatible_package", ["aiidalab==22.7.1", "ipywidgets==8.0.0"]
+    "incompatible_package", ["aiidalab==22.7.1", "ipywidgets==7.7.4"]
 )
 @pytest.mark.parametrize("package_manager", ["pip", "mamba"])
 def test_prevent_install_of_incompatible_packages(
