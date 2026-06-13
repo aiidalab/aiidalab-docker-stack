@@ -56,10 +56,8 @@ ENV PIP_CONSTRAINT=/opt/requirements.txt
 COPY pip.conf "${CONDA_DIR}/pip.conf"
 
 # Upgrade pip and mamba to latest
-# Update async_generator, certipy to satisfy `pip check`
-# https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip async_generator certipy && \
+RUN mamba update -y pip && \
      mamba install --yes \
      aiida-core.atomic_tools==${AIIDA_VERSION} \
      mamba-bash-completion \
