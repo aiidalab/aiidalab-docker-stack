@@ -82,7 +82,7 @@ jobs:
             # https://github.com/aiidalab/aiidalab-docker-stack/issues/493
             - name: Write metadata output to a json file
               run: |
-                  cat << EOF > bake_metadata.json
+                  cat << 'EOF' > bake_metadata.json
                   ${{ steps.build-upload.outputs.metadata }}
                   EOF
 
