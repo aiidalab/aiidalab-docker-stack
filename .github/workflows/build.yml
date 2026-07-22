@@ -37,7 +37,7 @@ jobs:
         steps:
 
             - name: Checkout Repo ⚡️
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
 
             - name: Set up QEMU
               if: ${{ inputs.platforms != 'linux/amd64' }}
@@ -59,7 +59,7 @@ jobs:
 
             - name: Build and upload to ghcr.io 📤
               id: build-upload
-              uses: docker/bake-action@v7.2.0
+              uses: docker/bake-action@v7.3.0
               env:
                   # https://github.com/docker/bake-action/issues/239#issuecomment-3828170326
                   BUILDX_METADATA_PROVENANCE: disabled
@@ -82,7 +82,7 @@ jobs:
             # https://github.com/aiidalab/aiidalab-docker-stack/issues/493
             - name: Write metadata output to a json file
               run: |
-                  cat << EOF > bake_metadata.json
+                  cat << 'EOF' > bake_metadata.json
                   ${{ steps.build-upload.outputs.metadata }}
                   EOF
 
