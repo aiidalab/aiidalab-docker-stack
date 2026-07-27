@@ -1,0 +1,6 @@
+/* Ensures that the AiiDAlab logo is correctly aligned */
+#ipython_notebook {
+  flex-grow: 1 !important;
+  display: flex;
+  align-items: center;
+}
