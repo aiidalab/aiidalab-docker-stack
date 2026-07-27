@@ -99,3 +99,7 @@ ENV NOTEBOOK_ARGS \
 
 # Set up the logo of notebook interface
 COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/nbclassic/static/base/images/logo.png
+
+# Copy custom CSS into user home directory
+RUN mkdir -p "/home/${NB_USER}/.jupyter/custom"
+COPY --chown=${NB_UID}:${NB_GID} custom.css /home/${NB_USER}/.jupyter/custom/custom.css
