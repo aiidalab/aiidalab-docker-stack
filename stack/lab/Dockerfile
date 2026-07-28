@@ -15,7 +15,7 @@ ARG AIIDALAB_VERSION
 ARG AWB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
-     appmode=1.1.0 \
+     appmode=1.2.0 \
      aiidalab-widgets-base=${AWB_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
