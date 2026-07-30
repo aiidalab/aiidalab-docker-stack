@@ -15,7 +15,7 @@ ARG AIIDALAB_VERSION
 ARG AWB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
-     appmode=1.1.0 \
+     appmode=1.2.0 \
      aiidalab-widgets-base=${AWB_VERSION} \
      && mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
@@ -99,3 +99,7 @@ ENV NOTEBOOK_ARGS \
 
 # Set up the logo of notebook interface
 COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/nbclassic/static/base/images/logo.png
+
+# Copy custom CSS into user home directory
+RUN mkdir -p "/home/${NB_USER}/.jupyter/custom"
+COPY --chown=${NB_UID}:${NB_GID} custom.css /home/${NB_USER}/.jupyter/custom/custom.css

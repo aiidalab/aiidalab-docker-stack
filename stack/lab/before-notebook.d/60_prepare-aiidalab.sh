@@ -52,7 +52,7 @@ fi
 find -L /home/${NB_USER} -maxdepth 3 -name apps_meta.sqlite -writable -delete
 
 # Remove old temporary notebook files.
-find -L /home/${NB_USER}/apps -maxdepth 2 -type f -name .*.ipynb -writable -delete
+find -L /home/${NB_USER}/apps -maxdepth 2 -type f -name '.*.ipynb' -writable -delete
 
 # Uninstall aiidalab from user packages (if present).
 # Would otherwise interfere with the system package.
