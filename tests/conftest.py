@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 import requests
-from requests.exceptions import ConnectionError  # noqa: A004
+from requests.exceptions import ConnectionError
 
 TARGETS = ("base", "lab", "base-with-services", "full-stack")
 
@@ -71,7 +71,7 @@ def notebook_service(docker_ip, docker_services):
         docker_services.wait_until_responsive(
             timeout=60.0, pause=0.1, check=lambda: is_responsive(url)
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(docker_compose.execute("logs").decode().strip())
         # Let's exit hard, otherwise pytest output is a huge mess.
         pytest.exit(e)

@@ -50,5 +50,5 @@ def test_prevent_install_of_incompatible_packages(
     package_manager,
     incompatible_package,
 ):
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         aiidalab_exec(f"{package_manager} install {incompatible_package}", user=nb_user)
