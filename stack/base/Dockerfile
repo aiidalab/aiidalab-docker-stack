@@ -13,7 +13,7 @@ USER root
 # bc: needed to compute the resources for computer setup
 ENV EXTRA_APT_PACKAGES="curl povray rsync build-essential bc"
 
-# For ARM64 we also install few more packages for compiling from source,
+# For ARM64 we also install a few more packages for compiling from source,
 # which is more often needed on ARM64.
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
@@ -58,10 +58,8 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # Upgrade pip and mamba to latest
 # Install aiida-core and other shared requirements.
 RUN mamba update -y pip && \
-     mamba install --yes \
-     aiida-core.atomic_tools==${AIIDA_VERSION} \
-     mamba-bash-completion \
-     && mamba clean --all -f -y && \
+     mamba install --yes aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
+     mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 
 # Enable verdi autocompletion.

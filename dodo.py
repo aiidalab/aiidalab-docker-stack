@@ -1,5 +1,6 @@
 import json
 import platform
+import sys
 from pathlib import Path
 
 import docker
@@ -25,7 +26,7 @@ if ARCH is None:
     print(
         f"Unsupported architecture {_DOCKER_ARCHITECTURE} on platform {platform.system()}."
     )
-    exit(1)
+    sys.exit(1)
 
 _REGISTRY_PARAM = {
     "name": "registry",
@@ -128,9 +129,11 @@ def task_build():
     return {
         "actions": [
             generate_version_override,
-            "docker buildx bake -f docker-bake.hcl -f build.json "
-            "-f docker-bake.override.json "
-            "--load",
+            (
+                "docker buildx bake -f docker-bake.hcl -f build.json "
+                "-f docker-bake.override.json "
+                "--load"
+            ),
         ],
         "title": title_with_actions,
         "params": [
@@ -150,8 +153,10 @@ def task_tests():
     return {
         "actions": [
             target_required,
-            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
-            "pytest -s --target %(target)s --compose-cmd='%(compose-command)s' %(pytest-opts)s",
+            (
+                "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
+                "pytest -s --target %(target)s --compose-cmd='%(compose-command)s' %(pytest-opts)s"
+            ),
         ],
         "params": [
             _TARGET_PARAM,
@@ -177,8 +182,10 @@ def task_up():
     return {
         "actions": [
             target_required,
-            "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
-            "%(compose-command)s -f stack/docker-compose.%(target)s.yml up --detach",
+            (
+                "AIIDALAB_PORT=%(port)i REGISTRY=%(registry)s VERSION=:%(version)s "
+                "%(compose-command)s -f stack/docker-compose.%(target)s.yml up --detach"
+            ),
         ],
         "params": [
             _TARGET_PARAM,

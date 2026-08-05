@@ -25,7 +25,7 @@ def test_prevent_installation_of_aiida(
 
     # Expected to succeed, although should be a no-op.
     aiidalab_exec(f"{pkg_manager} install aiida-core=={aiida_version}", user=nb_user)
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         aiidalab_exec(
             f"{pkg_manager} install aiida-core=={incompatible_version}",
             user=nb_user,
@@ -38,7 +38,7 @@ def test_prevent_notebook_upgrade(aiidalab_exec, nb_user, pkg_manager):
     test that both pip and mamba refuse to update to v7 of the notebook."""
 
     incompatible_version = "7"
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         aiidalab_exec(
             f"{pkg_manager} install notebook=={incompatible_version}",
             user=nb_user,
