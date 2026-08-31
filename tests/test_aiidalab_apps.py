@@ -42,7 +42,10 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
         aiidalab_exec(f"pip uninstall --yes {pkg_name}", user=nb_user)
 
 
-@pytest.mark.parametrize("package_name", ["aiidalab-widgets-base"])
+@pytest.mark.xfail(
+    reason="QeApp doesn't yet have a release compatible with Python 3.12 image"
+)
+@pytest.mark.parametrize("package_name", ["quantum-espresso"])
 def test_install_apps_from_stable(generate_aiidalab_install_output, package_name):
     """Test that apps can be installed from app store."""
     output = generate_aiidalab_install_output(package_name)
@@ -53,7 +56,7 @@ def test_install_apps_from_stable(generate_aiidalab_install_output, package_name
     assert "No broken requirements found" in output
 
 
-@pytest.mark.parametrize("repo_name", ["aiidalab-widgets-base"])
+@pytest.mark.parametrize("repo_name", ["aiidalab-qe"])
 def test_install_apps_from_default_branch(generate_aiidalab_install_output, repo_name):
     """Test that apps can be installed from the default branch of the repository."""
     package = f"{repo_name}@git+https://github.com/aiidalab/{repo_name}.git"
