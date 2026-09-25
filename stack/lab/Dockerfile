@@ -82,14 +82,14 @@ RUN mkdir -p /home/${NB_USER}/apps
 # eventually consuming all available RAM.
 # See https://github.com/aiidalab/issues/issues/13 for detailed analysis.
 # Moreover, it will leave the python kernel running indefinitely which needlessly consumes resources.
-# We could turn this behaviour off by setting "buffer_offline_messages=False",
-# but that may come with other problems for people with flaky internet connections.
-# Instead, here we configure Jupyter to kill all kernels that have been alive for
+# We turn this behaviour off by setting "buffer_offline_messages=False",
+# even though that might come at a price for people with flaky internet connections.
+# We also configure Jupyter to kill all kernels that have been alive for
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
      "--NotebookApp.show_banner=False" \
-     "--MappingKernelManager.buffer_offline_messages=True" \
+     "--MappingKernelManager.buffer_offline_messages=False" \
      "--MappingKernelManager.cull_busy=True" \
      "--MappingKernelManager.cull_connected=True" \
      "--MappingKernelManager.cull_idle_timeout=64800" \
