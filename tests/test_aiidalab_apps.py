@@ -37,7 +37,6 @@ def generate_aiidalab_install_output(aiidalab_exec, nb_user):
     if pkg:
         app_name = pkg.split("@")[0]
         aiidalab_exec(f"aiidalab uninstall --yes --force {app_name}", user=nb_user)
-        pkg_name = app_name
         if app_name.lower() == "quantum-espresso":
             pkg_name = "aiidalab-qe"
         else:
