@@ -8,8 +8,6 @@ cfgv==3.5.0
     # via pre-commit
 charset-normalizer==3.4.9
     # via requests
-colorama==0.4.6 ; sys_platform == 'win32'
-    # via pytest
 distlib==0.4.3
     # via virtualenv
 docker==7.2.0
@@ -52,15 +50,13 @@ pytest-docker==3.2.5
     # via -r requirements.in
 python-discovery==1.4.4
     # via virtualenv
-pywin32==312 ; sys_platform == 'win32'
-    # via docker
 pyyaml==6.0.3
     # via pre-commit
 requests==2.34.2
     # via
     #   -r requirements.in
     #   docker
-urllib3==2.7.0
+urllib3==2.8.0
     # via
     #   docker
     #   requests
