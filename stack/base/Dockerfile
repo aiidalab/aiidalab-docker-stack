@@ -59,6 +59,7 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # Install aiida-core and other shared requirements.
 RUN mamba update -y pip && \
      mamba install --yes aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
+     pip check && \
      mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 

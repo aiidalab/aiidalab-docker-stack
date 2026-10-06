@@ -16,8 +16,9 @@ ARG AWB_VERSION
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
      appmode=1.3.0 \
-     aiidalab-widgets-base=${AWB_VERSION} \
-     && mamba clean --all -f -y && \
+     aiidalab-widgets-base=${AWB_VERSION} && \
+     pip check && \
+     mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
