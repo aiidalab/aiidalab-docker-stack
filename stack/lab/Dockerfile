@@ -85,7 +85,7 @@ RUN mkdir -p /home/${NB_USER}/apps
 # We turn this behaviour off by setting "buffer_offline_messages=False",
 # even though that might come at a price for people with flaky internet connections.
 # We also configure Jupyter to kill all kernels that have been alive for
-# more than 12 hours. We also close all inactive terminals after 10 minutes.
+# more than 18 hours. We also close all inactive terminals after an hour.
 ENV NOTEBOOK_ARGS \
      "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
      "--NotebookApp.show_banner=False" \
