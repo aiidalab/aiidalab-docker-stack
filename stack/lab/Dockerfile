@@ -34,6 +34,7 @@ ARG AIIDALAB_HOME_TAG
 RUN git clone --branch "${AIIDALAB_HOME_TAG}" https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
      pip install --no-user --no-cache-dir "./" && \
+     pip check && \
      fix-permissions "./" && \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
