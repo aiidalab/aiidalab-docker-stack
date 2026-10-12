@@ -7,6 +7,7 @@ export SHELL=/bin/bash
 # 0b000 0 - No reset (noop).
 # 0b001 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
 # 0b010 2 - Remove all files and directories within the users home directory.
+# 0b100 4 - Remove local software installation (~/.local/) only.
 
 # If the ~/AIIDALAB_FACTORY_RESET file exists, parse it (and remove it).
 if [ -e "/home/${NB_USER}/AIIDALAB_FACTORY_RESET" ]; then
@@ -18,7 +19,7 @@ fi
 RESET_MODE="${AIIDALAB_FACTORY_RESET:-${RESET_MODE:-0}}"
 
 # Warn about unknown mode.
-if (( ${RESET_MODE} > 0x3 )); then
+if (( ${RESET_MODE} > 0x7 )); then
   echo "factory reset: WARNING: UNKNOWN RESET MODE (${RESET_MODE}) CONTAINS UNKNOWN BITS."
 fi
 
@@ -33,6 +34,12 @@ fi
 if (( (${RESET_MODE} & 0x1) == 0x1)); then
   echo "factory reset: Remove apps (~/apps/) and local software installation (~/.local/)."
   rm -rf "/home/${NB_USER}/apps"
+  rm -rf "/home/${NB_USER}/.local"
+fi
+
+# mode & 100 -> delete ~/.local/
+if (( (${RESET_MODE} & 0x4) == 0x4)); then
+  echo "factory reset: Remove local software installation (~/.local/)."
   rm -rf "/home/${NB_USER}/.local"
 fi
 
