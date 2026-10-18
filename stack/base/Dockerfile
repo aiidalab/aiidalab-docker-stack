@@ -57,8 +57,9 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 
 # Upgrade pip and mamba to latest
 # Install aiida-core and other shared requirements.
+# TODO: Remove `cryptography` pin after https://github.com/conda-forge/asyncssh-feedstock/pull/75 is merged
 RUN mamba update -y pip && \
-     mamba install --yes aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
+     mamba install --yes cryptography==48.0.1 aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
      mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 
