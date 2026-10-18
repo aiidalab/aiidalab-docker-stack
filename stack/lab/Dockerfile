@@ -33,7 +33,6 @@ RUN echo 'eval "$(_AIIDALAB_COMPLETE=bash_source aiidalab)"' >> "${CONDA_DIR}/et
 ARG AIIDALAB_HOME_TAG
 RUN git clone --branch "${AIIDALAB_HOME_TAG}" https://github.com/aiidalab/aiidalab-home && \
      cd aiidalab-home && \
-     pip check && \
      pip install --no-user --no-cache-dir "./" && \
      pip check && \
      fix-permissions "./" && \
