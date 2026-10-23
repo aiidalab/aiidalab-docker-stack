@@ -9,14 +9,14 @@ export SHELL=/bin/bash
 # 0b010 2 - Remove all files and directories within the users home directory.
 # 0b100 4 - Reset local software installation (~/.local/) only by moving it to ~/.local_backup.
 
+# The reset mode is read only from the ~/AIIDALAB_FACTORY_RESET file (default mode=0).
+RESET_MODE=0
+
 # If the ~/AIIDALAB_FACTORY_RESET file exists, parse it (and remove it).
 if [ -e "/home/${NB_USER}/AIIDALAB_FACTORY_RESET" ]; then
   RESET_MODE="`cat /home/${NB_USER}/AIIDALAB_FACTORY_RESET`"
   rm -f "/home/${NB_USER}/AIIDALAB_FACTORY_RESET"  # Remove file after parsing.
 fi
-
-# If the AIIDALAB_FACTORY_RESET environment variable is set, it takes preference (default mode=0):
-RESET_MODE="${AIIDALAB_FACTORY_RESET:-${RESET_MODE:-0}}"
 
 # Warn about unknown mode.
 if (( ${RESET_MODE} > 0x7 )); then
