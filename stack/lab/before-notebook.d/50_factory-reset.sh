@@ -3,48 +3,26 @@
 # Environment.
 export SHELL=/bin/bash
 
-# Bit mask for performing factory reset of the AiiDAlab environment:
-# 0b000 0 - No reset (noop).
-# 0b001 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
-# 0b010 2 - Remove all files and directories within the users home directory.
-# 0b100 4 - Reset local software installation (~/.local/) only by moving it to ~/.local_backup.
+# Factory reset of the AiiDAlab environment, requested by writing the reset
+# mode into the ~/AIIDALAB_FACTORY_RESET file (the file is removed after parsing).
+# Supported modes:
+#   local - Reset local software installation (moves ~/.local/ to ~/.local_backup).
 
-# The reset mode is read only from the ~/AIIDALAB_FACTORY_RESET file (default mode=0).
-RESET_MODE=0
+RESET_FILE="/home/${NB_USER}/AIIDALAB_FACTORY_RESET"
 
-# If the ~/AIIDALAB_FACTORY_RESET file exists, parse it (and remove it).
-if [ -e "/home/${NB_USER}/AIIDALAB_FACTORY_RESET" ]; then
-  RESET_MODE="`cat /home/${NB_USER}/AIIDALAB_FACTORY_RESET`"
-  rm -f "/home/${NB_USER}/AIIDALAB_FACTORY_RESET"  # Remove file after parsing.
-fi
+if [ -e "${RESET_FILE}" ]; then
+  RESET_MODE="$(tr -d '[:space:]' < "${RESET_FILE}")"
+  rm -f "${RESET_FILE}"  # Remove file after parsing.
 
-# Warn about unknown mode.
-if (( ${RESET_MODE} > 0x7 )); then
-  echo "factory reset: WARNING: UNKNOWN RESET MODE (${RESET_MODE}) CONTAINS UNKNOWN BITS."
-fi
-
-# Perform the individual reset functions:
-
-# mode==0 -> noop
-if (( ${RESET_MODE} == 0)); then  # noop
-    echo "factory reset: No reset (mode=0)."
-fi
-
-# mode & 001 -> delete ~/apps/ and ~/.local/
-if (( (${RESET_MODE} & 0x1) == 0x1)); then
-  echo "factory reset: Remove apps (~/apps/) and local software installation (~/.local/)."
-  rm -rf "/home/${NB_USER}/apps"
-  rm -rf "/home/${NB_USER}/.local"
-fi
-
-# mode & 010 -> delete all home directory contents
-if (( (${RESET_MODE} & 0x2) == 0x2)); then
-  echo "factory reset: Remove user home directory contents."
-  find "/home/${NB_USER}/" -mindepth 1 -delete
-fi
-
-# mode & 100 -> move ~/.local/ to ~/.local_backup
-if (( (${RESET_MODE} & 0x4) == 0x4)); then
-  echo "factory reset: Move local software installation (~/.local/) to ~/.local_backup."
-  mv "/home/${NB_USER}/.local" "/home/${NB_USER}/.local_backup"
+  case "${RESET_MODE}" in
+    local)
+      echo "factory reset: Move local software installation (~/.local/) to ~/.local_backup."
+      mv "/home/${NB_USER}/.local" "/home/${NB_USER}/.local_backup"
+      ;;
+    *)
+      echo "factory reset: WARNING: Unknown reset mode (${RESET_MODE}), no reset performed."
+      ;;
+  esac
+else
+  echo "factory reset: No reset requested."
 fi
