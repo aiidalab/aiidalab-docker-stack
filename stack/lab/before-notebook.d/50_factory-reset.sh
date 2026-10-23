@@ -6,7 +6,7 @@ export SHELL=/bin/bash
 # Factory reset of the AiiDAlab environment, requested by writing the reset
 # mode into the ~/AIIDALAB_FACTORY_RESET file (the file is removed after parsing).
 # Supported modes:
-#   local - Reset local software installation (moves ~/.local/ to ~/.local_backup).
+#   local - Reset local software installation (moves ~/.local/ to ~/.local~<date>).
 
 RESET_FILE="/home/${NB_USER}/AIIDALAB_FACTORY_RESET"
 
@@ -16,8 +16,14 @@ if [ -e "${RESET_FILE}" ]; then
 
   case "${RESET_MODE}" in
     local)
-      echo "factory reset: Move local software installation (~/.local/) to ~/.local_backup."
-      mv "/home/${NB_USER}/.local" "/home/${NB_USER}/.local_backup"
+      if [ -e "/home/${NB_USER}/.local" ]; then
+        LOCAL_BACKUP="/home/${NB_USER}/.local~`date --iso-8601=seconds`"
+        echo "factory reset: Move ~/.local/ to ${LOCAL_BACKUP}."
+        mv "/home/${NB_USER}/.local" "${LOCAL_BACKUP}" \
+          || echo "factory reset: WARNING: Failed to move ~/.local/, no reset performed."
+      else
+        echo "factory reset: No ~/.local/ to reset."
+      fi
       ;;
     *)
       echo "factory reset: WARNING: Unknown reset mode (${RESET_MODE}), no reset performed."
