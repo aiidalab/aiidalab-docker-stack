@@ -12,10 +12,10 @@ factory_reset() {
   local reset_file="/home/${NB_USER}/AIIDALAB_FACTORY_RESET"
   local reset_mode local_backup
 
-  if [ ! -e "${reset_file}" ]; then
-    echo "factory reset: No reset requested."
-    return 0
-  fi
+  # No reset requested, nothing to do. Return 0 explicitly: a bare `return`
+  # would pass on the failed test's status and, as this hook is sourced by
+  # a `set -e` script, abort container startup.
+  [ -e "${reset_file}" ] || return 0
 
   reset_mode="$(tr -d '[:space:]' < "${reset_file}")"
   rm -f "${reset_file}"  # Remove file after parsing.
