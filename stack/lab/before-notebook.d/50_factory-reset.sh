@@ -7,7 +7,7 @@ export SHELL=/bin/bash
 # 0b000 0 - No reset (noop).
 # 0b001 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
 # 0b010 2 - Remove all files and directories within the users home directory.
-# 0b100 4 - Remove local software installation (~/.local/) only.
+# 0b100 4 - Reset local software installation (~/.local/) only by moving it to ~/.local_backup.
 
 # If the ~/AIIDALAB_FACTORY_RESET file exists, parse it (and remove it).
 if [ -e "/home/${NB_USER}/AIIDALAB_FACTORY_RESET" ]; then
@@ -37,14 +37,14 @@ if (( (${RESET_MODE} & 0x1) == 0x1)); then
   rm -rf "/home/${NB_USER}/.local"
 fi
 
-# mode & 100 -> delete ~/.local/
-if (( (${RESET_MODE} & 0x4) == 0x4)); then
-  echo "factory reset: Remove local software installation (~/.local/)."
-  rm -rf "/home/${NB_USER}/.local"
-fi
-
 # mode & 010 -> delete all home directory contents
 if (( (${RESET_MODE} & 0x2) == 0x2)); then
   echo "factory reset: Remove user home directory contents."
   find "/home/${NB_USER}/" -mindepth 1 -delete
+fi
+
+# mode & 100 -> move ~/.local/ to ~/.local_backup
+if (( (${RESET_MODE} & 0x4) == 0x4)); then
+  echo "factory reset: Move local software installation (~/.local/) to ~/.local_backup."
+  mv "/home/${NB_USER}/.local" "/home/${NB_USER}/.local_backup"
 fi
