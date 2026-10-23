@@ -1,43 +1,41 @@
-#!/bin/bash -eu
+#!/bin/bash
 
-# Environment.
-export SHELL=/bin/bash
+# Factory reset of the AiiDAlab environment, requested by writing the reset
+# mode into the ~/AIIDALAB_FACTORY_RESET file (the file is removed after parsing).
+# Supported modes:
+#   local - Reset local software installation (moves ~/.local/ to ~/.local~<date>).
+#
+# This hook is sourced by the container start script, so the logic is wrapped in
+# a function to keep its variables out of the environment of subsequent hooks.
 
-# Bit mask for performing factory reset of the AiiDAlab environment:
-# 0b000 0 - No reset (noop).
-# 0b001 1 - Remove locally installed software and apps (removes ~/apps/ and ~/.local/).
-# 0b010 2 - Remove all files and directories within the users home directory.
+factory_reset() {
+  local reset_file="/home/${NB_USER}/AIIDALAB_FACTORY_RESET"
+  local reset_mode local_backup
 
-# If the ~/AIIDALAB_FACTORY_RESET file exists, parse it (and remove it).
-if [ -e "/home/${NB_USER}/AIIDALAB_FACTORY_RESET" ]; then
-  RESET_MODE="`cat /home/${NB_USER}/AIIDALAB_FACTORY_RESET`"
-  rm -f "/home/${NB_USER}/AIIDALAB_FACTORY_RESET"  # Remove file after parsing.
-fi
+  # No reset requested, nothing to do. Return 0 explicitly: a bare `return`
+  # would pass on the failed test's status and, as this hook is sourced by
+  # a `set -e` script, abort container startup.
+  [ -e "${reset_file}" ] || return 0
 
-# If the AIIDALAB_FACTORY_RESET environment variable is set, it takes preference (default mode=0):
-RESET_MODE="${AIIDALAB_FACTORY_RESET:-${RESET_MODE:-0}}"
+  reset_mode="$(tr -d '[:space:]' < "${reset_file}")"
+  rm -f "${reset_file}"  # Remove file after parsing.
 
-# Warn about unknown mode.
-if (( ${RESET_MODE} > 0x3 )); then
-  echo "factory reset: WARNING: UNKNOWN RESET MODE (${RESET_MODE}) CONTAINS UNKNOWN BITS."
-fi
+  case "${reset_mode}" in
+    local)
+      if [ -e "/home/${NB_USER}/.local" ]; then
+        local_backup="/home/${NB_USER}/.local~`date --iso-8601=seconds`"
+        echo "factory reset: Move ~/.local/ to ${local_backup}."
+        mv "/home/${NB_USER}/.local" "${local_backup}" \
+          || echo "factory reset: WARNING: Failed to move ~/.local/, no reset performed."
+      else
+        echo "factory reset: No ~/.local/ to reset."
+      fi
+      ;;
+    *)
+      echo "factory reset: WARNING: Unknown reset mode (${reset_mode}), no reset performed."
+      ;;
+  esac
+}
 
-# Perform the individual reset functions:
-
-# mode==0 -> noop
-if (( ${RESET_MODE} == 0)); then  # noop
-    echo "factory reset: No reset (mode=0)."
-fi
-
-# mode & 001 -> delete ~/apps/ and ~/.local/
-if (( (${RESET_MODE} & 0x1) == 0x1)); then
-  echo "factory reset: Remove apps (~/apps/) and local software installation (~/.local/)."
-  rm -rf "/home/${NB_USER}/apps"
-  rm -rf "/home/${NB_USER}/.local"
-fi
-
-# mode & 010 -> delete all home directory contents
-if (( (${RESET_MODE} & 0x2) == 0x2)); then
-  echo "factory reset: Remove user home directory contents."
-  find "/home/${NB_USER}/" -mindepth 1 -delete
-fi
+factory_reset
+unset -f factory_reset
