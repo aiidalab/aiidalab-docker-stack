@@ -101,3 +101,9 @@ def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
     output = aiidalab_exec(f"{pip} show {pkg}")
     msg = email.message_from_string(output)
     assert msg.get("Location").startswith(f"{venv}/lib")
+
+
+@pytest.mark.parametrize("cert_package", ["certifi", "ca-certificates"])
+def test_cert_packages_updated(package_info, cert_package):
+    info = package_info(cert_package)
+    assert parse(info["version"]) >= parse("2026.10.23")

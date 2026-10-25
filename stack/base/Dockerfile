@@ -56,18 +56,18 @@ ENV PIP_CONSTRAINT=/opt/requirements.txt
 COPY pip.conf "${CONDA_DIR}/pip.conf"
 
 # Upgrade pip and mamba to latest
+# Update certificates (e.g. to make sure we're not vulnerable to
+# https://emudhra.we-have-a-problem.com/
 # Update async_generator, certipy to satisfy `pip check`
 # https://github.com/aiidalab/aiidalab-docker-stack/issues/490
 # Install aiida-core and other shared requirements.
 # We need to pin numpy to 1.x due to AWB using old bokeh version, see:
 # https://github.com/aiidalab/aiidalab-widgets-base/issues/733
-RUN mamba update -y pip async_generator certipy && \
+RUN mamba update -y pip async_generator certipy certifi ca-certificates && \
      mamba install --yes \
-     aiida-core=${AIIDA_VERSION} \
-     numpy=1.* \
-     mamba-bash-completion \
-     traitlets=5.9.0 \
-     && mamba clean --all -f -y && \
+     aiida-core=${AIIDA_VERSION} numpy=1.* mamba-bash-completion traitlets=5.9.0 && \
+     pip check && \
+     mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 
 # Enable verdi autocompletion.
