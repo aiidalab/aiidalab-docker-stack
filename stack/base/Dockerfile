@@ -55,9 +55,11 @@ ENV PIP_CONSTRAINT=/opt/requirements.txt
 # https://github.com/aiidalab/aiidalab-docker-stack/issues/501
 COPY pip.conf "${CONDA_DIR}/pip.conf"
 
-# Upgrade pip and mamba to latest
+# Upgrade pip to latest
+# Update certificates (e.g. to make sure we're not vulnerable to
+# https://emudhra.we-have-a-problem.com/
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
+RUN mamba update -y pip certifi ca-certificates && \
      mamba install --yes aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
      pip check && \
      mamba clean --all -f -y && \
