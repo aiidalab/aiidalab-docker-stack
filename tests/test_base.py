@@ -107,3 +107,22 @@ def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
 def test_cert_packages_updated(package_info, cert_package):
     info = package_info(cert_package)
     assert parse(info["version"]) >= parse("2026.10.23")
+
+
+@pytest.mark.parametrize(
+    "test_url",
+    [
+        "https://dv-g3b-emudhra.we-have-a-problem.com/",
+        "https://dv-g3b-aaa-emudhra.we-have-a-problem.com/",
+        "https://dv-g3b-noct-emudhra.we-have-a-problem.com/",
+        "https://dv-g3b-aaa-noct-emudhra.we-have-a-problem.com/",
+    ],
+)
+def test_emudhra_mitigation(aiidalab_exec, test_url):
+    """Test that the compromised eMudhra certificates were revoked at the OS level
+
+    Per https://emudhra.we-have-a-problem.com/#check
+    """
+    # TODO: We should assert the exit code somehow
+    output = aiidalab_exec(f"curl {test_url}")
+    assert output == ""
