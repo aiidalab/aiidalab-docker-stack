@@ -20,7 +20,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
         EXTRA_APT_PACKAGES="libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
-    apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
+    apt-get install --yes --no-install-recommends ca-certificates ${EXTRA_APT_PACKAGES} && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/
