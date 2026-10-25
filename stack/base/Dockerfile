@@ -15,6 +15,7 @@ ENV EXTRA_APT_PACKAGES="curl povray rsync build-essential bc"
 
 # For ARM64 we also install a few more packages for compiling from source,
 # which is more often needed on ARM64.
+# Update ca-certificates package to mitigate https://emudhra.we-have-a-problem.com/
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
         EXTRA_APT_PACKAGES="libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
@@ -56,7 +57,7 @@ ENV PIP_CONSTRAINT=/opt/requirements.txt
 COPY pip.conf "${CONDA_DIR}/pip.conf"
 
 # Upgrade pip to latest
-# Update certificates (e.g. to make sure we're not vulnerable to
+# Update certificates to make sure we're not vulnerable to
 # https://emudhra.we-have-a-problem.com/
 # Install aiida-core and other shared requirements.
 RUN mamba update -y pip certifi ca-certificates && \
