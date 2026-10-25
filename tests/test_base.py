@@ -123,6 +123,8 @@ def test_emudhra_mitigation(aiidalab_exec, test_url):
 
     Per https://emudhra.we-have-a-problem.com/#check
     """
-    # TODO: We should assert the exit code somehow
     output = aiidalab_exec(f"curl {test_url}")
-    assert output == ""
+
+    assert "Your client successfully connected to the site" not in output
+    assert "That's bad" not in output
+    assert "SSL certificate problem" in output
