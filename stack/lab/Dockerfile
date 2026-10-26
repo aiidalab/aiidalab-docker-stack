@@ -69,9 +69,6 @@ ENV AIIDALAB_DEFAULT_GIT_BRANCH=master
 # ENV AIIDALAB_DEFAULT_APPS "aiidalab-widgets-base~=1.0"
 ENV AIIDALAB_DEFAULT_APPS=""
 
-# Specify default factory reset (not set):
-ENV AIIDALAB_FACTORY_RESET=""
-
 USER ${NB_USER}
 
 WORKDIR "/home/${NB_USER}"
