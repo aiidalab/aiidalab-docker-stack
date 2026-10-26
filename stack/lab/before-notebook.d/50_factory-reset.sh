@@ -17,7 +17,15 @@ factory_reset() {
   # a `set -e` script, abort container startup.
   [ -e "${reset_file}" ] || return 0
 
-  reset_mode="$(tr -d '[:space:]' < "${reset_file}")"
+  # Only accept a regular file: a directory would make the read fail (aborting
+  # startup), a FIFO would block it, and a symlink could point anywhere.
+  if [ ! -f "${reset_file}" ] || [ -L "${reset_file}" ]; then
+    echo "factory reset: WARNING: ${reset_file} is not a regular file, no reset performed."
+    return 0
+  fi
+
+  # Bounded read; a read failure must not abort container startup.
+  reset_mode="$(head -c 64 "${reset_file}" | tr -d '[:space:]')" || true
   rm -f "${reset_file}"  # Remove file after parsing.
 
   case "${reset_mode}" in
