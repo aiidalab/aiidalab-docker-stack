@@ -204,6 +204,8 @@ def test_factory_reset_failed_move(factory_reset, nb_user):
     entries = factory_reset.home_entries()
     assert "AIIDALAB_FACTORY_RESET" in entries
     assert ".local" in entries
+
+
 # First Mozilla CA bundle that drops the compromised eMudhra roots,
 # see https://emudhra.we-have-a-problem.com/
 EMUDHRA_FIXED_CA_BUNDLE = "2026.10.23"
