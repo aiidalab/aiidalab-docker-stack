@@ -204,3 +204,41 @@ def test_factory_reset_failed_move(factory_reset, nb_user):
     entries = factory_reset.home_entries()
     assert "AIIDALAB_FACTORY_RESET" in entries
     assert ".local" in entries
+# First Mozilla CA bundle that drops the compromised eMudhra roots,
+# see https://emudhra.we-have-a-problem.com/
+EMUDHRA_FIXED_CA_BUNDLE = "2026.10.23"
+# External incident test site; remove these tests once it goes offline.
+EMUDHRA_TEST_URLS = [
+    "https://dv-g3b-emudhra.we-have-a-problem.com/",
+    "https://dv-g3b-aaa-emudhra.we-have-a-problem.com/",
+    "https://dv-g3b-noct-emudhra.we-have-a-problem.com/",
+    "https://dv-g3b-aaa-noct-emudhra.we-have-a-problem.com/",
+]
+
+
+@pytest.mark.parametrize("cert_package", ["certifi", "ca-certificates"])
+def test_cert_packages_updated(package_info, cert_package):
+    info = package_info(cert_package)
+    assert parse(info["version"]) >= parse(EMUDHRA_FIXED_CA_BUNDLE)
+
+
+@pytest.mark.parametrize("test_url", EMUDHRA_TEST_URLS)
+@pytest.mark.parametrize(
+    "client",
+    [
+        # OS trust store (apt ca-certificates)
+        "/usr/bin/curl --silent --show-error --connect-timeout 10 --max-time 30",
+        # conda OpenSSL trust store (conda-forge ca-certificates)
+        'python -c "import sys, urllib.request; urllib.request.urlopen(sys.argv[1], timeout=30)"',
+        # requests (certifi)
+        'python -c "import sys, requests; requests.get(sys.argv[1], timeout=30)"',
+    ],
+)
+def test_emudhra_mitigation(aiidalab_exec, client, test_url):
+    """Test that all trust stores in the image reject the compromised eMudhra roots
+
+    Per https://emudhra.we-have-a-problem.com/#check
+    """
+    output = aiidalab_exec(f"sh -c '{client} {test_url} 2>&1; true'")
+
+    assert "unable to get local issuer certificate" in output, output
