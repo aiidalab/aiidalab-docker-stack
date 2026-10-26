@@ -8,8 +8,6 @@ cfgv==3.5.0
     # via pre-commit
 charset-normalizer==3.5.2
     # via requests
-colorama==0.4.6 ; sys_platform == 'win32'
-    # via pytest
 distlib==0.4.3
     # via virtualenv
 docker==7.2.0
@@ -18,7 +16,7 @@ doit==0.37.0
     # via -r requirements.in
 dunamai==1.26.2
     # via -r requirements.in
-filelock==4.0.12
+filelock==4.2.1
     # via
     #   python-discovery
     #   virtualenv
@@ -51,8 +49,6 @@ pytest-docker==3.2.5
     # via -r requirements.in
 python-discovery==1.6.1
     # via virtualenv
-pywin32==312 ; sys_platform == 'win32'
-    # via docker
 pyyaml==6.0.3
     # via pre-commit
 requests==2.34.2
