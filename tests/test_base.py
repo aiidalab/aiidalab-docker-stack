@@ -103,30 +103,41 @@ def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
     assert msg.get("Location").startswith(f"{venv}/lib")
 
 
+# First Mozilla CA bundle that drops the compromised eMudhra roots,
+# see https://emudhra.we-have-a-problem.com/
+EMUDHRA_FIXED_CA_BUNDLE = "2026.10.23"
+# External incident test site; remove these tests once it goes offline.
+EMUDHRA_TEST_URLS = [
+    "https://dv-g3b-emudhra.we-have-a-problem.com/",
+    "https://dv-g3b-aaa-emudhra.we-have-a-problem.com/",
+    "https://dv-g3b-noct-emudhra.we-have-a-problem.com/",
+    "https://dv-g3b-aaa-noct-emudhra.we-have-a-problem.com/",
+]
+
+
 @pytest.mark.parametrize("cert_package", ["certifi", "ca-certificates"])
 def test_cert_packages_updated(package_info, cert_package):
     info = package_info(cert_package)
-    assert parse(info["version"]) >= parse("2026.10.23")
+    assert parse(info["version"]) >= parse(EMUDHRA_FIXED_CA_BUNDLE)
 
 
+@pytest.mark.parametrize("test_url", EMUDHRA_TEST_URLS)
 @pytest.mark.parametrize(
-    "test_url",
+    "client",
     [
-        "https://dv-g3b-emudhra.we-have-a-problem.com/",
-        "https://dv-g3b-aaa-emudhra.we-have-a-problem.com/",
-        "https://dv-g3b-noct-emudhra.we-have-a-problem.com/",
-        "https://dv-g3b-aaa-noct-emudhra.we-have-a-problem.com/",
+        # OS trust store (apt ca-certificates)
+        "/usr/bin/curl --silent --show-error --connect-timeout 10 --max-time 30",
+        # conda OpenSSL trust store (conda-forge ca-certificates)
+        'python -c "import sys, urllib.request; urllib.request.urlopen(sys.argv[1], timeout=30)"',
+        # requests (certifi)
+        'python -c "import sys, requests; requests.get(sys.argv[1], timeout=30)"',
     ],
 )
-def test_emudhra_mitigation(aiidalab_exec, test_url):
-    """Test that the compromised eMudhra certificates were revoked at the OS level
+def test_emudhra_mitigation(aiidalab_exec, client, test_url):
+    """Test that all trust stores in the image reject the compromised eMudhra roots
 
     Per https://emudhra.we-have-a-problem.com/#check
     """
-    output = aiidalab_exec(
-        f"sh -c '/usr/bin/curl --connect-timeout 10 --max-time 30 {test_url} 2>&1; test $? -eq 60'"
-    )
+    output = aiidalab_exec(f"sh -c '{client} {test_url} 2>&1; true'")
 
-    assert "Your client successfully connected to the site" not in output
-    assert "That's bad" not in output
-    assert "SSL certificate problem" in output
+    assert "unable to get local issuer certificate" in output, output
