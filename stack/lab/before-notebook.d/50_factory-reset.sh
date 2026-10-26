@@ -25,8 +25,7 @@ factory_reset() {
       if [ -e "/home/${NB_USER}/.local" ]; then
         local_backup="/home/${NB_USER}/.local~`date --iso-8601=seconds`"
         echo "factory reset: Move ~/.local/ to ${local_backup}."
-        mv "/home/${NB_USER}/.local" "${local_backup}" \
-          || echo "factory reset: WARNING: Failed to move ~/.local/, no reset performed."
+        mv --no-target-directory "/home/${NB_USER}/.local" "${local_backup}"
       else
         echo "factory reset: No ~/.local/ to reset."
       fi
