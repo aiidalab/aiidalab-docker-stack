@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Factory reset of the AiiDAlab environment, requested by writing the reset
-# mode into the ~/AIIDALAB_FACTORY_RESET file (the file is removed after parsing).
+# mode into the ~/AIIDALAB_FACTORY_RESET file (the file is removed once the reset is done).
 # Supported modes:
 #   local - Reset local software installation (moves ~/.local/ to ~/.local~<date>).
 #
@@ -26,7 +26,6 @@ factory_reset() {
 
   # Bounded read; a read failure must not abort container startup.
   reset_mode="$(head -c 64 "${reset_file}" | tr -d '[:space:]')" || true
-  rm -f "${reset_file}"  # Remove file after parsing.
 
   case "${reset_mode}" in
     local)
@@ -42,6 +41,10 @@ factory_reset() {
       echo "factory reset: WARNING: Unknown reset mode (${reset_mode}), no reset performed."
       ;;
   esac
+
+  # Remove the request only once handled, so that a failed reset (which aborts
+  # container startup) is retried on the next start.
+  rm -f "${reset_file}"
 }
 
 factory_reset
