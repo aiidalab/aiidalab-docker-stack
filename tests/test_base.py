@@ -123,7 +123,9 @@ def test_emudhra_mitigation(aiidalab_exec, test_url):
 
     Per https://emudhra.we-have-a-problem.com/#check
     """
-    output = aiidalab_exec(f"sh -c '/usr/bin/curl {test_url} 2>&1; test $? -eq 60'")
+    output = aiidalab_exec(
+        f"sh -c '/usr/bin/curl --connect-timeout 10 --max-time 30 {test_url} 2>&1; test $? -eq 60'"
+    )
 
     assert "Your client successfully connected to the site" not in output
     assert "That's bad" not in output
