@@ -15,12 +15,13 @@ ENV EXTRA_APT_PACKAGES="curl povray rsync build-essential bc"
 
 # For ARM64 we also install a few more packages for compiling from source,
 # which is more often needed on ARM64.
+# Update ca-certificates package to mitigate https://emudhra.we-have-a-problem.com/
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
         EXTRA_APT_PACKAGES="libhdf5-serial-dev pkg-config ${EXTRA_APT_PACKAGES}"; \
     fi;\
     apt-get update --yes && \
-    apt-get install --yes --no-install-recommends ${EXTRA_APT_PACKAGES} && \
+    apt-get install --yes --no-install-recommends ca-certificates ${EXTRA_APT_PACKAGES} && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/
@@ -55,10 +56,13 @@ ENV PIP_CONSTRAINT=/opt/requirements.txt
 # https://github.com/aiidalab/aiidalab-docker-stack/issues/501
 COPY pip.conf "${CONDA_DIR}/pip.conf"
 
-# Upgrade pip and mamba to latest
+# Upgrade pip to latest
+# Update certificates to make sure we're not vulnerable to
+# https://emudhra.we-have-a-problem.com/
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip && \
+RUN mamba update -y pip "certifi>=2026.10.23" "ca-certificates>=2026.10.23" && \
      mamba install --yes aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
+     pip check && \
      mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
 
