@@ -60,7 +60,7 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # Update certificates to make sure we're not vulnerable to
 # https://emudhra.we-have-a-problem.com/
 # Install aiida-core and other shared requirements.
-RUN mamba update -y pip certifi ca-certificates && \
+RUN mamba update -y pip mamba libmamba "certifi>=2026.10.23" "ca-certificates>=2026.10.23" && \
      mamba install --yes aiida-core.atomic_tools==${AIIDA_VERSION} mamba-bash-completion && \
      pip check && \
      mamba clean --all -f -y && \
