@@ -103,6 +103,109 @@ def test_pip_install_in_venv(aiidalab_exec, venv, nb_user):
     assert msg.get("Location").startswith(f"{venv}/lib")
 
 
+FACTORY_RESET_HOOK = "/usr/local/bin/before-notebook.d/05_factory-reset.sh"
+FACTORY_RESET_MARKER = "factory-reset-test-marker"
+
+
+@pytest.fixture
+def factory_reset(aiidalab_exec, nb_user):
+    """Run the factory reset hook directly, sourced from a `set -e` shell
+    as the container start script does, and restore ~/.local afterwards."""
+    home = f"/home/{nb_user}"
+
+    def run_bash(script, **kwargs):
+        return aiidalab_exec(f"bash -c '{script}'", user=nb_user, **kwargs)
+
+    def _factory_reset(request=None):
+        if request is not None:
+            run_bash(request)
+        return run_bash(f"set -e; source {FACTORY_RESET_HOOK}")
+
+    def home_entries():
+        return set(run_bash(f"ls -A {home}").split())
+
+    _factory_reset.run_bash = run_bash
+    _factory_reset.home_entries = home_entries
+
+    assert not any(e.startswith(".local~") for e in home_entries())
+    run_bash(f"mkdir -p {home}/.local && touch {home}/.local/{FACTORY_RESET_MARKER}")
+
+    yield _factory_reset
+
+    run_bash(
+        f"chmod u+w {home}; rm -rf {home}/AIIDALAB_FACTORY_RESET; "
+        f'for b in {home}/.local~*; do [ -d "$b" ] || continue; '
+        f'rm -rf {home}/.local; mv -T "$b" {home}/.local; done; '
+        f"rm -f {home}/.local/{FACTORY_RESET_MARKER}"
+    )
+
+
+def test_factory_reset_not_requested(factory_reset):
+    entries = factory_reset.home_entries()
+    assert factory_reset() == ""
+    assert factory_reset.home_entries() == entries
+
+
+def test_factory_reset_local(factory_reset, nb_user):
+    output = factory_reset(f"echo local > /home/{nb_user}/AIIDALAB_FACTORY_RESET")
+    assert "Move ~/.local/" in output
+
+    entries = factory_reset.home_entries()
+    assert "AIIDALAB_FACTORY_RESET" not in entries
+    assert ".local" not in entries
+    (backup,) = (e for e in entries if e.startswith(".local~"))
+    assert FACTORY_RESET_MARKER in factory_reset.run_bash(
+        f"ls -A /home/{nb_user}/{backup}"
+    )
+
+
+def test_factory_reset_unknown_mode(factory_reset, nb_user):
+    output = factory_reset(f"echo foo > /home/{nb_user}/AIIDALAB_FACTORY_RESET")
+    assert "Unknown reset mode (foo)" in output
+
+    entries = factory_reset.home_entries()
+    assert "AIIDALAB_FACTORY_RESET" not in entries
+    assert ".local" in entries
+
+
+@pytest.mark.parametrize(
+    "request_cmd",
+    [
+        "mkdir {reset_file}",
+        "mkfifo {reset_file}",
+        "echo local > {home}/target && ln -s {home}/target {reset_file}",
+    ],
+    ids=["directory", "fifo", "symlink"],
+)
+def test_factory_reset_not_regular_file(factory_reset, nb_user, request_cmd):
+    home = f"/home/{nb_user}"
+    reset_file = f"{home}/AIIDALAB_FACTORY_RESET"
+    try:
+        output = factory_reset(request_cmd.format(home=home, reset_file=reset_file))
+        assert "is not a regular file" in output
+
+        entries = factory_reset.home_entries()
+        assert "AIIDALAB_FACTORY_RESET" in entries
+        assert ".local" in entries
+    finally:
+        factory_reset.run_bash(f"rm -f {home}/target")
+
+
+def test_factory_reset_failed_move(factory_reset, nb_user):
+    """A failed reset aborts startup and keeps the request for the next start."""
+    home = f"/home/{nb_user}"
+    factory_reset.run_bash(f"echo local > {home}/AIIDALAB_FACTORY_RESET")
+    # Moving ~/.local requires write permission on the home directory.
+    factory_reset.run_bash(f"chmod u-w {home}")
+    with pytest.raises(Exception):  # noqa: B017
+        factory_reset()
+    factory_reset.run_bash(f"chmod u+w {home}")
+
+    entries = factory_reset.home_entries()
+    assert "AIIDALAB_FACTORY_RESET" in entries
+    assert ".local" in entries
+
+
 # First Mozilla CA bundle that drops the compromised eMudhra roots,
 # see https://emudhra.we-have-a-problem.com/
 EMUDHRA_FIXED_CA_BUNDLE = "2026.10.23"
