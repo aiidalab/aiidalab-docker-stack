@@ -22,8 +22,8 @@ RUN mamba install --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# TO-BE-REMOVED: MAIN BRANCH
-RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab@main
+# TO-BE-REMOVED: "App reinstall feature"
+RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab@9226088f95f984649e587555d0a9579c040dd5fe
 
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
