@@ -23,7 +23,7 @@ RUN mamba install --yes \
      fix-permissions "/home/${NB_USER}"
 
 # TO-BE-REMOVED: "Back to v26.09.0"
-RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab@9606f98c0671f175894811f57bed2502756f9f70
+#RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab@9606f98c0671f175894811f57bed2502756f9f70
 
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
