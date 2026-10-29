@@ -40,6 +40,14 @@ def test_appmode_installed(aiidalab_exec):
     assert msg.get("Location").startswith("/opt/conda/lib/python")
 
 
+def test_appmode_nbextension_enabled(aiidalab_exec):
+    """Test that appmode frontend extension is enabled, otherwise apps hang on load"""
+    output = aiidalab_exec("jupyter nbclassic-extension list")
+    # Strip ANSI color codes
+    output = re.sub(r"\x1b\[[0-9;]*m", "", output)
+    assert re.search(r"appmode/main\s+enabled", output)
+
+
 @pytest.mark.parametrize(
     "incompatible_package", ["aiidalab==22.7.1", "ipywidgets==7.7.4"]
 )

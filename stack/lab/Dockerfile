@@ -13,10 +13,15 @@ WORKDIR /opt/
 
 ARG AIIDALAB_VERSION
 ARG AWB_VERSION
+
+# Note: The appmode post-link script is supposed to enable the appmode nbextension,
+# but it might fail if some dependencies are temporarily missing during the upgrade.
+# Therefore, we explicitly enable it here.
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
      appmode=1.3.0 \
      aiidalab-widgets-base=${AWB_VERSION} && \
+     jupyter nbclassic-extension enable --py --sys-prefix appmode && \
      pip check && \
      mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}" && \
