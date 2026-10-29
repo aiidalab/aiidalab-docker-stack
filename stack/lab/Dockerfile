@@ -22,8 +22,8 @@ RUN mamba install --yes \
      fix-permissions "${CONDA_DIR}" && \
      fix-permissions "/home/${NB_USER}"
 
-# TO-BE-REMOVED: "Account for environment markers"
-RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab@607b5ea2154dcca593c565c921ea0e2062de99a5
+# TO-BE-REMOVED: "Back to v26.09.0"
+RUN pip install --no-user aiidalab@git+https://github.com/aiidalab/aiidalab@9606f98c0671f175894811f57bed2502756f9f70
 
 # Pin aiidalab version.
 RUN echo "aiidalab==${AIIDALAB_VERSION}" >> /opt/requirements.txt
