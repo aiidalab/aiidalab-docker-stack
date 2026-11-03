@@ -63,9 +63,13 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # Install aiida-core and other shared requirements.
 # We need to pin numpy to 1.x due to AWB using old bokeh version, see:
 # https://github.com/aiidalab/aiidalab-widgets-base/issues/733
-RUN mamba update -y pip async_generator certipy mamba=1.5 libmamba=1.5 libmambapy=1.5 certifi "ca-certificates>=2026.10.23" && \
+RUN mamba update -y pip async_generator certipy mamba libmamba libmambapy certifi "ca-certificates>=2026.10.23" && \
      mamba install --yes \
-     aiida-core=${AIIDA_VERSION} numpy=1.* mamba-bash-completion traitlets=5.9.0 && \
+     mamba=1.5 libmamba=1.5 libmambapy=1.5 \
+     aiida-core=${AIIDA_VERSION} \
+     numpy=1.* \
+     mamba-bash-completion \
+     traitlets=5.9.0 && \
      pip check && \
      mamba clean --all -f -y && \
      fix-permissions "${CONDA_DIR}"
