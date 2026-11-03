@@ -22,7 +22,7 @@ def test_correct_aiidalab_version_installed(package_info, aiidalab_version):
 
 
 def test_correct_aiidalab_home_version_installed(package_info, aiidalab_home_tag):
-    info = package_info("aiidalab-home")
+    info = package_info("aiidalab_home")
     # For debugging, aiidalab_home_tag can point to a branch or a commit,
     # in which case we cannot easily compare the versions.
     # We only try the comparison if the version starts with "v[0-9][0-9]",
