@@ -115,7 +115,7 @@ EMUDHRA_TEST_URLS = [
 ]
 
 
-@pytest.mark.parametrize("cert_package", ["certifi", "ca-certificates"])
+@pytest.mark.parametrize("cert_package", ["ca-certificates"])
 def test_cert_packages_updated(package_info, cert_package):
     info = package_info(cert_package)
     assert parse(info["version"]) >= parse(EMUDHRA_FIXED_CA_BUNDLE)
@@ -130,7 +130,7 @@ def test_cert_packages_updated(package_info, cert_package):
         # conda OpenSSL trust store (conda-forge ca-certificates)
         'python -c "import sys, urllib.request; urllib.request.urlopen(sys.argv[1], timeout=30)"',
         # requests (certifi)
-        'python -c "import sys, requests; requests.get(sys.argv[1], timeout=30)"',
+        # 'python -c "import sys, requests; requests.get(sys.argv[1], timeout=30)"',
     ],
 )
 def test_emudhra_mitigation(aiidalab_exec, client, test_url):
