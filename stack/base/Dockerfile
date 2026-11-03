@@ -65,7 +65,6 @@ COPY pip.conf "${CONDA_DIR}/pip.conf"
 # https://github.com/aiidalab/aiidalab-widgets-base/issues/733
 RUN mamba update -y pip async_generator certipy mamba libmamba libmambapy certifi "ca-certificates>=2026.10.23" && \
      mamba install --yes \
-     mamba=1.5 libmamba=1.5 libmambapy=1.5 \
      aiida-core=${AIIDA_VERSION} \
      numpy=1.* \
      mamba-bash-completion \
