@@ -17,10 +17,13 @@ ARG AWB_VERSION
 # Note: The appmode post-link script is supposed to enable the appmode nbextension,
 # but it might fail if some dependencies are temporarily missing during the upgrade.
 # Therefore, we explicitly enable it here.
+# The idna pin is needed because the conda-forge url-normalize 3.1.0 package
+# doesn't declare its idna>=3.20 requirement, so pip check would fail.
 RUN mamba install --yes \
      aiidalab=${AIIDALAB_VERSION} \
      appmode=1.3.0 \
-     aiidalab-widgets-base=${AWB_VERSION} && \
+     aiidalab-widgets-base=${AWB_VERSION} \
+     "idna>=3.20" && \
      jupyter nbclassic-extension enable --py --sys-prefix appmode && \
      pip check && \
      mamba clean --all -f -y && \
