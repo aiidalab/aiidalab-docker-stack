@@ -91,7 +91,6 @@ RUN mkdir -p /home/${NB_USER}/apps
 # Instead, here we configure Jupyter to kill all kernels that have been alive for
 # more than 12 hours. We also close all inactive terminals after 10 minutes.
 ENV NOTEBOOK_ARGS \
-     "--NotebookApp.default_url='/apps/apps/home/start.ipynb'" \
      "--NotebookApp.show_banner=False" \
      "--MappingKernelManager.buffer_offline_messages=True" \
      "--MappingKernelManager.cull_busy=True" \
@@ -100,6 +99,9 @@ ENV NOTEBOOK_ARGS \
      "--MappingKernelManager.cull_interval=300" \
      "--TerminalManager.cull_inactive_timeout=3600" \
      "--TerminalManager.cull_interval=300"
+
+# Default URL. Not in /etc/jupyter, which some deployments mount over.
+COPY jupyter_server_config.py ${CONDA_DIR}/etc/jupyter/jupyter_server_config.py
 
 # Set up the logo of notebook interface
 COPY --chown=${NB_UID}:${NB_GID} aiidalab-wide-logo.png ${CONDA_DIR}/lib/python${PYTHON_MINOR_VERSION}/site-packages/nbclassic/static/base/images/logo.png
