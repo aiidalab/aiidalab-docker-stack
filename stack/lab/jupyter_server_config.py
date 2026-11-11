@@ -2,6 +2,11 @@ import os
 
 c = get_config()  # noqa: F821
 
+# AiiDAlab uses nbclassic. Notebook 7 registers /terminals before nbclassic's
+# handler and replaces the classic terminal page. Disable only its frontend
+# extension; leave the installed packages and the JupyterLab interface intact.
+c.ServerApp.jpserver_extensions = {"notebook": False}
+
 # If the hub sets c.Spawner.default_url, it is passed through as $JUPYTERHUB_DEFAULT_URL.
 # Otherwise, use default AiiDAlab home.
 default_url = os.environ.get("JUPYTERHUB_DEFAULT_URL") or "/apps/apps/home/start.ipynb"

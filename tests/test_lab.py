@@ -1,7 +1,9 @@
 import email
+import json
 import re
 
 import pytest
+import requests
 from packaging.version import parse
 
 # Tests in this file should pass for the following images
@@ -46,6 +48,36 @@ def test_appmode_nbextension_enabled(aiidalab_exec):
     # Strip ANSI color codes
     output = re.sub(r"\x1b\[[0-9;]*m", "", output)
     assert re.search(r"appmode/main\s+enabled", output)
+
+
+def test_classic_file_browser_and_terminal(notebook_service, aiidalab_exec):
+    """Notebook 7 must not take over the classic terminal's URL."""
+    server = json.loads(
+        aiidalab_exec(
+            'python -c "import json; '
+            "from jupyter_server.serverapp import list_running_servers; "
+            'print(json.dumps(next(list_running_servers())))"'
+        )
+    )
+    with requests.Session() as session:
+        if server["token"]:
+            session.headers["Authorization"] = f"token {server['token']}"
+        base_url = notebook_service + server["base_url"].rstrip("/")
+        response = session.get(f"{base_url}/nbclassic/tree/", timeout=30)
+        response.raise_for_status()
+        assert 'id="notebook_list"' in response.text
+
+        response = session.post(f"{base_url}/api/terminals", timeout=30)
+        response.raise_for_status()
+        name = response.json()["name"]
+        try:
+            response = session.get(f"{base_url}/terminals/{name}", timeout=30)
+            response.raise_for_status()
+            assert 'id="terminado-container"' in response.text
+            assert "terminal/js/main.min.js" in response.text
+        finally:
+            response = session.delete(f"{base_url}/api/terminals/{name}", timeout=30)
+            response.raise_for_status()
 
 
 @pytest.mark.parametrize(
