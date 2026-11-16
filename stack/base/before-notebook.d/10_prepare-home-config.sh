@@ -33,6 +33,16 @@ if [[ ! -f  /home/${NB_USER}/.ssh/id_rsa ]]; then
   ssh-keygen -f /home/${NB_USER}/.ssh/id_rsa -t rsa -b 4096 -m PEM -N ''
 fi
 
+# Restore restrictive permissions after a persistent home is remounted (e.g.
+# Kubernetes fsGroup can add group access). Cover custom key names, preserve
+# file owner permissions and leave symbolic links and their targets untouched.
+if ! find -P "/home/${NB_USER}/.ssh" -type d -perm /077 -exec chmod 00700 {} +; then
+    echo "Warning: Could not restrict SSH directory permissions; check ownership or read-only mounts." >&2
+fi
+if ! find -P "/home/${NB_USER}/.ssh" -type f -perm /077 -exec chmod go-rwx {} +; then
+    echo "Warning: Could not restrict SSH file permissions; check ownership or read-only mounts." >&2
+fi
+
 # Set sshagent by source load-singlesshagent.sh script
 # append the command text of source to .bashrc if the script /opt/bin/load-singlesshagen.sh is present
 # and the command text is not already present in .bashrc
